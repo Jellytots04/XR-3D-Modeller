@@ -1,6 +1,7 @@
 extends XRController3D
 
 var ui_controller
+var controller_Start
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -9,8 +10,15 @@ func _ready() -> void:
 		ui_controller = ui_controllers[0]
 	else:
 		print("UI Controller not found")
+	controller_Start = ui_controller.global_transform
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if is_button_pressed("ax_button"): # Meta Quest A button
+	if is_button_pressed("ax_button"): # Meta Quest X button
+		#ui_controller.global_basis = self.global_basis
+		print("Before Change", ui_controller.global_transform)
+		print("Controller PreChange", self.global_transform)
 		ui_controller.global_transform = self.global_transform
+		ui_controller.get_node("PickableObject").transform = Transform3D.IDENTITY
+		print("After Change", ui_controller.global_transform)
+		print("Controller After Change", self.global_transform)
