@@ -1,0 +1,208 @@
+[gd_scene load_steps=17 format=3 uid="uid://dtu04ja1ciam2"]
+
+[ext_resource type="Texture2D" uid="uid://doouo351qxka6" path="res://ControllerUI/Icons/CubeIcon.aseprite" id="1_5nlk7"]
+[ext_resource type="Texture2D" uid="uid://b4fy5f1eolrqs" path="res://ControllerUI/Icons/PrismIcon.aseprite" id="2_iuyxb"]
+[ext_resource type="Texture2D" uid="uid://ddss0uunw1bww" path="res://ControllerUI/Icons/SphereIcon.aseprite" id="3_wus27"]
+[ext_resource type="Texture2D" uid="uid://ta5e6sy0j6wr" path="res://ControllerUI/Icons/VerticeIcon.aseprite" id="4_kkiu2"]
+[ext_resource type="Texture2D" uid="uid://3nh4a4e6xj5b" path="res://ControllerUI/Icons/CutIcon.aseprite" id="5_rhe20"]
+[ext_resource type="Texture2D" uid="uid://341vcjtm7k0f" path="res://ControllerUI/Icons/SnapIcon.aseprite" id="6_tpmfw"]
+[ext_resource type="Texture2D" uid="uid://lc5yadkpxhld" path="res://ControllerUI/Icons/GridIcon.aseprite" id="7_b4tso"]
+[ext_resource type="Texture2D" uid="uid://csyna0axkoeoh" path="res://ControllerUI/Icons/MoveIcon.aseprite" id="8_exnw3"]
+[ext_resource type="Texture2D" uid="uid://bhbhf16um162j" path="res://ControllerUI/Icons/RotateIcon.aseprite" id="9_u26fo"]
+[ext_resource type="Texture2D" uid="uid://luxrb0qnej8d" path="res://ControllerUI/Icons/ScaleIcon.aseprite" id="10_7oq3b"]
+[ext_resource type="Texture2D" uid="uid://bhaptdgitud0u" path="res://ControllerUI/Icons/MeasureIcon.aseprite" id="11_wjypm"]
+[ext_resource type="Texture2D" uid="uid://d0cyfuiwivtba" path="res://ControllerUI/Icons/UndoIcon.aseprite" id="12_7oq3b"]
+[ext_resource type="Texture2D" uid="uid://ljyff1wpqbdy" path="res://ControllerUI/Icons/RedoIcon.aseprite" id="13_wjypm"]
+[ext_resource type="Texture2D" uid="uid://d14oa0mv8ak6f" path="res://ControllerUI/Icons/HistoryIcon.aseprite" id="14_g8fi6"]
+[ext_resource type="Texture2D" uid="uid://qq8cr2pngjy1" path="res://ControllerUI/Icons/StretchIcon.aseprite" id="15_keb40"]
+[ext_resource type="Texture2D" uid="uid://iukg2m2fcqk3" path="res://ControllerUI/Icons/MultiScaleIcon.aseprite" id="16_5tk4o"]
+
+[node name="ControlPadDisplay" type="TabContainer"]
+offset_right = 400.0
+offset_bottom = 200.0
+tab_alignment = 1
+current_tab = 0
+
+[node name="Build" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+metadata/_tab_index = 0
+
+[node name="VerticalArrangement" type="VBoxContainer" parent="Build"]
+layout_mode = 2
+
+[node name="BuildOptions" type="HBoxContainer" parent="Build/VerticalArrangement"]
+layout_mode = 2
+alignment = 1
+
+[node name="CubePrimitive" type="Button" parent="Build/VerticalArrangement/BuildOptions"]
+layout_mode = 2
+icon = ExtResource("1_5nlk7")
+
+[node name="PrismPrimitive" type="Button" parent="Build/VerticalArrangement/BuildOptions"]
+layout_mode = 2
+icon = ExtResource("2_iuyxb")
+
+[node name="SpherePrimitive" type="Button" parent="Build/VerticalArrangement/BuildOptions"]
+layout_mode = 2
+icon = ExtResource("3_wus27")
+
+[node name="VerticeSet" type="Button" parent="Build/VerticalArrangement/BuildOptions"]
+layout_mode = 2
+icon = ExtResource("4_kkiu2")
+
+[node name="AlwaysEditable" type="HBoxContainer" parent="Build/VerticalArrangement"]
+layout_mode = 2
+alignment = 1
+
+[node name="Cut" type="Button" parent="Build/VerticalArrangement/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("5_rhe20")
+
+[node name="Snap" type="Button" parent="Build/VerticalArrangement/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("6_tpmfw")
+
+[node name="Grid" type="Button" parent="Build/VerticalArrangement/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("7_b4tso")
+
+[node name="Move" type="Button" parent="Build/VerticalArrangement/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("8_exnw3")
+
+[node name="Rotate" type="Button" parent="Build/VerticalArrangement/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("9_u26fo")
+
+[node name="Scale" type="Button" parent="Build/VerticalArrangement/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("10_7oq3b")
+
+[node name="Measurements" type="Button" parent="Build/VerticalArrangement/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("11_wjypm")
+
+[node name="Edit" type="MarginContainer" parent="."]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+metadata/_tab_index = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Edit"]
+layout_mode = 2
+
+[node name="Panel" type="HBoxContainer" parent="Edit/VBoxContainer"]
+layout_mode = 2
+
+[node name="Undo" type="Button" parent="Edit/VBoxContainer/Panel"]
+layout_mode = 2
+icon = ExtResource("12_7oq3b")
+
+[node name="Redo" type="Button" parent="Edit/VBoxContainer/Panel"]
+layout_mode = 2
+icon = ExtResource("13_wjypm")
+
+[node name="History" type="Button" parent="Edit/VBoxContainer/Panel"]
+layout_mode = 2
+icon = ExtResource("14_g8fi6")
+
+[node name="Stretch" type="Button" parent="Edit/VBoxContainer/Panel"]
+layout_mode = 2
+icon = ExtResource("15_keb40")
+
+[node name="MultiScaleTool" type="Button" parent="Edit/VBoxContainer/Panel"]
+layout_mode = 2
+icon = ExtResource("16_5tk4o")
+
+[node name="AlwaysEditable" type="HBoxContainer" parent="Edit/VBoxContainer"]
+layout_mode = 2
+
+[node name="Cut" type="Button" parent="Edit/VBoxContainer/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("5_rhe20")
+
+[node name="Snap" type="Button" parent="Edit/VBoxContainer/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("6_tpmfw")
+
+[node name="Grid" type="Button" parent="Edit/VBoxContainer/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("7_b4tso")
+
+[node name="Move" type="Button" parent="Edit/VBoxContainer/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("8_exnw3")
+
+[node name="Rotate" type="Button" parent="Edit/VBoxContainer/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("9_u26fo")
+
+[node name="Scale" type="Button" parent="Edit/VBoxContainer/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("10_7oq3b")
+
+[node name="Measurements" type="Button" parent="Edit/VBoxContainer/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("11_wjypm")
+
+[node name="Physics" type="MarginContainer" parent="."]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+metadata/_tab_index = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Physics"]
+layout_mode = 2
+
+[node name="Position" type="HBoxContainer" parent="Physics/VBoxContainer"]
+layout_mode = 2
+
+[node name="Name" type="Label" parent="Physics/VBoxContainer/Position"]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+text = "PlaceHolder : "
+
+[node name="Value" type="Label" parent="Physics/VBoxContainer/Position"]
+layout_mode = 2
+text = "Place Holder Value"
+
+[node name="AlwaysEditable" type="HBoxContainer" parent="Physics/VBoxContainer"]
+layout_mode = 2
+
+[node name="Cut" type="Button" parent="Physics/VBoxContainer/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("5_rhe20")
+
+[node name="Snap" type="Button" parent="Physics/VBoxContainer/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("6_tpmfw")
+
+[node name="Grid" type="Button" parent="Physics/VBoxContainer/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("7_b4tso")
+
+[node name="Move" type="Button" parent="Physics/VBoxContainer/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("8_exnw3")
+
+[node name="Rotate" type="Button" parent="Physics/VBoxContainer/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("9_u26fo")
+
+[node name="Scale" type="Button" parent="Physics/VBoxContainer/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("10_7oq3b")
+
+[node name="Measurements" type="Button" parent="Physics/VBoxContainer/AlwaysEditable"]
+layout_mode = 2
+icon = ExtResource("11_wjypm")

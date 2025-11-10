@@ -1,0 +1,37 @@
+[gd_scene load_steps=7 format=3 uid="uid://hfu7l13886ko"]
+
+[ext_resource type="Script" uid="uid://b0nal575khs58" path="res://UIController.gd" id="1_l6ach"]
+[ext_resource type="PackedScene" uid="uid://clujaf3u776a3" path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" id="2_cjv01"]
+[ext_resource type="PackedScene" uid="uid://c8l60rnugru40" path="res://addons/godot-xr-tools/objects/pickable.tscn" id="2_vuevf"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_cjv01"]
+size = Vector3(0.355, 0.215, 0.02)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cjv01"]
+albedo_color = Color(0.23921569, 1, 1, 1)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_cjv01"]
+points = PackedVector3Array(0.17750002, 0.1075, 0.01, 0.17750002, 0.1075, -0.01, -0.1775, 0.1075, 0.01, 0.17750002, -0.1075, 0.01, 0.17750002, -0.1075, -0.01, -0.1775, 0.1075, -0.01, -0.1775, -0.1075, 0.01, -0.1775, -0.1075, -0.01)
+
+[node name="UIController" type="Node3D"]
+script = ExtResource("1_l6ach")
+
+[node name="PickableObject" parent="." instance=ExtResource("2_vuevf")]
+gravity_scale = 0.0
+ranged_grab_method = 0
+
+[node name="Viewport2Din3D" parent="PickableObject" instance=ExtResource("2_cjv01")]
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+collision_layer = 5242880
+viewport_size = Vector2(400, 200)
+transparent = 2
+unshaded = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="PickableObject"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.013232499)
+mesh = SubResource("BoxMesh_cjv01")
+surface_material_override/0 = SubResource("StandardMaterial3D_cjv01")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="PickableObject"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.013232499)
+shape = SubResource("ConvexPolygonShape3D_cjv01")

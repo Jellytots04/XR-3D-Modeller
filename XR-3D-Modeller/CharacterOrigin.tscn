@@ -1,0 +1,67 @@
+[gd_scene load_steps=10 format=3 uid="uid://dry3gd8dudal"]
+
+[ext_resource type="Script" uid="uid://dqn7bjvewuwck" path="res://left_hand.gd" id="1_5pt0g"]
+[ext_resource type="PackedScene" uid="uid://b4kad2kuba1yn" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_hand_low.tscn" id="1_5w5qi"]
+[ext_resource type="Script" uid="uid://evdnmsuh025x" path="res://Summon.gd" id="1_md7ef"]
+[ext_resource type="PackedScene" uid="uid://b4ysuy43poobf" path="res://addons/godot-xr-tools/functions/function_pickup.tscn" id="2_a57kf"]
+[ext_resource type="PackedScene" uid="uid://heyxgipogtlf" path="res://Objects_Summonable/new_box.tscn" id="2_s27s0"]
+[ext_resource type="PackedScene" uid="uid://l2n30mpbkdyw" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/right_hand_low.tscn" id="2_tpptb"]
+[ext_resource type="PackedScene" uid="uid://cqhw276realc" path="res://addons/godot-xr-tools/functions/function_pointer.tscn" id="3_ayg2o"]
+[ext_resource type="PackedScene" uid="uid://bl2nuu3qhlb5k" path="res://addons/godot-xr-tools/functions/movement_direct.tscn" id="5_bayos"]
+[ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="9_55u2w"]
+
+[node name="XROrigin3D" type="XROrigin3D"]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="."]
+
+[node name="LeftHand" type="XRController3D" parent="."]
+tracker = &"left_hand"
+script = ExtResource("1_5pt0g")
+
+[node name="LeftHand" parent="LeftHand" instance=ExtResource("1_5w5qi")]
+
+[node name="FunctionPickup" parent="LeftHand/LeftHand" instance=ExtResource("2_a57kf")]
+
+[node name="MovementDirect" parent="LeftHand/LeftHand" instance=ExtResource("5_bayos")]
+max_speed = 3.3
+strafe = true
+
+[node name="FunctionPointer" parent="LeftHand" instance=ExtResource("3_ayg2o")]
+show_laser = 2
+laser_length = 1
+show_target = true
+
+[node name="RightHand" type="XRController3D" parent="."]
+tracker = &"right_hand"
+script = ExtResource("1_md7ef")
+object_scene = ExtResource("2_s27s0")
+
+[node name="RightHand" parent="RightHand" instance=ExtResource("2_tpptb")]
+
+[node name="FunctionPickup" parent="RightHand/RightHand" instance=ExtResource("2_a57kf")]
+
+[node name="UIPointer" parent="RightHand" instance=ExtResource("3_ayg2o")]
+y_offset = 0.0
+show_laser = 2
+laser_length = 1
+show_target = true
+target_radius = 0.01
+
+[node name="Timer" type="Timer" parent="RightHand"]
+
+[node name="SelectPointer" parent="RightHand" instance=ExtResource("3_ayg2o")]
+show_laser = 2
+laser_length = 1
+show_target = true
+target_radius = 0.01
+collision_mask = 6
+
+[node name="RayCast3D" type="RayCast3D" parent="RightHand"]
+target_position = Vector3(0, 0, -8)
+collision_mask = 7
+debug_shape_custom_color = Color(0.80813736, 3.272891e-06, 7.70092e-07, 1)
+debug_shape_thickness = 5
+
+[node name="Marker3D" type="Marker3D" parent="RightHand"]
+
+[node name="PlayerBody" parent="." instance=ExtResource("9_55u2w")]
