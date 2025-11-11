@@ -2,6 +2,7 @@ extends XRController3D
 
 # Exported objects and nodes
 @export var summonableFolder = "res://Objects_Summonable/"
+@export var ghostedFolder = "res://Objects_Ghosted/"
 @export var object_scene: PackedScene
 @export var spawn_distance := 1.0
 @export var summon_rate:int = 1
@@ -13,7 +14,11 @@ extends XRController3D
 
 var summonedObjects = []
 var summonableObjects = []
+var ghostedObjects = []
+var objectsInScene = []
 var summonIndex = 0
+var ghostInstance
+var ghostingOn = false
 var can_summon = true
 
 # Highlighting variables
@@ -45,10 +50,33 @@ func load_summonables():
 	else:
 		print("No folder applicable")
 
+func load_ghosted():
+	# Open the directory
+	var directory = DirAccess.open(ghostedFolder)
+	if directory:
+		# Starts listing the directory stream
+		directory.list_dir_begin()
+		var file_name = directory.get_next()
+		# While the file name exists
+		while file_name != "":
+			# Ensure the file is a scene tscn
+			if file_name.ends_with(".tscn"):
+				# Combine the directory path and the file
+				var scene = load(ghostedFolder + file_name)
+				# Add it to the list of obejcts
+				ghostedObjects.append(scene)
+			# Move to the next item
+			file_name = directory.get_next()
+		# Ends the stream
+		directory.list_dir_end()
+		# print(summonableFolder)
+	else:
+		print("No folder applicable")
+
 func _ready() -> void:
 	# Load the summonables when started
 	load_summonables()
-	
+	load_ghosted()
 	timer.wait_time = 1.0 / summon_rate
 	timer.connect("timeout", _time_out)
 	# Get the path for the left Hand controller
@@ -67,9 +95,20 @@ func _time_out():
 func _process(_delta):
 	# Will activate when the user presses the A button on the controller
 	if is_button_pressed("ax_button") and can_summon: # Meta Quest A button
-		timer.start()
-		can_summon = false
-		summon_object(summonIndex)
+		if not ghostingOn:
+			ghostInstance = ghostedObjects[summonIndex].instantiate()
+			get_tree().current_scene.add_child(ghostInstance)
+			ghostingOn = true
+		var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
+		ghostInstance.global_transform.origin = spawn_pos
+	else:
+		if ghostingOn:
+			ghostInstance.queue_free()
+			ghostInstance = null
+			ghostingOn = false
+			timer.start()
+			can_summon = false
+			summon_object(summonIndex)
 	if is_button_pressed("by_button"):
 		print("Removing time")
 		remove_object()
@@ -79,11 +118,12 @@ func update_highlighted_object():
 	# print("Ray update")
 	if raycast_3d.is_colliding():
 		var obj = raycast_3d.get_collider()
-		if obj != highlighted_object:
-			if highlighted_object:
-				_remove_highlight(highlighted_object)
-			highlighted_object = obj
-			_apply_highlight(highlighted_object)
+		if obj in objectsInScene:
+			if obj != highlighted_object:
+				if highlighted_object:
+					_remove_highlight(highlighted_object)
+				highlighted_object = obj
+				_apply_highlight(highlighted_object)
 	else:
 		if highlighted_object:
 			_remove_highlight(highlighted_object)
@@ -99,6 +139,7 @@ func summon_object(index):
 		var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
 		new_obj.global_transform.origin = spawn_pos
 		new_obj.add_to_group("summonedObjects")
+		objectsInScene.append(new_obj)
 		# Add the new object to the scene
 		get_tree().current_scene.add_child(new_obj)
 	else:
@@ -110,6 +151,7 @@ func set_summon_index(idx):
 
 func _apply_highlight(obj):
 	var mesh_inst = null
+	
 	if obj is MeshInstance3D:
 		mesh_inst = obj
 	elif obj.has_node("MeshInstance3D"):

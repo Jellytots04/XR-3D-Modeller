@@ -16,9 +16,9 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if is_button_pressed("ax_button"): # Meta Quest X button
 		#ui_controller.global_basis = self.global_basis
-		print("Before Change", ui_controller.global_transform)
-		print("Controller PreChange", self.global_transform)
+		#print("Before Change", ui_controller.global_transform)
+		#print("Controller PreChange", self.global_transform)
 		ui_controller.global_transform = self.global_transform
 		ui_controller.get_node("PickableObject").transform = Transform3D.IDENTITY
-		print("After Change", ui_controller.global_transform)
-		print("Controller After Change", self.global_transform)
+		#print("After Change", ui_controller.global_transform)
+		#print("Controller After Change", self.global_transform)

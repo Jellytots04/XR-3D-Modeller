@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://buefrvxv16peg"]
+[gd_scene load_steps=4 format=3 uid="uid://dlg6w5bafkbpa"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_7ltao"]
 radius = 0.1
@@ -7,7 +7,9 @@ radius = 0.1
 radius = 0.1
 height = 0.2
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7ltao"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ab2ed"]
+transparency = 1
+albedo_color = Color(1, 1, 1, 0.3137255)
 
 [node name="Vertice" type="RigidBody3D"]
 gravity_scale = 0.0
@@ -17,4 +19,4 @@ shape = SubResource("SphereShape3D_7ltao")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_oedvn")
-surface_material_override/0 = SubResource("StandardMaterial3D_7ltao")
+surface_material_override/0 = SubResource("StandardMaterial3D_ab2ed")
