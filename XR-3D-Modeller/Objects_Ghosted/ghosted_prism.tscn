@@ -1,25 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://bn35mf6266bck"]
+[gd_scene load_steps=3 format=3 uid="uid://bn35mf6266bck"]
 
-[ext_resource type="Script" uid="uid://c7sulawupgqsu" path="res://addons/godot-xr-tools/objects/pickable.gd" id="1_qr2on"]
+[sub_resource type="PrismMesh" id="PrismMesh_ck4de"]
 
-[sub_resource type="PrismMesh" id="PrismMesh_cm0pq"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jeafm"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sf6gq"]
 transparency = 1
 albedo_color = Color(1, 1, 1, 0.3137255)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_fos0i"]
-points = PackedVector3Array(0, 0.5, 0.5, 0.5, -0.5, 0.5, 0, 0.5, -0.5, -0.5, -0.5, 0.5, 0.5, -0.5, -0.5, -0.5, -0.5, -0.5)
-
-[node name="Prism" type="RigidBody3D"]
-collision_layer = 4
-collision_mask = 196615
-freeze_mode = 1
-script = ExtResource("1_qr2on")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-mesh = SubResource("PrismMesh_cm0pq")
-surface_material_override/0 = SubResource("StandardMaterial3D_jeafm")
-
-[node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
-shape = SubResource("ConvexPolygonShape3D_fos0i")
+[node name="MeshInstance3D" type="MeshInstance3D"]
+mesh = SubResource("PrismMesh_ck4de")
+surface_material_override/0 = SubResource("StandardMaterial3D_sf6gq")
