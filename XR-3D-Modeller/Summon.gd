@@ -151,7 +151,6 @@ func set_summon_index(idx):
 
 func _apply_highlight(obj):
 	var mesh_inst = null
-	
 	if obj is MeshInstance3D:
 		mesh_inst = obj
 	elif obj.has_node("MeshInstance3D"):
@@ -199,3 +198,35 @@ func remove_object():
 		# Remove the actual instance from scene
 		highlighted_object.queue_free()
 		highlighted_object = null
+
+func _on_function_pickup_has_picked_up(obj):
+	var mesh_inst = null
+	if obj is MeshInstance3D:
+		mesh_inst = obj
+	elif obj.has_node("MeshInstance3D"):
+		mesh_inst = obj.get_node("MeshInstance3D")
+	else:
+		print("No MeshInstance3D available on object!")
+		return
+
+	if not mesh_inst.mesh:
+		print("No mesh resource found on MeshInstance3D!")
+		return
+
+	if obj in objectsInScene:
+		var mesh = mesh_inst.mesh
+		original_materials[mesh_inst] = []
+		for i in range(mesh.get_surface_count()):
+			original_materials[mesh_inst].append(mesh_inst.get_active_material(i))
+			var mat = mesh_inst.get_active_material(i)
+			if mat:
+				mat = mat.duplicate()
+				var c = mat.albedo_color
+				c.a = 0.3
+				mat.albedo_color = c
+				mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+				mesh_inst.set_surface_override_material(i, mat)
+
+
+func _on_function_pickup_has_dropped() -> void:
+	pass # Replace with function body.

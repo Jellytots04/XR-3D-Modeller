@@ -65,3 +65,6 @@ debug_shape_thickness = 5
 [node name="Marker3D" type="Marker3D" parent="RightHand"]
 
 [node name="PlayerBody" parent="." instance=ExtResource("9_55u2w")]
+
+[connection signal="has_dropped" from="RightHand/RightHand/FunctionPickup" to="RightHand" method="_on_function_pickup_has_dropped"]
+[connection signal="has_picked_up" from="RightHand/RightHand/FunctionPickup" to="RightHand" method="_on_function_pickup_has_picked_up"]
