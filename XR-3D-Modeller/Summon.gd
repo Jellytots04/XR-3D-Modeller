@@ -26,6 +26,9 @@ var original_materials = {}
 var highlighted_object = null
 var highlight_color = Color(1,0,0) # Red highlight
 
+# For Pickup and relase signalling
+var last_grabbed_object = null
+
 # Load the summonable objects from the Objects_Summonable Folder
 func load_summonables():
 	# Open the directory
@@ -199,7 +202,7 @@ func remove_object():
 		highlighted_object.queue_free()
 		highlighted_object = null
 
-func _on_function_pickup_has_picked_up(obj):
+func _apply_transparency(obj):
 	var mesh_inst = null
 	if obj is MeshInstance3D:
 		mesh_inst = obj
@@ -214,6 +217,7 @@ func _on_function_pickup_has_picked_up(obj):
 		return
 
 	if obj in objectsInScene:
+		last_grabbed_object = obj
 		var mesh = mesh_inst.mesh
 		original_materials[mesh_inst] = []
 		for i in range(mesh.get_surface_count()):
@@ -227,6 +231,21 @@ func _on_function_pickup_has_picked_up(obj):
 				mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 				mesh_inst.set_surface_override_material(i, mat)
 
+func _on_function_pickup_has_picked_up(obj):
+	_apply_transparency(obj)
+	print("Old transform : ", obj.global_transform)
+	var grab_position = global_transform.origin + -global_transform.basis.z * 5
+	var new_transform = Transform3D(global_transform.basis, grab_position)
+	obj.global_transform = new_transform
+	
+	print("New transform : ", obj.global_transform)
+	print("Mesh global transform: ", obj.get_node("MeshInstance3D").global_transform)
+
+# ui_controller.get_node("PickableObject").transform = Transform3D.IDENTITY
+# ghostInstance.global_transform.origin = spawn_pos
+# var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
 
 func _on_function_pickup_has_dropped() -> void:
-	pass # Replace with function body.
+	if last_grabbed_object:
+		_remove_highlight(last_grabbed_object)
+		last_grabbed_object = null
