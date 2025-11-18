@@ -20,3 +20,8 @@ shape = SubResource("SphereShape3D_0olex")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_c5y3r")
 surface_material_override/0 = SubResource("StandardMaterial3D_0olex")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_0olex")

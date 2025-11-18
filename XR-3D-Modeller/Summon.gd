@@ -216,30 +216,44 @@ func _apply_transparency(obj):
 		print("No mesh resource found on MeshInstance3D!")
 		return
 
-	if obj in objectsInScene:
-		last_grabbed_object = obj
-		var mesh = mesh_inst.mesh
-		original_materials[mesh_inst] = []
-		for i in range(mesh.get_surface_count()):
-			original_materials[mesh_inst].append(mesh_inst.get_active_material(i))
-			var mat = mesh_inst.get_active_material(i)
-			if mat:
-				mat = mat.duplicate()
-				var c = mat.albedo_color
-				c.a = 0.3
-				mat.albedo_color = c
-				mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-				mesh_inst.set_surface_override_material(i, mat)
+	#if obj in objectsInScene:
+		# last_grabbed_object = obj
+	var mesh = mesh_inst.mesh
+	original_materials[mesh_inst] = []
+	for i in range(mesh.get_surface_count()):
+		original_materials[mesh_inst].append(mesh_inst.get_active_material(i))
+		var mat = mesh_inst.get_active_material(i)
+		if mat:
+			mat = mat.duplicate()
+			var c = mat.albedo_color
+			c.a = 0.3
+			mat.albedo_color = c
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			mesh_inst.set_surface_override_material(i, mat)
+
+func _remove_main_collision(obj):
+	if obj.has_node("CollisionShape3D"):
+		var collision = obj.get_node("CollisionShape3D")
+		collision.disabled = true
+
+func _return_collision(obj):
+	if obj.has_node("CollisionShape3D"):
+		var collision = obj.get_node("CollisionShape3D")
+		collision.disabled = false
 
 func _on_function_pickup_has_picked_up(obj):
-	_apply_transparency(obj)
-	print("Old transform : ", obj.global_transform)
-	var grab_position = global_transform.origin + -global_transform.basis.z * 5
-	var new_transform = Transform3D(global_transform.basis, grab_position)
-	obj.global_transform = new_transform
-	
-	print("New transform : ", obj.global_transform)
-	print("Mesh global transform: ", obj.get_node("MeshInstance3D").global_transform)
+	if obj in objectsInScene:
+		last_grabbed_object = obj
+		_apply_transparency(obj)
+		_remove_main_collision(obj)
+		
+		print("Old transform : ", obj.global_transform)
+		var grab_position = global_transform.origin + -global_transform.basis.z * 5
+		var new_transform = Transform3D(global_transform.basis, grab_position)
+		obj.global_transform = new_transform
+
+	#print("New transform : ", obj.global_transform)
+	#print("Mesh global transform: ", obj.get_node("MeshInstance3D").global_transform)
 
 # ui_controller.get_node("PickableObject").transform = Transform3D.IDENTITY
 # ghostInstance.global_transform.origin = spawn_pos
@@ -248,4 +262,5 @@ func _on_function_pickup_has_picked_up(obj):
 func _on_function_pickup_has_dropped() -> void:
 	if last_grabbed_object:
 		_remove_highlight(last_grabbed_object)
+		_return_collision(last_grabbed_object)
 		last_grabbed_object = null

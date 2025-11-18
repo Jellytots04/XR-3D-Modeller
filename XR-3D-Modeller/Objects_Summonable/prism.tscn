@@ -21,3 +21,8 @@ surface_material_override/0 = SubResource("StandardMaterial3D_jeafm")
 
 [node name="CollisionShape3D3" type="CollisionShape3D" parent="."]
 shape = SubResource("ConvexPolygonShape3D_fos0i")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("ConvexPolygonShape3D_fos0i")

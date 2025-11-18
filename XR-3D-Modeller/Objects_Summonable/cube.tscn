@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://heyxgipogtlf"]
+[gd_scene load_steps=6 format=3 uid="uid://heyxgipogtlf"]
 
 [ext_resource type="Script" uid="uid://c7sulawupgqsu" path="res://addons/godot-xr-tools/objects/pickable.gd" id="1_vvsbo"]
 
@@ -7,6 +7,8 @@
 [sub_resource type="BoxMesh" id="BoxMesh_38jwj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8k3l6"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_k4vix"]
 
 [node name="NewBox" type="RigidBody3D"]
 collision_layer = 4
@@ -20,3 +22,8 @@ shape = SubResource("BoxShape3D_senx8")
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("BoxMesh_38jwj")
 surface_material_override/0 = SubResource("StandardMaterial3D_8k3l6")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_k4vix")
