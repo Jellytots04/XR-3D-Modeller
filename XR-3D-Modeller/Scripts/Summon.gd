@@ -1,8 +1,10 @@
 extends XRController3D
 
 # Exported objects and nodes
-@export var summonableFolder = "res://Objects_Summonable/"
-@export var ghostedFolder = "res://Objects_Ghosted/"
+@export var summonableFolder = "res://Summonables_Folder/CSG_Editables/" # Editable CSGs will be used for main functions.
+# @export var summonableFolder = "res://Summonables_Folder/CSG_Summonable_Pickable/" # Using pickable object CSGs
+# @export var summonableFolder = "res://Summonables_Folder/Objects_Summonable/" # For using Mesh Instances
+@export var ghostedFolder = "res://Summonables_Folder/Objects_Ghosted/"
 @export var object_scene: PackedScene
 @export var spawn_distance := 1.0
 @export var summon_rate:int = 1
@@ -143,6 +145,7 @@ func summon_object(index):
 		new_obj.global_transform.origin = spawn_pos
 		new_obj.add_to_group("summonedObjects")
 		objectsInScene.append(new_obj)
+		print("Added", new_obj)
 		# Add the new object to the scene
 		get_tree().current_scene.add_child(new_obj)
 	else:
@@ -154,16 +157,16 @@ func set_summon_index(idx):
 
 func _apply_highlight(obj):
 	var mesh_inst = null
-	if obj is MeshInstance3D:
+	if obj is CSGMesh3D:
 		mesh_inst = obj
-	elif obj.has_node("MeshInstance3D"):
-		mesh_inst = obj.get_node("MeshInstance3D")
+	elif obj.has_node("CSGMesh3D"):
+		mesh_inst = obj.get_node("CSGMesh3D")
 	else:
-		print("No MeshInstance3D available on object!")
+		print("No CSGMesh3D available on object!")
 		return
 
 	if not mesh_inst.mesh:
-		print("No mesh resource found on MeshInstance3D!")
+		print("No mesh resource found on CSGMesh3D!")
 		return
 
 	var mesh = mesh_inst.mesh
@@ -178,10 +181,10 @@ func _apply_highlight(obj):
 
 func _remove_highlight(obj):
 	var mesh_inst = null
-	if obj is MeshInstance3D:
+	if obj is CSGMesh3D:
 		mesh_inst = obj
-	elif obj.has_node("MeshInstance3D"):
-		mesh_inst = obj.get_node("MeshInstance3D")
+	elif obj.has_node("CSGMesh3D"):
+		mesh_inst = obj.get_node("CSGMesh3D")
 	else:
 		return
 
@@ -204,16 +207,16 @@ func remove_object():
 
 func _apply_transparency(obj):
 	var mesh_inst = null
-	if obj is MeshInstance3D:
+	if obj is CSGMesh3D:
 		mesh_inst = obj
-	elif obj.has_node("MeshInstance3D"):
-		mesh_inst = obj.get_node("MeshInstance3D")
+	elif obj.has_node("CSGMesh3D"):
+		mesh_inst = obj.get_node("CSGMesh3D")
 	else:
-		print("No MeshInstance3D available on object!")
+		print("No CSGMesh3D available on object!")
 		return
 
 	if not mesh_inst.mesh:
-		print("No mesh resource found on MeshInstance3D!")
+		print("No mesh resource found on CSGMesh3D!")
 		return
 
 	#if obj in objectsInScene:
@@ -253,7 +256,7 @@ func _on_function_pickup_has_picked_up(obj):
 		obj.global_transform = new_transform
 
 	#print("New transform : ", obj.global_transform)
-	#print("Mesh global transform: ", obj.get_node("MeshInstance3D").global_transform)
+	#print("Mesh global transform: ", obj.get_node("CSGMesh3D").global_transform)
 
 # ui_controller.get_node("PickableObject").transform = Transform3D.IDENTITY
 # ghostInstance.global_transform.origin = spawn_pos

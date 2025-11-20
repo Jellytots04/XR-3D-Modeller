@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://b4kad2kuba1yn" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_hand_low.tscn" id="1_5w5qi"]
 [ext_resource type="Script" uid="uid://evdnmsuh025x" path="res://Scripts/Summon.gd" id="1_md7ef"]
 [ext_resource type="PackedScene" uid="uid://b4ysuy43poobf" path="res://addons/godot-xr-tools/functions/function_pickup.tscn" id="2_a57kf"]
-[ext_resource type="PackedScene" uid="uid://heyxgipogtlf" path="res://Objects_Summonable/cube.tscn" id="2_s27s0"]
+[ext_resource type="PackedScene" uid="uid://heyxgipogtlf" path="res://Summonables_Folder/Objects_Summonable/cube.tscn" id="2_s27s0"]
 [ext_resource type="PackedScene" uid="uid://l2n30mpbkdyw" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/right_hand_low.tscn" id="2_tpptb"]
 [ext_resource type="PackedScene" uid="uid://cqhw276realc" path="res://addons/godot-xr-tools/functions/function_pointer.tscn" id="3_ayg2o"]
 [ext_resource type="PackedScene" uid="uid://bl2nuu3qhlb5k" path="res://addons/godot-xr-tools/functions/movement_direct.tscn" id="5_bayos"]

@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://dysmwvlfidhvv"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_3gppu"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3gppu"]
+
+[node name="BoxCsg" type="Node3D"]
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+use_collision = true
+collision_layer = 5242880
+mesh = SubResource("BoxMesh_3gppu")
+material = SubResource("StandardMaterial3D_3gppu")

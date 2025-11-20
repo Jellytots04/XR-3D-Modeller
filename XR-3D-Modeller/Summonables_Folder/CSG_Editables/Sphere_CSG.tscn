@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://cla8sh1kq84cr"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_5nfm7"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a6ykx"]
+
+[node name="SphereCsg" type="Node3D"]
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+use_collision = true
+collision_layer = 5242880
+mesh = SubResource("SphereMesh_5nfm7")
+material = SubResource("StandardMaterial3D_a6ykx")

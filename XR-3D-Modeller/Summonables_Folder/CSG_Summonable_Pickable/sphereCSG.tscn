@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://bdp53focvn1sg"]
+
+[ext_resource type="Script" uid="uid://c7sulawupgqsu" path="res://addons/godot-xr-tools/objects/pickable.gd" id="1_uxmc1"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_0olex"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_c8al8"]
+
+[node name="Sphere" type="RigidBody3D"]
+collision_layer = 4
+collision_mask = 196615
+freeze_mode = 1
+script = ExtResource("1_uxmc1")
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_0olex")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D2" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("SphereShape3D_0olex")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="CSGCombiner3D"]
+material = SubResource("StandardMaterial3D_c8al8")

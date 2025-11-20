@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://b2lnnc8thv0l8"]
+
+[ext_resource type="Script" uid="uid://c7sulawupgqsu" path="res://addons/godot-xr-tools/objects/pickable.gd" id="1_pyi8p"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_senx8"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_k4vix"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yr5q7"]
+
+[node name="NewBox" type="RigidBody3D"]
+collision_layer = 4
+collision_mask = 196615
+gravity_scale = 0.0
+freeze_mode = 1
+script = ExtResource("1_pyi8p")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_senx8")
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D"]
+shape = SubResource("BoxShape3D_k4vix")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D"]
+material = SubResource("StandardMaterial3D_yr5q7")

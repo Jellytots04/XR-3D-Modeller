@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://dvwftgksdye7k"]
+
+[sub_resource type="PrismMesh" id="PrismMesh_01iee"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_01iee"]
+
+[node name="PrismCsg" type="Node3D"]
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+use_collision = true
+collision_layer = 5242880
+mesh = SubResource("PrismMesh_01iee")
+material = SubResource("StandardMaterial3D_01iee")
