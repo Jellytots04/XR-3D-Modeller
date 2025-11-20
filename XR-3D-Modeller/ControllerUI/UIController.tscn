@@ -17,6 +17,8 @@ points = PackedVector3Array(0.17750002, 0.1075, 0.01, 0.17750002, 0.1075, -0.01,
 script = ExtResource("1_l6ach")
 
 [node name="PickableObject" parent="." instance=ExtResource("2_vuevf")]
+collision_layer = 196612
+collision_mask = 196612
 gravity_scale = 0.0
 ranged_grab_method = 0
 

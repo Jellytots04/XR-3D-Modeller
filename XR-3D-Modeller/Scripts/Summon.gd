@@ -1,5 +1,10 @@
 extends XRController3D
 
+# Dev Note #
+# Pickable functions will not work due to the CSGMesh style.
+# Not allowing the players to pick up the objets via grabbing.
+# Will use a separate function for that.
+
 # Exported objects and nodes
 @export var summonableFolder = "res://Summonables_Folder/CSG_Editables/" # Editable CSGs will be used for main functions.
 # @export var summonableFolder = "res://Summonables_Folder/CSG_Summonable_Pickable/" # Using pickable object CSGs
@@ -123,7 +128,9 @@ func update_highlighted_object():
 	# print("Ray update")
 	if raycast_3d.is_colliding():
 		var obj = raycast_3d.get_collider()
+		print(obj)
 		if obj in objectsInScene:
+			print("Obj is in the list")
 			if obj != highlighted_object:
 				if highlighted_object:
 					_remove_highlight(highlighted_object)
@@ -158,8 +165,10 @@ func set_summon_index(idx):
 func _apply_highlight(obj):
 	var mesh_inst = null
 	if obj is CSGMesh3D:
+		print("obj is a CSGMesh3D")
 		mesh_inst = obj
 	elif obj.has_node("CSGMesh3D"):
+		print("OBJ has a CSGMesh3D")
 		mesh_inst = obj.get_node("CSGMesh3D")
 	else:
 		print("No CSGMesh3D available on object!")
@@ -168,16 +177,13 @@ func _apply_highlight(obj):
 	if not mesh_inst.mesh:
 		print("No mesh resource found on CSGMesh3D!")
 		return
-
-	var mesh = mesh_inst.mesh
-	original_materials[mesh_inst] = []
-	for i in range(mesh.get_surface_count()):
-		original_materials[mesh_inst].append(mesh_inst.get_active_material(i))
-		var mat = mesh_inst.get_active_material(i)
-		if mat:
-			mat = mat.duplicate()
-			mat.albedo_color = highlight_color
-			mesh_inst.set_surface_override_material(i, mat)
+	
+	original_materials[mesh_inst] = mesh_inst.material
+	
+	if mesh_inst.material:
+		var mat = mesh_inst.material.duplicate()
+		mat.albedo_color = highlight_color
+		mesh_inst.material = mat
 
 func _remove_highlight(obj):
 	var mesh_inst = null
@@ -187,14 +193,11 @@ func _remove_highlight(obj):
 		mesh_inst = obj.get_node("CSGMesh3D")
 	else:
 		return
-
 	if not mesh_inst.mesh:
 		return
-
-	var mesh = mesh_inst.mesh
 	if mesh_inst in original_materials:
-		for i in range(mesh.get_surface_count()):
-			mesh_inst.set_surface_override_material(i, original_materials[mesh_inst][i])
+		mesh_inst.material = original_materials[mesh_inst]
+			# mesh_inst.set_surface_override_material(i, original_materials[mesh_inst][i])
 		original_materials.erase(mesh_inst)
 
 func remove_object():
@@ -214,18 +217,16 @@ func _apply_transparency(obj):
 	else:
 		print("No CSGMesh3D available on object!")
 		return
-
 	if not mesh_inst.mesh:
 		print("No mesh resource found on CSGMesh3D!")
 		return
-
 	#if obj in objectsInScene:
 		# last_grabbed_object = obj
 	var mesh = mesh_inst.mesh
 	original_materials[mesh_inst] = []
 	for i in range(mesh.get_surface_count()):
-		original_materials[mesh_inst].append(mesh_inst.get_active_material(i))
-		var mat = mesh_inst.get_active_material(i)
+		original_materials[mesh_inst].append(mesh_inst.get_material(i))
+		var mat = mesh_inst.get_material(i)
 		if mat:
 			mat = mat.duplicate()
 			var c = mat.albedo_color
