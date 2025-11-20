@@ -31,7 +31,7 @@ var can_summon = true
 # Highlighting variables
 var original_materials = {}
 var highlighted_object = null
-var highlight_color = Color(1,0,0) # Red highlight
+var highlight_color = Color(0.833, 0.363, 0.379, 1.0) # Red highlight / Pinkish highlight
 
 # For Pickup and relase signalling
 var last_grabbed_object = null
@@ -95,7 +95,7 @@ func _ready() -> void:
 		var ui_controller = ui_controllers[0]
 		# Connect the script to the summonable Selected function with a signal to call the set_summon_index
 		ui_controller.connect("summonable_selected", Callable(self, "set_summon_index"))
-		print("Controller foubd", ui_controller)
+		print("Controller found ", ui_controller)
 	else:
 		print("UI Controller not found")
 	
@@ -120,7 +120,6 @@ func _process(_delta):
 			can_summon = false
 			summon_object(summonIndex)
 	if is_button_pressed("by_button"):
-		print("Removing time")
 		remove_object()
 	update_highlighted_object()
 
@@ -128,9 +127,7 @@ func update_highlighted_object():
 	# print("Ray update")
 	if raycast_3d.is_colliding():
 		var obj = raycast_3d.get_collider()
-		print(obj)
 		if obj in objectsInScene:
-			print("Obj is in the list")
 			if obj != highlighted_object:
 				if highlighted_object:
 					_remove_highlight(highlighted_object)
@@ -159,7 +156,7 @@ func summon_object(index):
 		print("Summonables out of index")
 	
 func set_summon_index(idx):
-	print("Summon Called")
+	# print("Summon Called")
 	summonIndex = idx
 
 func _apply_highlight(obj):
@@ -235,16 +232,7 @@ func _apply_transparency(obj):
 			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			mesh_inst.set_surface_override_material(i, mat)
 
-func _remove_main_collision(obj):
-	if obj.has_node("CollisionShape3D"):
-		var collision = obj.get_node("CollisionShape3D")
-		collision.disabled = true
-
-func _return_collision(obj):
-	if obj.has_node("CollisionShape3D"):
-		var collision = obj.get_node("CollisionShape3D")
-		collision.disabled = false
-
+# Functions Below are now obsolete due to CSG usage and moving to Raycast movement, rather than grab movements.
 func _on_function_pickup_has_picked_up(obj):
 	if obj in objectsInScene:
 		last_grabbed_object = obj
@@ -256,15 +244,18 @@ func _on_function_pickup_has_picked_up(obj):
 		var new_transform = Transform3D(global_transform.basis, grab_position)
 		obj.global_transform = new_transform
 
-	#print("New transform : ", obj.global_transform)
-	#print("Mesh global transform: ", obj.get_node("CSGMesh3D").global_transform)
-
-# ui_controller.get_node("PickableObject").transform = Transform3D.IDENTITY
-# ghostInstance.global_transform.origin = spawn_pos
-# var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
-
 func _on_function_pickup_has_dropped() -> void:
 	if last_grabbed_object:
 		_remove_highlight(last_grabbed_object)
 		_return_collision(last_grabbed_object)
 		last_grabbed_object = null
+
+func _remove_main_collision(obj):
+	if obj.has_node("CollisionShape3D"):
+		var collision = obj.get_node("CollisionShape3D")
+		collision.disabled = true
+
+func _return_collision(obj):
+	if obj.has_node("CollisionShape3D"):
+		var collision = obj.get_node("CollisionShape3D")
+		collision.disabled = false
