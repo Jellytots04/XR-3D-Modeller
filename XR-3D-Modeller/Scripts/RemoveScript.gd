@@ -24,7 +24,7 @@ func _process(delta: float) -> void:
 		print("Hello From remove Script")
 
 func set_page_index(idx):
-	print("Hello from remove call index")
+	# print("Hello from remove call index")
 	if idx == 1:
 		is_active = true
 	else:

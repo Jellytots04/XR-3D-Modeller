@@ -31,7 +31,7 @@ func _ready():
 			for idx in range(remove_options.get_child_count()):
 				var button = remove_options.get_child(idx)
 				button.connect("pressed", Callable(self, "_remove_option").bind(idx))
-				print(idx)
+				# print(idx)
 		else:
 			print("RemoveOptions node not found!")
 
@@ -39,7 +39,7 @@ func _ready():
 			for idx in range(edit_options.get_child_count()):
 				var button = edit_options.get_child(idx)
 				button.connect("pressed", Callable(self, "_edit_option").bind(idx))
-				print(idx)
+				# print(idx)
 		else:
 			print("EditOptions node not found!")
 
@@ -47,7 +47,7 @@ func _ready():
 		print("Viewport root scene not loaded!")
 
 func _build_option(idx):
-	# print("Button Pressed Summon", idx)
+	print("Button Pressed Summon", idx)
 	emit_signal("summonable_selected", idx)
 
 func _remove_option(idx):

@@ -95,6 +95,7 @@ func _ready() -> void:
 	if ui_controllers.size() > 0:
 		var ui_controller = ui_controllers[0]
 		# Connect the script to the summonable Selected function with a signal to call the set_summon_index
+		ui_controller.connect("summonable_selected", Callable(self, "set_summon_index"))
 		print("Controller found ", ui_controller)
 	else:
 		print("UI Controller not found")
@@ -156,7 +157,7 @@ func summon_object(index):
 		print("Summonables out of index")
 
 func set_summon_index(idx):
-	# print("Summon Called")
+	print("Summon Called")
 	summonIndex = idx
 
 func _apply_highlight(obj):
