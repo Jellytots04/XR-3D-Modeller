@@ -23,7 +23,8 @@ var summonedObjects = []
 var summonableObjects = []
 var ghostedObjects = []
 var objectsInScene = []
-var summonIndex = 0
+var summonIndex = 0 # Default index value defined by the build pages button value on the UI controller
+var pageIndex = 0 # Default index value defined by the pages index value on the UI controller
 var ghostInstance
 var ghostingOn = false
 var can_summon = true
@@ -94,11 +95,10 @@ func _ready() -> void:
 	if ui_controllers.size() > 0:
 		var ui_controller = ui_controllers[0]
 		# Connect the script to the summonable Selected function with a signal to call the set_summon_index
-		ui_controller.connect("summonable_selected", Callable(self, "set_summon_index"))
 		print("Controller found ", ui_controller)
 	else:
 		print("UI Controller not found")
-	
+
 func _time_out():
 	can_summon = true
 
@@ -137,7 +137,7 @@ func update_highlighted_object():
 		if highlighted_object:
 			_remove_highlight(highlighted_object)
 			highlighted_object = null
-			
+
 func summon_object(index):
 	# Checks to see if index is inside the size of the array
 	if index < summonableObjects.size():
@@ -154,7 +154,7 @@ func summon_object(index):
 		get_tree().current_scene.add_child(new_obj)
 	else:
 		print("Summonables out of index")
-	
+
 func set_summon_index(idx):
 	# print("Summon Called")
 	summonIndex = idx
@@ -174,9 +174,9 @@ func _apply_highlight(obj):
 	if not mesh_inst.mesh:
 		print("No mesh resource found on CSGMesh3D!")
 		return
-	
+
 	original_materials[mesh_inst] = mesh_inst.material
-	
+
 	if mesh_inst.material:
 		var mat = mesh_inst.material.duplicate()
 		mat.albedo_color = highlight_color
@@ -238,7 +238,7 @@ func _on_function_pickup_has_picked_up(obj):
 		last_grabbed_object = obj
 		_apply_transparency(obj)
 		_remove_main_collision(obj)
-		
+
 		print("Old transform : ", obj.global_transform)
 		var grab_position = global_transform.origin + -global_transform.basis.z * 5
 		var new_transform = Transform3D(global_transform.basis, grab_position)

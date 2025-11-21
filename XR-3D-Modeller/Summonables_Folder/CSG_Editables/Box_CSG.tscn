@@ -7,6 +7,6 @@
 [node name="CSGMesh3D" type="CSGMesh3D"]
 use_collision = true
 collision_layer = 1048577
-collision_mask = 1048577
+collision_mask = 1048576
 mesh = SubResource("BoxMesh_3gppu")
 material = SubResource("StandardMaterial3D_rexdy")

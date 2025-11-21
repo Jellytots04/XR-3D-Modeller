@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://ij0g0qwuumpn"]
+
+[ext_resource type="Script" uid="uid://dtgup1a1u4h4u" path="res://Scripts/RemoveScript.gd" id="1_0f1qj"]
+
+[node name="FunctionToolNode" type="Node3D"]
+
+[node name="RemoveFunction" type="Node3D" parent="."]
+script = ExtResource("1_0f1qj")
