@@ -1,5 +1,6 @@
 extends Node
 
+signal objectRemoved
 # Since this will always be attached to the right controller
 @onready var controller = get_parent().get_parent()
 @onready var raycast_3d = controller.get_node("RayCast3D")
@@ -15,8 +16,8 @@ var highlight_color = Color(0.833, 0.363, 0.379, 1.0) # Red highlight / Pinkish 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	var summoner = get_node("../..") # Later this path should reach the summon part of function tool node
-	print(summoner)
-	summoner.connect("objectSummoned", Callable(self,  "_read_new_object"))
+	# print(summoner)
+	summoner.connect("objectSummoned", Callable(self,  "update_list"))
 	var ui_controllers = get_tree().get_nodes_in_group("ui_controller")
 	if ui_controllers.size() > 0:
 		var ui_controller = ui_controllers[0]
@@ -31,7 +32,7 @@ func _process(delta: float) -> void:
 	# print(controller.is_button_pressed("ax_button"))
 	if is_active:
 		if controller.is_button_pressed("ax_button"):
-			print("Hello From remove Script")
+			# print("Hello From remove Script")
 			remove_object()
 		update_highlighted_object()
 
@@ -95,7 +96,11 @@ func remove_object():
 		_remove_highlight(highlighted_object)
 		# Remove the actual instance from scene
 		highlighted_object.queue_free()
+		highlighted_object.remove_from_group("summonedObjects")
 		highlighted_object = null
+		emit_signal("objectRemoved")
+		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Update the list
+		# print(summonedObjects)
 
 func set_page_index(idx):
 	# print("Hello from remove call index")
@@ -104,6 +109,6 @@ func set_page_index(idx):
 	else:
 		is_active = false
 
-func _read_new_object():
+func update_list():
 	print("Hello from remove script new object update signal")
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")

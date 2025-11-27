@@ -78,7 +78,11 @@ func _ready() -> void:
 	timer.wait_time = 1.0 / summon_rate
 	timer.connect("timeout", _time_out)
 	# Get the path for the left Hand controller
+	
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+	var remover = get_node("FunctionToolNode/RemoveFunction") # Change to new location when the toolbox is finished
+	# print(remover)
+	remover.connect("objectRemoved", Callable(self, "update_list"))
 	var ui_controllers = get_tree().get_nodes_in_group("ui_controller")
 	if ui_controllers.size() > 0:
 		var ui_controller = ui_controllers[0]
@@ -232,6 +236,10 @@ func set_page_index(idx):
 		is_active = true
 	else:
 		is_active = false
+		
+func update_list():
+	# print("Hello from update list in Summon")
+	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
 
 # Functions Below are now obsolete due to CSG usage and moving to Raycast movement, rather than grab movements.
 func _on_function_pickup_has_picked_up(obj):
