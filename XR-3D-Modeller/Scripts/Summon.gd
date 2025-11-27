@@ -4,6 +4,7 @@ extends XRController3D
 # Pickable functions will not work due to the CSGMesh style.
 # Not allowing the players to pick up the objets via grabbing.
 # Will use a separate function for that.
+signal objectSummoned
 
 @export var object_scene: PackedScene
 @export var spawn_distance := 1.0
@@ -14,20 +15,21 @@ extends XRController3D
 @onready var raycast_3d = $RayCast3D
 # @export var bland
 
-var summonedObjects = []
 # var summonableObjects = []
 # var ghostedObjects = []
+var summonedObjects
 var objectsInScene = []
 var summonIndex = 0 # Default index value defined by the build pages button value on the UI controller
 var pageIndex = 0 # Default index value defined by the pages index value on the UI controller
 var ghostInstance
 var ghostingOn = false
 var can_summon = true
+var is_active = true
 
 # Highlighting variables
 var original_materials = {}
 var highlighted_object = null
-var highlight_color = Color(0.833, 0.363, 0.379, 1.0) # Red highlight / Pinkish highlight
+var highlight_color = Color(0.756, 0.453, 0.105, 1.0) # Red highlight / Pinkish highlight
 
 # For Pickup and relase signalling
 var last_grabbed_object = null
@@ -38,15 +40,13 @@ var last_grabbed_object = null
 	"res://Summonables_Folder/CSG_Editables/Prism_CSG.tscn",
 	"res://Summonables_Folder/CSG_Editables/Sphere_CSG.tscn",
 	"res://Summonables_Folder/CSG_Editables/Vertice.tscn"
-	
-	# Add more paths here
 ]
 @export var ghostedPaths := [
 	"res://Summonables_Folder/Objects_Ghosted/ghosted_cube.tscn",
 	"res://Summonables_Folder/Objects_Ghosted/ghosted_prism.tscn",
 	"res://Summonables_Folder/Objects_Ghosted/ghosted_sphere.tscn",
 	"res://Summonables_Folder/Objects_Ghosted/ghosted_Vertice.tscn"
-	# Add more paths here
+
 ]
 
 # Loaded scenes will be stored here
@@ -78,10 +78,12 @@ func _ready() -> void:
 	timer.wait_time = 1.0 / summon_rate
 	timer.connect("timeout", _time_out)
 	# Get the path for the left Hand controller
+	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
 	var ui_controllers = get_tree().get_nodes_in_group("ui_controller")
 	if ui_controllers.size() > 0:
 		var ui_controller = ui_controllers[0]
 		# Connect the script to the summonable Selected function with a signal to call the set_summon_index
+		ui_controller.connect("change_page", Callable(self, "set_page_index"))
 		ui_controller.connect("summonable_selected", Callable(self, "set_summon_index"))
 		print("Controller found ", ui_controller)
 	else:
@@ -92,30 +94,32 @@ func _time_out():
 
 func _process(_delta):
 	# Will activate when the user presses the A button on the controller
-	if is_button_pressed("ax_button") and can_summon: # Meta Quest A button
-		if not ghostingOn:
-			ghostInstance = ghostedObjects[summonIndex].instantiate()
-			get_tree().current_scene.add_child(ghostInstance)
-			ghostingOn = true
-		var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
-		ghostInstance.global_transform.origin = spawn_pos
-	else:
-		if ghostingOn:
-			ghostInstance.queue_free()
-			ghostInstance = null
-			ghostingOn = false
-			timer.start()
-			can_summon = false
-			summon_object(summonIndex)
-	if is_button_pressed("by_button"):
-		remove_object()
-	update_highlighted_object()
+	if is_active:
+		if is_button_pressed("ax_button") and can_summon: # Meta Quest A button
+			if not ghostingOn:
+				ghostInstance = ghostedObjects[summonIndex].instantiate()
+				get_tree().current_scene.add_child(ghostInstance)
+				ghostingOn = true
+			var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
+			ghostInstance.global_transform.origin = spawn_pos
+		else:
+			if ghostingOn:
+				ghostInstance.queue_free()
+				ghostInstance = null
+				ghostingOn = false
+				timer.start()
+				can_summon = false
+				summon_object(summonIndex)
+		#if is_button_pressed("by_button"):
+			#remove_object()
+		update_highlighted_object()
 
 func update_highlighted_object():
 	# print("Ray update")
 	if raycast_3d.is_colliding():
 		var obj = raycast_3d.get_collider()
-		if obj in objectsInScene:
+		if obj in summonedObjects:
+			# print("Object was found in summonedObjects")
 			if obj != highlighted_object:
 				if highlighted_object:
 					_remove_highlight(highlighted_object)
@@ -136,10 +140,13 @@ func summon_object(index):
 		var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
 		new_obj.global_transform.origin = spawn_pos
 		new_obj.add_to_group("summonedObjects")
-		objectsInScene.append(new_obj)
+		# objectsInScene.append(new_obj)
 		print("Added", new_obj)
 		# Add the new object to the scene
 		get_tree().current_scene.add_child(new_obj)
+		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Updates the summoned list within script
+		emit_signal("objectSummoned")
+		print(summonedObjects)
 	else:
 		print("Summonables out of index")
 
@@ -205,8 +212,7 @@ func _apply_transparency(obj):
 	if not mesh_inst.mesh:
 		print("No mesh resource found on CSGMesh3D!")
 		return
-	#if obj in objectsInScene:
-		# last_grabbed_object = obj
+
 	var mesh = mesh_inst.mesh
 	original_materials[mesh_inst] = []
 	for i in range(mesh.get_surface_count()):
@@ -220,7 +226,12 @@ func _apply_transparency(obj):
 			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			mesh_inst.set_surface_override_material(i, mat)
 
-
+func set_page_index(idx):
+	# print("Hello from remove call index")
+	if idx == 0:
+		is_active = true
+	else:
+		is_active = false
 
 # Functions Below are now obsolete due to CSG usage and moving to Raycast movement, rather than grab movements.
 func _on_function_pickup_has_picked_up(obj):

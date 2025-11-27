@@ -5,7 +5,7 @@ extends Node
 @onready var raycast_3d = controller.get_node("RayCast3D")
 
 var is_active = false
-var summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+var summonedObjects
 
 # Highlighting variables
 var original_materials = {}
@@ -14,6 +14,9 @@ var highlight_color = Color(0.833, 0.363, 0.379, 1.0) # Red highlight / Pinkish 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	var summoner = get_node("../..") # Later this path should reach the summon part of function tool node
+	print(summoner)
+	summoner.connect("objectSummoned", Callable(self,  "_read_new_object"))
 	var ui_controllers = get_tree().get_nodes_in_group("ui_controller")
 	if ui_controllers.size() > 0:
 		var ui_controller = ui_controllers[0]
@@ -26,8 +29,27 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	# print(controller.is_button_pressed("ax_button"))
-	if controller.is_button_pressed("ax_button") and is_active:
-		print("Hello From remove Script")
+	if is_active:
+		if controller.is_button_pressed("ax_button"):
+			print("Hello From remove Script")
+			remove_object()
+		update_highlighted_object()
+
+func update_highlighted_object():
+	# print("Ray update")
+	if raycast_3d.is_colliding():
+		var obj = raycast_3d.get_collider()
+		if obj in summonedObjects:
+			if obj != highlighted_object:
+				if highlighted_object:
+					_remove_highlight(highlighted_object)
+				highlighted_object = obj
+				_apply_highlight(highlighted_object)
+
+	else:
+		if highlighted_object:
+			_remove_highlight(highlighted_object)
+			highlighted_object = null
 
 func _apply_highlight(obj):
 	var mesh_inst = null
@@ -81,3 +103,7 @@ func set_page_index(idx):
 		is_active = true
 	else:
 		is_active = false
+
+func _read_new_object():
+	print("Hello from remove script new object update signal")
+	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
