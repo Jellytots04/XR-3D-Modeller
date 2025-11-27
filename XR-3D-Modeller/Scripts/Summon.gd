@@ -6,10 +6,10 @@ extends XRController3D
 # Will use a separate function for that.
 
 # Exported objects and nodes
-@export var summonableFolder = "res://Summonables_Folder/CSG_Editables/" # Editable CSGs will be used for main functions.
+# @export var summonableFolder = "res://Summonables_Folder/CSG_Editables/" # Editable CSGs will be used for main functions.
 # @export var summonableFolder = "res://Summonables_Folder/CSG_Summonable_Pickable/" # Using pickable object CSGs
 # @export var summonableFolder = "res://Summonables_Folder/Objects_Summonable/" # For using Mesh Instances
-@export var ghostedFolder = "res://Summonables_Folder/Objects_Ghosted/"
+# @export var ghostedFolder = "res://Summonables_Folder/Objects_Ghosted/"
 @export var object_scene: PackedScene
 @export var spawn_distance := 1.0
 @export var summon_rate:int = 1
@@ -20,8 +20,8 @@ extends XRController3D
 # @export var bland
 
 var summonedObjects = []
-var summonableObjects = []
-var ghostedObjects = []
+# var summonableObjects = []
+# var ghostedObjects = []
 var objectsInScene = []
 var summonIndex = 0 # Default index value defined by the build pages button value on the UI controller
 var pageIndex = 0 # Default index value defined by the pages index value on the UI controller
@@ -37,52 +37,97 @@ var highlight_color = Color(0.833, 0.363, 0.379, 1.0) # Red highlight / Pinkish 
 # For Pickup and relase signalling
 var last_grabbed_object = null
 
-# Load the summonable objects from the Objects_Summonable Folder
+#@export var summonableFolder = "res://Summonables_Folder/CSG_Editables/" # Editable CSGs will be used for main functions.
+## @export var summonableFolder = "res://Summonables_Folder/CSG_Summonable_Pickable/" # Using pickable object CSGs
+## @export var summonableFolder = "res://Summonables_Folder/Objects_Summonable/" # For using Mesh Instances
+#@export var ghostedFolder = "res://Summonables_Folder/Objects_Ghosted/"
+#
+## Load the summonable objects from the Objects_Summonable Folder
+#func load_summonables():
+	## Open the directory
+	#var directory = DirAccess.open(summonableFolder)
+	#if directory:
+		## Starts listing the directory stream
+		#directory.list_dir_begin()
+		#var file_name = directory.get_next()
+		## While the file name exists
+		#while file_name != "":
+			## Ensure the file is a scene tscn
+			#if file_name.ends_with(".tscn"):
+				## Combine the directory path and the file
+				#var scene = load(summonableFolder + file_name)
+				## Add it to the list of obejcts
+				#summonableObjects.append(scene)
+			## Move to the next item
+			#file_name = directory.get_next()
+		## Ends the stream
+		#directory.list_dir_end()
+		#print(summonableFolder)
+	#else:
+		#print("No folder applicable")
+#
+#func load_ghosted():
+	## Open the directory
+	#var directory = DirAccess.open(ghostedFolder)
+	#if directory:
+		## Starts listing the directory stream
+		#directory.list_dir_begin()
+		#var file_name = directory.get_next()
+		## While the file name exists
+		#while file_name != "":
+			## Ensure the file is a scene tscn
+			#if file_name.ends_with(".tscn"):
+				## Combine the directory path and the file
+				#var scene = load(ghostedFolder + file_name)
+				## Add it to the list of obejcts
+				#ghostedObjects.append(scene)
+			## Move to the next item
+			#file_name = directory.get_next()
+		## Ends the stream
+		#directory.list_dir_end()
+		#print(summonableFolder)
+	#else:
+		#print("No folder applicable")
+#
+
+# Replace folder variables with arrays of file paths
+@export var summonablePaths := [
+	"res://Summonables_Folder/CSG_Editables/Box_CSG.tscn",
+	"res://Summonables_Folder/CSG_Editables/Prism_CSG.tscn",
+	"res://Summonables_Folder/CSG_Editables/Sphere_CSG.tscn",
+	"res://Summonables_Folder/CSG_Editables/Vertice.tscn"
+	
+	# Add more paths here
+]
+@export var ghostedPaths := [
+	"res://Summonables_Folder/Objects_Ghosted/ghosted_cube.tscn",
+	"res://Summonables_Folder/Objects_Ghosted/ghosted_prism.tscn",
+	"res://Summonables_Folder/Objects_Ghosted/ghosted_sphere.tscn",
+	"res://Summonables_Folder/Objects_Ghosted/ghosted_Vertice.tscn"
+	# Add more paths here
+]
+
+# Loaded scenes will be stored here
+var summonableObjects = []
+var ghostedObjects = []
+
 func load_summonables():
-	# Open the directory
-	var directory = DirAccess.open(summonableFolder)
-	if directory:
-		# Starts listing the directory stream
-		directory.list_dir_begin()
-		var file_name = directory.get_next()
-		# While the file name exists
-		while file_name != "":
-			# Ensure the file is a scene tscn
-			if file_name.ends_with(".tscn"):
-				# Combine the directory path and the file
-				var scene = load(summonableFolder + file_name)
-				# Add it to the list of obejcts
-				summonableObjects.append(scene)
-			# Move to the next item
-			file_name = directory.get_next()
-		# Ends the stream
-		directory.list_dir_end()
-		# print(summonableFolder)
-	else:
-		print("No folder applicable")
+	summonableObjects.clear()
+	for path in summonablePaths:
+		var scene = load(path)
+		if scene:
+			summonableObjects.append(scene)
+		else:
+			print("Could not load: ", path)
 
 func load_ghosted():
-	# Open the directory
-	var directory = DirAccess.open(ghostedFolder)
-	if directory:
-		# Starts listing the directory stream
-		directory.list_dir_begin()
-		var file_name = directory.get_next()
-		# While the file name exists
-		while file_name != "":
-			# Ensure the file is a scene tscn
-			if file_name.ends_with(".tscn"):
-				# Combine the directory path and the file
-				var scene = load(ghostedFolder + file_name)
-				# Add it to the list of obejcts
-				ghostedObjects.append(scene)
-			# Move to the next item
-			file_name = directory.get_next()
-		# Ends the stream
-		directory.list_dir_end()
-		# print(summonableFolder)
-	else:
-		print("No folder applicable")
+	ghostedObjects.clear()
+	for path in ghostedPaths:
+		var scene = load(path)
+		if scene:
+			ghostedObjects.append(scene)
+		else:
+			print("Could not load: ", path)
 
 func _ready() -> void:
 	# Load the summonables when started
