@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dtu04ja1ciam2"]
+[gd_scene load_steps=18 format=3 uid="uid://dtu04ja1ciam2"]
 
 [ext_resource type="Texture2D" uid="uid://doouo351qxka6" path="res://ControllerUI/Icons/CubeIcon.aseprite" id="1_5nlk7"]
 [ext_resource type="Texture2D" uid="uid://b4fy5f1eolrqs" path="res://ControllerUI/Icons/PrismIcon.aseprite" id="2_iuyxb"]
@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://luxrb0qnej8d" path="res://ControllerUI/Icons/ScaleIcon.aseprite" id="10_7oq3b"]
 [ext_resource type="Texture2D" uid="uid://bhaptdgitud0u" path="res://ControllerUI/Icons/MeasureIcon.aseprite" id="11_wjypm"]
 [ext_resource type="Texture2D" uid="uid://d0cyfuiwivtba" path="res://ControllerUI/Icons/UndoIcon.aseprite" id="12_7oq3b"]
+[ext_resource type="Texture2D" uid="uid://cgwq5m46jr53v" path="res://ControllerUI/Icons/TrashIcon.aseprite" id="12_wjypm"]
 [ext_resource type="Texture2D" uid="uid://ljyff1wpqbdy" path="res://ControllerUI/Icons/RedoIcon.aseprite" id="13_wjypm"]
 [ext_resource type="Texture2D" uid="uid://d14oa0mv8ak6f" path="res://ControllerUI/Icons/HistoryIcon.aseprite" id="14_g8fi6"]
 [ext_resource type="Texture2D" uid="uid://qq8cr2pngjy1" path="res://ControllerUI/Icons/StretchIcon.aseprite" id="15_keb40"]
@@ -102,21 +103,17 @@ layout_mode = 2
 layout_mode = 2
 alignment = 1
 
-[node name="CubePrimitive" type="Button" parent="Remove/VerticalArrangement/RemoveOptions"]
+[node name="Remove" type="Button" parent="Remove/VerticalArrangement/RemoveOptions"]
 layout_mode = 2
-icon = ExtResource("1_5nlk7")
+icon = ExtResource("12_wjypm")
 
-[node name="PrismPrimitive" type="Button" parent="Remove/VerticalArrangement/RemoveOptions"]
+[node name="Unparent" type="Button" parent="Remove/VerticalArrangement/RemoveOptions"]
 layout_mode = 2
-icon = ExtResource("2_iuyxb")
+icon = ExtResource("12_wjypm")
 
-[node name="SpherePrimitive" type="Button" parent="Remove/VerticalArrangement/RemoveOptions"]
+[node name="UndefinedBehaviour" type="Button" parent="Remove/VerticalArrangement/RemoveOptions"]
 layout_mode = 2
 icon = ExtResource("3_wus27")
-
-[node name="VerticeSet" type="Button" parent="Remove/VerticalArrangement/RemoveOptions"]
-layout_mode = 2
-icon = ExtResource("4_kkiu2")
 
 [node name="AlwaysEditable" type="HBoxContainer" parent="Remove/VerticalArrangement"]
 layout_mode = 2

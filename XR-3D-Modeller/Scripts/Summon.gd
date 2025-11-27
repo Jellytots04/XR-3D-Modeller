@@ -5,11 +5,6 @@ extends XRController3D
 # Not allowing the players to pick up the objets via grabbing.
 # Will use a separate function for that.
 
-# Exported objects and nodes
-# @export var summonableFolder = "res://Summonables_Folder/CSG_Editables/" # Editable CSGs will be used for main functions.
-# @export var summonableFolder = "res://Summonables_Folder/CSG_Summonable_Pickable/" # Using pickable object CSGs
-# @export var summonableFolder = "res://Summonables_Folder/Objects_Summonable/" # For using Mesh Instances
-# @export var ghostedFolder = "res://Summonables_Folder/Objects_Ghosted/"
 @export var object_scene: PackedScene
 @export var spawn_distance := 1.0
 @export var summon_rate:int = 1
@@ -36,59 +31,6 @@ var highlight_color = Color(0.833, 0.363, 0.379, 1.0) # Red highlight / Pinkish 
 
 # For Pickup and relase signalling
 var last_grabbed_object = null
-
-#@export var summonableFolder = "res://Summonables_Folder/CSG_Editables/" # Editable CSGs will be used for main functions.
-## @export var summonableFolder = "res://Summonables_Folder/CSG_Summonable_Pickable/" # Using pickable object CSGs
-## @export var summonableFolder = "res://Summonables_Folder/Objects_Summonable/" # For using Mesh Instances
-#@export var ghostedFolder = "res://Summonables_Folder/Objects_Ghosted/"
-#
-## Load the summonable objects from the Objects_Summonable Folder
-#func load_summonables():
-	## Open the directory
-	#var directory = DirAccess.open(summonableFolder)
-	#if directory:
-		## Starts listing the directory stream
-		#directory.list_dir_begin()
-		#var file_name = directory.get_next()
-		## While the file name exists
-		#while file_name != "":
-			## Ensure the file is a scene tscn
-			#if file_name.ends_with(".tscn"):
-				## Combine the directory path and the file
-				#var scene = load(summonableFolder + file_name)
-				## Add it to the list of obejcts
-				#summonableObjects.append(scene)
-			## Move to the next item
-			#file_name = directory.get_next()
-		## Ends the stream
-		#directory.list_dir_end()
-		#print(summonableFolder)
-	#else:
-		#print("No folder applicable")
-#
-#func load_ghosted():
-	## Open the directory
-	#var directory = DirAccess.open(ghostedFolder)
-	#if directory:
-		## Starts listing the directory stream
-		#directory.list_dir_begin()
-		#var file_name = directory.get_next()
-		## While the file name exists
-		#while file_name != "":
-			## Ensure the file is a scene tscn
-			#if file_name.ends_with(".tscn"):
-				## Combine the directory path and the file
-				#var scene = load(ghostedFolder + file_name)
-				## Add it to the list of obejcts
-				#ghostedObjects.append(scene)
-			## Move to the next item
-			#file_name = directory.get_next()
-		## Ends the stream
-		#directory.list_dir_end()
-		#print(summonableFolder)
-	#else:
-		#print("No folder applicable")
-#
 
 # Replace folder variables with arrays of file paths
 @export var summonablePaths := [
@@ -277,6 +219,8 @@ func _apply_transparency(obj):
 			mat.albedo_color = c
 			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			mesh_inst.set_surface_override_material(i, mat)
+
+
 
 # Functions Below are now obsolete due to CSG usage and moving to Raycast movement, rather than grab movements.
 func _on_function_pickup_has_picked_up(obj):
