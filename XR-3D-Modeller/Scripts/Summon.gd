@@ -12,7 +12,7 @@ signal objectSummoned
 
 # Onready variables used 
 @onready var timer = $Timer
-@onready var raycast_3d = $RayCast3D
+@onready var raycast_3d = $RayCast3D # Fix path later when the ToolNodebox is implemented
 # @export var bland
 
 # var summonableObjects = []
@@ -104,8 +104,17 @@ func _process(_delta):
 				ghostInstance = ghostedObjects[summonIndex].instantiate()
 				get_tree().current_scene.add_child(ghostInstance)
 				ghostingOn = true
-			var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
-			ghostInstance.global_transform.origin = spawn_pos
+
+			if raycast_3d.is_colliding():
+				var obj = raycast_3d.get_collider()
+				if obj in summonedObjects:
+					var snap_pos = raycast_3d.get_collision_point() + raycast_3d.get_collision_normal() * 0.01
+					ghostInstance.global_position = snap_pos
+					ghostInstance.look_at(raycast_3d.get_collision_point(), raycast_3d.get_collision_normal())
+			else:
+				var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
+				ghostInstance.global_transform.origin = spawn_pos
+
 		else:
 			if ghostingOn:
 				ghostInstance.queue_free()
@@ -117,22 +126,6 @@ func _process(_delta):
 		#if is_button_pressed("by_button"):
 			#remove_object()
 		update_highlighted_object()
-
-func update_highlighted_object():
-	# print("Ray update")
-	if raycast_3d.is_colliding():
-		var obj = raycast_3d.get_collider()
-		if obj in summonedObjects:
-			# print("Object was found in summonedObjects")
-			if obj != highlighted_object:
-				if highlighted_object:
-					_remove_highlight(highlighted_object)
-				highlighted_object = obj
-				_apply_highlight(highlighted_object)
-	else:
-		if highlighted_object:
-			_remove_highlight(highlighted_object)
-			highlighted_object = null
 
 func summon_object(index):
 	# Checks to see if index is inside the size of the array
@@ -154,9 +147,21 @@ func summon_object(index):
 	else:
 		print("Summonables out of index")
 
-func set_summon_index(idx):
-	print("Summon Called")
-	summonIndex = idx
+func update_highlighted_object():
+	# print("Ray update")
+	if raycast_3d.is_colliding():
+		var obj = raycast_3d.get_collider()
+		if obj in summonedObjects:
+			# print("Object was found in summonedObjects")
+			if obj != highlighted_object:
+				if highlighted_object:
+					_remove_highlight(highlighted_object)
+				highlighted_object = obj
+				_apply_highlight(highlighted_object)
+	else:
+		if highlighted_object:
+			_remove_highlight(highlighted_object)
+			highlighted_object = null
 
 func _apply_highlight(obj):
 	var mesh_inst = null
@@ -230,6 +235,8 @@ func _apply_transparency(obj):
 			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			mesh_inst.set_surface_override_material(i, mat)
 
+
+# Signals going and coming
 func set_page_index(idx):
 	# print("Hello from remove call index")
 	if idx == 0:
@@ -240,6 +247,10 @@ func set_page_index(idx):
 func update_list():
 	# print("Hello from update list in Summon")
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+
+func set_summon_index(idx):
+	print("Summon Called")
+	summonIndex = idx
 
 # Functions Below are now obsolete due to CSG usage and moving to Raycast movement, rather than grab movements.
 func _on_function_pickup_has_picked_up(obj):
