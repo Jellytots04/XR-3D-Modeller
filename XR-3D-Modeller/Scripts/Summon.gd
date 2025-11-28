@@ -25,7 +25,6 @@ var ghostInstance
 var ghostingOn = false
 var can_summon = true
 var is_active = true
-var snap_obj # Will be used for snapping objects to one another
 
 # Highlighting variables
 var original_materials = {}
@@ -109,7 +108,6 @@ func _process(_delta):
 			if raycast_3d.is_colliding():
 				var obj = raycast_3d.get_collider()
 				if obj in summonedObjects:
-					snap_obj = obj
 					var snap_pos = raycast_3d.get_collision_point() + raycast_3d.get_collision_normal() * 0.01
 					ghostInstance.global_position = snap_pos
 					ghostInstance.look_at(raycast_3d.get_collision_point(), raycast_3d.get_collision_normal())
@@ -127,22 +125,23 @@ func _process(_delta):
 				if raycast_3d.is_colliding():
 					var obj = raycast_3d.get_collider()
 					if obj in summonedObjects:
-						combine_objects(summonIndex, obj,(raycast_3d.get_collision_point() + raycast_3d.get_collision_normal() * 0.01))
+						combine_objects(summonIndex, obj, raycast_3d.get_collision_point(), raycast_3d.get_collision_normal())
 				else:
 					summon_object(summonIndex)
 		update_highlighted_object()
 
-func combine_objects(index, obj, spawnPoint):
+func combine_objects(index, obj, spawnPoint, objectNormal):
 	if index < summonableObjects.size():
 		# Instantiate the object in the scene
 		var new_obj = summonableObjects[index].instantiate()
 		# Grabs the position of the hand and will add to it to spawn the hand in
 		# Will replace this with a marker tag later on
-		new_obj.global_transform.origin = spawnPoint
+		new_obj.global_transform.origin = (spawnPoint + objectNormal * 0.01)
 		# objectsInScene.append(new_obj)
 		print("Added", new_obj)
 		# Add the new object to the scene
 		get_tree().current_scene.add_child(new_obj)
+		new_obj.look_at(spawnPoint, objectNormal)
 		new_obj.reparent(obj)
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Updates the summoned list within script
 		emit_signal("objectSummoned") # This gets called as an upadte is to be sent out due to a reparenting

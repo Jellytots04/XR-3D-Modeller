@@ -15,6 +15,7 @@ var highlight_color = Color(0.833, 0.363, 0.379, 1.0) # Red highlight / Pinkish 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # If there are any existing objects already then load, will be used later on for previous saves
 	var summoner = get_node("../..") # Later this path should reach the summon part of function tool node
 	# print(summoner)
 	summoner.connect("objectSummoned", Callable(self,  "update_list"))
