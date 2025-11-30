@@ -125,6 +125,7 @@ func _process(_delta):
 				if raycast_3d.is_colliding():
 					var obj = raycast_3d.get_collider()
 					if obj in summonedObjects:
+						print("Combined")
 						combine_objects(summonIndex, obj, raycast_3d.get_collision_point(), raycast_3d.get_collision_normal())
 				else:
 					summon_object(summonIndex)
@@ -138,14 +139,16 @@ func combine_objects(index, obj, spawnPoint, objectNormal):
 		# Will replace this with a marker tag later on
 		new_obj.global_transform.origin = (spawnPoint + objectNormal * 0.01)
 		# objectsInScene.append(new_obj)
-		print("Added", new_obj)
+		# print("Added", new_obj)
 		# Add the new object to the scene
 		get_tree().current_scene.add_child(new_obj)
 		new_obj.look_at(spawnPoint, objectNormal)
+		new_obj.add_to_group("summonedObjects")
 		new_obj.reparent(obj)
+		print("Parent is : ", new_obj.get_parent())
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Updates the summoned list within script
 		emit_signal("objectSummoned") # This gets called as an upadte is to be sent out due to a reparenting
-		# print(summonedObjects)
+		print(summonedObjects)
 	else:
 		print("Summonables out of index")
 
@@ -249,7 +252,6 @@ func _apply_transparency(obj):
 			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			mesh_inst.set_surface_override_material(i, mat)
 
-
 # Signals going and coming
 func set_page_index(idx):
 	# print("Hello from remove call index")
@@ -257,7 +259,7 @@ func set_page_index(idx):
 		is_active = true
 	else:
 		is_active = false
-		
+
 func update_list():
 	# print("Hello from update list in Summon")
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
