@@ -7,6 +7,7 @@ signal objectMoved
 
 var is_active = false
 var summonedObjects
+var objectsCurrentPos
 
 # Highlighting variables
 var original_materials = {}
@@ -28,7 +29,12 @@ func _ready() -> void:
 	print("Players controller: ", controller)
 
 func _process(delta: float) -> void:
-	pass
+	if is_active:
+		print("Currently Active")
+		if controller.is_button_pressed("grip_click") and highlighted_object:
+			print("Grip is active")
+			moveObject(highlighted_object)
+		update_highlighted_object()
 
 func update_highlighted_object():
 	# print("Ray update")
@@ -45,6 +51,9 @@ func update_highlighted_object():
 		if highlighted_object:
 			_remove_highlight(highlighted_object)
 			highlighted_object = null
+
+func moveObject(obj):
+	print("Hello moving object moment")
 
 func _apply_highlight(obj):
 	var mesh_inst = null
