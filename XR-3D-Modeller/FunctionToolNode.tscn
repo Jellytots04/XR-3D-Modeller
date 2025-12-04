@@ -1,8 +1,12 @@
-[gd_scene load_steps=2 format=3 uid="uid://ij0g0qwuumpn"]
+[gd_scene load_steps=3 format=3 uid="uid://ij0g0qwuumpn"]
 
 [ext_resource type="Script" uid="uid://dtgup1a1u4h4u" path="res://Scripts/RemoveScript.gd" id="1_0f1qj"]
+[ext_resource type="Script" uid="uid://cskwuu8bgu4f" path="res://Scripts/EditScript.gd" id="2_kv11s"]
 
 [node name="FunctionToolNode" type="Node3D"]
 
 [node name="RemoveFunction" type="Node3D" parent="."]
 script = ExtResource("1_0f1qj")
+
+[node name="EditFunction" type="Node3D" parent="."]
+script = ExtResource("2_kv11s")
