@@ -193,6 +193,9 @@ func _apply_highlight(obj):
 	if obj is CSGMesh3D:
 		print("obj is a CSGMesh3D")
 		mesh_inst = obj
+		if obj.get_children():
+			for child in obj.get_children():
+				_apply_highlight(child)
 	elif obj.has_node("CSGMesh3D"):
 		print("OBJ has a CSGMesh3D")
 		mesh_inst = obj.get_node("CSGMesh3D")
@@ -215,6 +218,9 @@ func _remove_highlight(obj):
 	var mesh_inst = null
 	if obj is CSGMesh3D:
 		mesh_inst = obj
+		if obj.get_children():
+			for child in obj.get_children():
+				_remove_highlight(child)
 	elif obj.has_node("CSGMesh3D"):
 		mesh_inst = obj.get_node("CSGMesh3D")
 	else:
