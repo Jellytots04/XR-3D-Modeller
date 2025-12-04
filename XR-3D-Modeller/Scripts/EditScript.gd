@@ -53,7 +53,17 @@ func update_highlighted_object():
 			highlighted_object = null
 
 func moveObject(obj):
-	print("Hello moving object moment")
+	print("Object is : ", obj)
+	objectsCurrentPos = obj.global_position
+	var X = controller.global_position.x
+	var Y = controller.global_position.y
+	var Z = controller.global_position.z
+	#print("OBJECT X", objectsCurrentPos.x)
+	#print("OBJECT Y", objectsCurrentPos.y)
+	#print("OBJECT Z", objectsCurrentPos.z)
+	var distanceFormula = ((objectsCurrentPos.x - X)**2 + (objectsCurrentPos.y - Y)**2 + (objectsCurrentPos.z - Z)**2)
+	var offset = sqrt(distanceFormula)
+	print("Distance between the two points is : ", offset)
 
 func _apply_highlight(obj):
 	var mesh_inst = null
