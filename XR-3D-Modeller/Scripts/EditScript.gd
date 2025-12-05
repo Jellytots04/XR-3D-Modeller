@@ -55,15 +55,12 @@ func update_highlighted_object():
 func moveObject(obj):
 	print("Object is : ", obj)
 	objectsCurrentPos = obj.global_position
-	var X = controller.global_position.x
-	var Y = controller.global_position.y
-	var Z = controller.global_position.z
-	#print("OBJECT X", objectsCurrentPos.x)
-	#print("OBJECT Y", objectsCurrentPos.y)
-	#print("OBJECT Z", objectsCurrentPos.z)
-	var distanceFormula = ((objectsCurrentPos.x - X)**2 + (objectsCurrentPos.y - Y)**2 + (objectsCurrentPos.z - Z)**2)
-	var offset = sqrt(distanceFormula)
+	var pointOfContact = raycast_3d.get_collision_point()
+	var offset = pointOfContact - obj.global_position
 	print("Distance between the two points is : ", offset)
+
+	# var move_pos = controller.global_position + -controller.global_transform.basis.z * offset
+	obj.global_position = controller.global_position + offset * controller.global_transform.basis
 
 func _apply_highlight(obj):
 	var mesh_inst = null
