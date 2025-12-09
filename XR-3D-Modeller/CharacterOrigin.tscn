@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dry3gd8dudal"]
+[gd_scene load_steps=12 format=3 uid="uid://dry3gd8dudal"]
 
 [ext_resource type="Script" uid="uid://dqn7bjvewuwck" path="res://Scripts/left_hand.gd" id="1_5pt0g"]
 [ext_resource type="PackedScene" uid="uid://b4kad2kuba1yn" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_hand_low.tscn" id="1_5w5qi"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://bl2nuu3qhlb5k" path="res://addons/godot-xr-tools/functions/movement_direct.tscn" id="5_bayos"]
 [ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="9_55u2w"]
 [ext_resource type="PackedScene" uid="uid://ij0g0qwuumpn" path="res://FunctionToolNode.tscn" id="9_bayos"]
+[ext_resource type="PackedScene" uid="uid://b6bk2pj8vbj28" path="res://addons/godot-xr-tools/functions/movement_turn.tscn" id="10_55u2w"]
 
 [node name="XROrigin3D" type="XROrigin3D"]
 
@@ -64,6 +65,9 @@ debug_shape_custom_color = Color(0.80813736, 3.272891e-06, 7.70092e-07, 1)
 debug_shape_thickness = 5
 
 [node name="FunctionToolNode" parent="RightHand" instance=ExtResource("9_bayos")]
+
+[node name="MovementTurn" parent="RightHand" instance=ExtResource("10_55u2w")]
+turn_mode = 2
 
 [node name="PlayerBody" parent="." instance=ExtResource("9_55u2w")]
 
