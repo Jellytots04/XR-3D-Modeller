@@ -1,0 +1,63 @@
+[gd_scene load_steps=9 format=3 uid="uid://cbmc6sgtgb4eu"]
+
+[ext_resource type="Script" uid="uid://dqn7bjvewuwck" path="res://Scripts/left_hand.gd" id="1_4wwya"]
+[ext_resource type="PackedScene" uid="uid://b4kad2kuba1yn" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_hand_low.tscn" id="2_g62gc"]
+[ext_resource type="PackedScene" uid="uid://b4ysuy43poobf" path="res://addons/godot-xr-tools/functions/function_pickup.tscn" id="3_6blyk"]
+[ext_resource type="PackedScene" uid="uid://cqhw276realc" path="res://addons/godot-xr-tools/functions/function_pointer.tscn" id="4_epcrh"]
+[ext_resource type="Script" uid="uid://evdnmsuh025x" path="res://Scripts/Summon.gd" id="5_q87ol"]
+[ext_resource type="PackedScene" uid="uid://heyxgipogtlf" path="res://Summonables_Folder/Objects_Summonable/cube.tscn" id="6_yihs3"]
+[ext_resource type="PackedScene" uid="uid://l2n30mpbkdyw" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/right_hand_low.tscn" id="7_4jukt"]
+[ext_resource type="PackedScene" uid="uid://ij0g0qwuumpn" path="res://FunctionToolNode.tscn" id="8_goo6n"]
+
+[node name="XROrigin3D" type="XROrigin3D"]
+
+[node name="XRCamera3D" type="XRCamera3D" parent="."]
+
+[node name="LeftHand" type="XRController3D" parent="."]
+tracker = &"left_hand"
+script = ExtResource("1_4wwya")
+
+[node name="LeftHand" parent="LeftHand" instance=ExtResource("2_g62gc")]
+
+[node name="FunctionPickup" parent="LeftHand/LeftHand" instance=ExtResource("3_6blyk")]
+
+[node name="FunctionPointer" parent="LeftHand" instance=ExtResource("4_epcrh")]
+show_laser = 2
+laser_length = 1
+show_target = true
+
+[node name="RightHand" type="XRController3D" parent="."]
+tracker = &"right_hand"
+script = ExtResource("5_q87ol")
+object_scene = ExtResource("6_yihs3")
+
+[node name="RightHand" parent="RightHand" instance=ExtResource("7_4jukt")]
+
+[node name="FunctionPickup" parent="RightHand/RightHand" instance=ExtResource("3_6blyk")]
+
+[node name="UIPointer" parent="RightHand" instance=ExtResource("4_epcrh")]
+y_offset = 0.0
+show_laser = 2
+laser_length = 1
+show_target = true
+target_radius = 0.01
+
+[node name="Timer" type="Timer" parent="RightHand"]
+
+[node name="SelectPointer" parent="RightHand" instance=ExtResource("4_epcrh")]
+show_laser = 2
+laser_length = 1
+show_target = true
+target_radius = 0.01
+collision_mask = 6
+
+[node name="RayCast3D" type="RayCast3D" parent="RightHand"]
+target_position = Vector3(0, 0, -8)
+collision_mask = 7
+debug_shape_custom_color = Color(0.80813736, 3.272891e-06, 7.70092e-07, 1)
+debug_shape_thickness = 5
+
+[node name="FunctionToolNode" parent="RightHand" instance=ExtResource("8_goo6n")]
+
+[connection signal="has_dropped" from="RightHand/RightHand/FunctionPickup" to="RightHand" method="_on_function_pickup_has_dropped"]
+[connection signal="has_picked_up" from="RightHand/RightHand/FunctionPickup" to="RightHand" method="_on_function_pickup_has_picked_up"]
