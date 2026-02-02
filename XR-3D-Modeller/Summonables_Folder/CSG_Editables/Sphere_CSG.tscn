@@ -1,6 +1,8 @@
 [gd_scene load_steps=3 format=3 uid="uid://cla8sh1kq84cr"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_5nfm7"]
+radial_segments = 8
+rings = 8
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_a6ykx"]
 
