@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dt52fi5t6blik"]
+[gd_scene format=3 uid="uid://dt52fi5t6blik"]
 
 [ext_resource type="PackedScene" uid="uid://clc5dre31iskm" path="res://addons/godot-xr-tools/xr/start_xr.tscn" id="1_v1gob"]
 [ext_resource type="PackedScene" uid="uid://hfu7l13886ko" path="res://ControllerUI/UIController.tscn" id="2_jw32o"]
@@ -30,48 +30,48 @@ size = Vector3(4.082, 1.142, 2)
 [sub_resource type="BoxMesh" id="BoxMesh_lgr22"]
 size = Vector3(1, 1, 2)
 
-[node name="Main" type="Node3D"]
+[node name="Main" type="Node3D" unique_id=1928351994]
 
-[node name="StartXR" parent="." instance=ExtResource("1_v1gob")]
+[node name="StartXR" parent="." unique_id=885171572 instance=ExtResource("1_v1gob")]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1088836000]
 environment = SubResource("Environment_cm0pq")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1980508955]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
 
-[node name="UIController" parent="." instance=ExtResource("2_jw32o")]
+[node name="UIController" parent="." unique_id=1948511124 instance=ExtResource("2_jw32o")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 1.396664, -1.7051923)
 
-[node name="XROrigin3D" parent="." instance=ExtResource("3_50glp")]
+[node name="XROrigin3D" parent="." unique_id=1720379132 instance=ExtResource("3_50glp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3983745, -0.39955565)
 
-[node name="Floor" type="StaticBody3D" parent="."]
+[node name="Floor" type="StaticBody3D" parent="." unique_id=515607179]
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="Floor"]
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Floor" unique_id=652164340]
 transform = Transform3D(9.69, 0, 0, 0, 9.69, 0, 0, 0, 9.69, 0, 0, 0)
 mesh = SubResource("PlaneMesh_fos0i")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=1664733718]
 shape = SubResource("WorldBoundaryShape3D_3dxm6")
 
-[node name="Box" type="StaticBody3D" parent="."]
+[node name="Box" type="StaticBody3D" parent="." unique_id=175681433]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.41366613, -2.0139468)
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Box"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Box" unique_id=68060578]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0018920898, 0.07122803, 0)
 shape = SubResource("BoxShape3D_r0du0")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Box"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Box" unique_id=1798274417]
 transform = Transform3D(4.075, 0, 0, 0, 1.3, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("BoxMesh_lgr22")
 
-[node name="NewBox" parent="." instance=ExtResource("4_vy5pj")]
+[node name="NewBox" parent="." unique_id=1439010805 instance=ExtResource("4_vy5pj")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.25449, 0.49999976, -2.7634985)
 
-[node name="Prism" parent="." instance=ExtResource("5_bmxlf")]
+[node name="Prism" parent="." unique_id=823852747 instance=ExtResource("5_bmxlf")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.3447404, 0.5, -2.7683)
 
-[node name="Sphere" parent="." instance=ExtResource("6_4kpch")]
+[node name="Sphere" parent="." unique_id=1901717490 instance=ExtResource("6_4kpch")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.308306, 0.5, -2.9466164)

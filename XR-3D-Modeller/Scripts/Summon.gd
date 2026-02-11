@@ -30,6 +30,8 @@ var is_active = true
 var original_materials = {}
 var highlighted_object = null
 var highlight_color = Color(0.756, 0.453, 0.105, 1.0) # Red highlight / Pinkish highlight
+var highlighting = false
+var highlighting_cancelled = false
 
 # For Pickup and relase signalling
 var last_grabbed_object = null
@@ -188,31 +190,89 @@ func update_highlighted_object():
 			_remove_highlight(highlighted_object)
 			highlighted_object = null
 
+#func _apply_highlight(obj):
+	#var mesh_inst = null
+	#if obj is CSGMesh3D:
+		#print("obj is a CSGMesh3D")
+		#mesh_inst = obj
+		#if obj.get_children():
+			#for child in obj.get_children():
+				#_apply_highlight(child)
+	#elif obj.has_node("CSGMesh3D"):
+		#print("OBJ has a CSGMesh3D")
+		#mesh_inst = obj.get_node("CSGMesh3D")
+	#else:
+		#print("No CSGMesh3D available on object!")
+		#return
+#
+	#if not mesh_inst.mesh:
+		#print("No mesh resource found on CSGMesh3D!")
+		#return
+#
+	#original_materials[mesh_inst] = mesh_inst.material
+#
+	#if mesh_inst.material:
+		#var mat = mesh_inst.material.duplicate()
+		#mat.albedo_color = highlight_color
+		#mesh_inst.material = mat
+
 func _apply_highlight(obj):
+	highlighting_cancelled = true
+	await get_tree().process_frame
+	
+	highlighting_cancelled = false
+	highlighting = true
+	
+	await _apply_highlight_recursive(obj)
+	
+	highlighting = false
+
+
+func _apply_highlight_recursive(obj):
+	# If this is true then cancel the recursive script
+	if highlighting_cancelled:
+		return
+		
 	var mesh_inst = null
 	if obj is CSGMesh3D:
 		print("obj is a CSGMesh3D")
 		mesh_inst = obj
+		
+		if mesh_inst.mesh:
+			original_materials[mesh_inst] = mesh_inst.material
+			if mesh_inst.material:
+				var mat = mesh_inst.material.duplicate()
+				mat.albedo_color = highlight_color
+				mesh_inst.material = mat
+			
+			# Will pause after applying material to reduce lag
+			await get_tree().process_frame
+		else:
+			print("No Mesh resource found on CSGMesh3D!")
+		
 		if obj.get_children():
 			for child in obj.get_children():
-				_apply_highlight(child)
+				if highlighting_cancelled:
+					return
+				await _apply_highlight_recursive(child)
+	
 	elif obj.has_node("CSGMesh3D"):
 		print("OBJ has a CSGMesh3D")
 		mesh_inst = obj.get_node("CSGMesh3D")
+		
+		if mesh_inst.mesh:
+			original_materials[mesh_inst] = mesh_inst.material
+			if mesh_inst.material:
+				var mat = mesh_inst.material.duplicate()
+				mat.albedo_color = highlight_color
+				mesh_inst.material = mat
+				
+			await get_tree().process_frame
+		else:
+			print("No mesh resource found on CSGMesh3D!")
 	else:
-		print("No CSGMesh3D available on object!")
-		return
-
-	if not mesh_inst.mesh:
 		print("No mesh resource found on CSGMesh3D!")
 		return
-
-	original_materials[mesh_inst] = mesh_inst.material
-
-	if mesh_inst.material:
-		var mat = mesh_inst.material.duplicate()
-		mat.albedo_color = highlight_color
-		mesh_inst.material = mat
 
 func _remove_highlight(obj):
 	var mesh_inst = null
@@ -231,32 +291,6 @@ func _remove_highlight(obj):
 		mesh_inst.material = original_materials[mesh_inst]
 			# mesh_inst.set_surface_override_material(i, original_materials[mesh_inst][i])
 		original_materials.erase(mesh_inst)
-
-func _apply_transparency(obj):
-	var mesh_inst = null
-	if obj is CSGMesh3D:
-		mesh_inst = obj
-	elif obj.has_node("CSGMesh3D"):
-		mesh_inst = obj.get_node("CSGMesh3D")
-	else:
-		print("No CSGMesh3D available on object!")
-		return
-	if not mesh_inst.mesh:
-		print("No mesh resource found on CSGMesh3D!")
-		return
-
-	var mesh = mesh_inst.mesh
-	original_materials[mesh_inst] = []
-	for i in range(mesh.get_surface_count()):
-		original_materials[mesh_inst].append(mesh_inst.get_material(i))
-		var mat = mesh_inst.get_material(i)
-		if mat:
-			mat = mat.duplicate()
-			var c = mat.albedo_color
-			c.a = 0.3
-			mat.albedo_color = c
-			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-			mesh_inst.set_surface_override_material(i, mat)
 
 # Signals going and coming
 func set_page_index(idx):
@@ -301,3 +335,30 @@ func _return_collision(obj):
 	if obj.has_node("CollisionShape3D"):
 		var collision = obj.get_node("CollisionShape3D")
 		collision.disabled = false
+
+# Isn't in use do to equip / pick up being in a different script
+func _apply_transparency(obj):
+	var mesh_inst = null
+	if obj is CSGMesh3D:
+		mesh_inst = obj
+	elif obj.has_node("CSGMesh3D"):
+		mesh_inst = obj.get_node("CSGMesh3D")
+	else:
+		print("No CSGMesh3D available on object!")
+		return
+	if not mesh_inst.mesh:
+		print("No mesh resource found on CSGMesh3D!")
+		return
+
+	var mesh = mesh_inst.mesh
+	original_materials[mesh_inst] = []
+	for i in range(mesh.get_surface_count()):
+		original_materials[mesh_inst].append(mesh_inst.get_material(i))
+		var mat = mesh_inst.get_material(i)
+		if mat:
+			mat = mat.duplicate()
+			var c = mat.albedo_color
+			c.a = 0.3
+			mat.albedo_color = c
+			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			mesh_inst.set_surface_override_material(i, mat)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dry3gd8dudal"]
+[gd_scene format=3 uid="uid://dry3gd8dudal"]
 
 [ext_resource type="Script" uid="uid://dqn7bjvewuwck" path="res://Scripts/left_hand.gd" id="1_5pt0g"]
 [ext_resource type="PackedScene" uid="uid://b4kad2kuba1yn" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_hand_low.tscn" id="1_5w5qi"]
@@ -12,64 +12,64 @@
 [ext_resource type="PackedScene" uid="uid://ij0g0qwuumpn" path="res://FunctionToolNode.tscn" id="9_bayos"]
 [ext_resource type="PackedScene" uid="uid://b6bk2pj8vbj28" path="res://addons/godot-xr-tools/functions/movement_turn.tscn" id="10_55u2w"]
 
-[node name="XROrigin3D" type="XROrigin3D"]
+[node name="XROrigin3D" type="XROrigin3D" unique_id=333387704]
 
-[node name="XRCamera3D" type="XRCamera3D" parent="."]
+[node name="XRCamera3D" type="XRCamera3D" parent="." unique_id=1259197729]
 
-[node name="LeftHand" type="XRController3D" parent="."]
+[node name="LeftHand" type="XRController3D" parent="." unique_id=1904736302]
 tracker = &"left_hand"
 script = ExtResource("1_5pt0g")
 
-[node name="LeftHand" parent="LeftHand" instance=ExtResource("1_5w5qi")]
+[node name="LeftHand" parent="LeftHand" unique_id=1740388944 instance=ExtResource("1_5w5qi")]
 
-[node name="FunctionPickup" parent="LeftHand/LeftHand" instance=ExtResource("2_a57kf")]
+[node name="FunctionPickup" parent="LeftHand/LeftHand" unique_id=1584065131 instance=ExtResource("2_a57kf")]
 
-[node name="MovementDirect" parent="LeftHand/LeftHand" instance=ExtResource("5_bayos")]
+[node name="MovementDirect" parent="LeftHand/LeftHand" unique_id=814479267 instance=ExtResource("5_bayos")]
 max_speed = 3.3
 strafe = true
 
-[node name="FunctionPointer" parent="LeftHand" instance=ExtResource("3_ayg2o")]
+[node name="FunctionPointer" parent="LeftHand" unique_id=699509882 instance=ExtResource("3_ayg2o")]
 show_laser = 2
 laser_length = 1
 show_target = true
 
-[node name="RightHand" type="XRController3D" parent="."]
+[node name="RightHand" type="XRController3D" parent="." unique_id=1769323809]
 tracker = &"right_hand"
 script = ExtResource("1_md7ef")
 object_scene = ExtResource("2_s27s0")
 
-[node name="RightHand" parent="RightHand" instance=ExtResource("2_tpptb")]
+[node name="RightHand" parent="RightHand" unique_id=512246083 instance=ExtResource("2_tpptb")]
 
-[node name="FunctionPickup" parent="RightHand/RightHand" instance=ExtResource("2_a57kf")]
+[node name="FunctionPickup" parent="RightHand/RightHand" unique_id=1716233156 instance=ExtResource("2_a57kf")]
 
-[node name="UIPointer" parent="RightHand" instance=ExtResource("3_ayg2o")]
+[node name="UIPointer" parent="RightHand" unique_id=1859802288 instance=ExtResource("3_ayg2o")]
 y_offset = 0.0
 show_laser = 2
 laser_length = 1
 show_target = true
 target_radius = 0.01
 
-[node name="Timer" type="Timer" parent="RightHand"]
+[node name="Timer" type="Timer" parent="RightHand" unique_id=25853258]
 
-[node name="SelectPointer" parent="RightHand" instance=ExtResource("3_ayg2o")]
+[node name="SelectPointer" parent="RightHand" unique_id=996107899 instance=ExtResource("3_ayg2o")]
 show_laser = 2
 laser_length = 1
 show_target = true
 target_radius = 0.01
 collision_mask = 6
 
-[node name="RayCast3D" type="RayCast3D" parent="RightHand"]
+[node name="RayCast3D" type="RayCast3D" parent="RightHand" unique_id=377750687]
 target_position = Vector3(0, 0, -8)
 collision_mask = 7
 debug_shape_custom_color = Color(0.80813736, 3.272891e-06, 7.70092e-07, 1)
 debug_shape_thickness = 5
 
-[node name="FunctionToolNode" parent="RightHand" instance=ExtResource("9_bayos")]
+[node name="FunctionToolNode" parent="RightHand" unique_id=612183384 instance=ExtResource("9_bayos")]
 
-[node name="MovementTurn" parent="RightHand" instance=ExtResource("10_55u2w")]
+[node name="MovementTurn" parent="RightHand" unique_id=1076150263 instance=ExtResource("10_55u2w")]
 turn_mode = 2
 
-[node name="PlayerBody" parent="." instance=ExtResource("9_55u2w")]
+[node name="PlayerBody" parent="." unique_id=1094677019 instance=ExtResource("9_55u2w")]
 
 [connection signal="has_dropped" from="RightHand/RightHand/FunctionPickup" to="RightHand" method="_on_function_pickup_has_dropped"]
 [connection signal="has_picked_up" from="RightHand/RightHand/FunctionPickup" to="RightHand" method="_on_function_pickup_has_picked_up"]

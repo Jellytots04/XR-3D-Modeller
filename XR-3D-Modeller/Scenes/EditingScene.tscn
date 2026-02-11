@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://ck6pmgy5ywr4t"]
+[gd_scene format=3 uid="uid://ck6pmgy5ywr4t"]
 
 [ext_resource type="PackedScene" uid="uid://clc5dre31iskm" path="res://addons/godot-xr-tools/xr/start_xr.tscn" id="1_xpd88"]
 [ext_resource type="PackedScene" uid="uid://hfu7l13886ko" path="res://ControllerUI/UIController.tscn" id="2_38jch"]
@@ -17,18 +17,18 @@ sky = SubResource("Sky_r0du0")
 tonemap_mode = 2
 glow_enabled = true
 
-[node name="EditScene" type="Node3D"]
+[node name="EditScene" type="Node3D" unique_id=46629792]
 
-[node name="StartXR" parent="." instance=ExtResource("1_xpd88")]
+[node name="StartXR" parent="." unique_id=658226225 instance=ExtResource("1_xpd88")]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1878105155]
 environment = SubResource("Environment_le7ih")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1371770198]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
 shadow_enabled = true
 
-[node name="UIController" parent="." instance=ExtResource("2_38jch")]
+[node name="UIController" parent="." unique_id=618635835 instance=ExtResource("2_38jch")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35321435, -0.9304223)
 
-[node name="XROrigin3D" parent="." instance=ExtResource("3_le7ih")]
+[node name="XROrigin3D" parent="." unique_id=1695988145 instance=ExtResource("3_le7ih")]
