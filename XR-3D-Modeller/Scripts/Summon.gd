@@ -32,6 +32,8 @@ var highlighted_object = null
 var highlight_color = Color(0.756, 0.453, 0.105, 1.0) # Red highlight / Pinkish highlight
 var highlighting = false
 var highlighting_cancelled = false
+var remove_highlighting = false
+var remove_highlighting_cancelled = false
 
 # For Pickup and relase signalling
 var last_grabbed_object = null
@@ -187,6 +189,7 @@ func update_highlighted_object():
 				_apply_highlight(highlighted_object)
 	else:
 		if highlighted_object:
+			remove_highlighting_cancelled = true
 			_remove_highlight(highlighted_object)
 			highlighted_object = null
 
@@ -275,22 +278,48 @@ func _apply_highlight_recursive(obj):
 		return
 
 func _remove_highlight(obj):
+	remove_highlighting_cancelled = true
+	
+	await get_tree().process_frame
+	
+	remove_highlighting_cancelled = false
+	remove_highlighting = true
+	
+	await _remove_highlight_recursive(obj)
+	
+	remove_highlighting = false
+
+
+func _remove_highlight_recursive(obj):
+	if remove_highlighting_cancelled:
+		return
+		
 	var mesh_inst = null
 	if obj is CSGMesh3D:
 		mesh_inst = obj
+		
+		if mesh_inst.mesh:
+			if mesh_inst in original_materials:
+				mesh_inst.material = original_materials[mesh_inst]
+				original_materials.erase(mesh_inst)
+				
+			await get_tree().process_frame
+			
 		if obj.get_children():
 			for child in obj.get_children():
-				_remove_highlight(child)
+				if remove_highlighting_cancelled:
+					return
+				await  _remove_highlight_recursive(child)
+				
 	elif obj.has_node("CSGMesh3D"):
 		mesh_inst = obj.get_node("CSGMesh3D")
-	else:
-		return
-	if not mesh_inst.mesh:
-		return
-	if mesh_inst in original_materials:
-		mesh_inst.material = original_materials[mesh_inst]
-			# mesh_inst.set_surface_override_material(i, original_materials[mesh_inst][i])
-		original_materials.erase(mesh_inst)
+		
+		if mesh_inst.mesh:
+			if mesh_inst in original_materials:
+				mesh_inst.material = original_materials[mesh_inst]
+				original_materials.erase(mesh_inst)
+				
+			await get_tree().process_frame
 
 # Signals going and coming
 func set_page_index(idx):
