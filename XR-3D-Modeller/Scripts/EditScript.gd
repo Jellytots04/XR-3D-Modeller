@@ -7,7 +7,10 @@ signal objectMoved
 
 var is_active = false
 var summonedObjects
-var objectsCurrentPos
+var moveOffset
+var currentlyMoving = false
+
+# var objectsCurrentPos
 
 # Highlighting variables
 var original_materials = {}
@@ -30,10 +33,14 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if is_active:
-		print("Currently Active")
 		if controller.is_button_pressed("grip_click") and highlighted_object:
-			print("Grip is active")
+			if not currentlyMoving:
+				startMove(highlighted_object)
+				currentlyMoving = true
+			# print("Grip is active")
 			moveObject(highlighted_object)
+		else:
+			currentlyMoving = false
 		update_highlighted_object()
 
 func update_highlighted_object():
@@ -52,15 +59,21 @@ func update_highlighted_object():
 			_remove_highlight(highlighted_object)
 			highlighted_object = null
 
+func startMove(obj):
+	moveOffset = self.global_position - obj.global_position
+
 func moveObject(obj):
 	print("Object is : ", obj)
-	objectsCurrentPos = obj.global_position
-	var pointOfContact = raycast_3d.get_collision_point()
-	var offset = pointOfContact - obj.global_position
-	print("Distance between the two points is : ", offset)
+	# objectsCurrentPos = obj.global_position
+	
+	# Distance should be self - obj.global_position
+	# have it face the forward direction of the Vector3 of the users controller
+	# var offset = self.global_position - obj.global_position
+	
+	obj.global_position = self.global_position - self.global_transform.basis.z -self.global_transform.basis.y - self.global_transform.basis.x * moveOffset
 
 	# var move_pos = controller.global_position + -controller.global_transform.basis.z * offset
-	obj.global_position = controller.global_position + offset * controller.global_transform.basis
+	# obj.global_position = controller.global_position + offset * controller.global_transform.basis
 
 func _apply_highlight(obj):
 	var mesh_inst = null
