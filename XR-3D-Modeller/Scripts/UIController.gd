@@ -60,7 +60,7 @@ func _ready():
 		print("Viewport root scene not loaded!")
 
 func _build_option(idx):
-	print("Button Pressed Summon", idx)
+	# print("Button Pressed Summon", idx)
 	emit_signal("summonable_selected", idx)
 
 func _remove_option(idx):
@@ -70,10 +70,9 @@ func _edit_option(idx):
 	emit_signal("edit_selected", idx)
 
 func _swap_page(idx):
-	print("UI Controller idx emit, from _swap_page: ", idx)
+	# print("UI Controller idx emit, from _swap_page: ", idx)
 	emit_signal("change_page", idx)
 
 func _size_change(value):
-	print(value)
+	# print(value)
 	scaleSize.emit(value) # Another way to emit signals with argument(s)
-	print("Size Scaler changed")

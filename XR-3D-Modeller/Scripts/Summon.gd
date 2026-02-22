@@ -25,7 +25,7 @@ var ghostInstance
 var ghostingOn = false
 var can_summon = true
 var is_active = true
-var objectSize # Used for size scaler in the UI
+var objectSize = 1.0 # Used for size scaler in the UI, starts on 1.0 scaling
 
 # Highlighting variables
 var original_materials = {}
@@ -92,8 +92,9 @@ func _ready() -> void:
 	if ui_controllers.size() > 0:
 		var ui_controller = ui_controllers[0]
 		# Connect the script to the summonable Selected function with a signal to call the set_summon_index
-		ui_controller.connect("change_page", Callable(self, "set_page_index"))
-		ui_controller.connect("summonable_selected", Callable(self, "set_summon_index"))
+		ui_controller.connect("change_page", Callable(self, "set_page_index")) # changes the current selected page
+		ui_controller.connect("summonable_selected", Callable(self, "set_summon_index")) # changes the selected summonable object 1 - 4 / 0 - 3
+		ui_controller.connect("scaleSize", Callable(self, "set_scale_size")) # changes the scale size for summoning and ghosting objects
 		print("Controller found ", ui_controller)
 	else:
 		print("UI Controller not found")
@@ -107,6 +108,7 @@ func _process(_delta):
 		if is_button_pressed("ax_button") and can_summon: # Meta Quest A button
 			if not ghostingOn:
 				ghostInstance = ghostedObjects[summonIndex].instantiate()
+				ghostInstance.scale = objectSize * Vector3.ONE # sets all of the values to objectSize
 				get_tree().current_scene.add_child(ghostInstance)
 				ghostingOn = true
 
@@ -146,6 +148,7 @@ func combine_objects(index, obj, spawnPoint, objectNormal):
 		# objectsInScene.append(new_obj)
 		# print("Added", new_obj)
 		# Add the new object to the scene
+		new_obj.scale = objectSize * Vector3.ONE
 		get_tree().current_scene.add_child(new_obj)
 		new_obj.look_at(spawnPoint, objectNormal)
 		new_obj.add_to_group("summonedObjects")
@@ -170,6 +173,7 @@ func summon_object(index):
 		# objectsInScene.append(new_obj)
 		print("Added", new_obj)
 		# Add the new object to the scene
+		new_obj.scale = objectSize * Vector3.ONE
 		get_tree().current_scene.add_child(new_obj)
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Updates the summoned list within script
 		emit_signal("objectSummoned")
@@ -337,6 +341,9 @@ func update_list():
 func set_summon_index(idx):
 	print("Summon Called")
 	summonIndex = idx
+	
+func set_scale_size(value):
+	objectSize = value
 
 # Functions Below are now obsolete due to CSG usage and moving to Raycast movement, rather than grab movements.
 func _on_function_pickup_has_picked_up(obj):
