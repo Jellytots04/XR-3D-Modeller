@@ -97,6 +97,9 @@ text = "Size "
 [node name="Size" type="HSlider" parent="Build/VerticalArrangement/ScaleOptions" unique_id=573685055]
 layout_mode = 2
 size_flags_horizontal = 3
+max_value = 2.0
+step = 0.1
+value = 1.0
 
 [node name="Remove" type="MarginContainer" parent="." unique_id=1607584328]
 visible = false

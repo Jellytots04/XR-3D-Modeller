@@ -25,6 +25,7 @@ var ghostInstance
 var ghostingOn = false
 var can_summon = true
 var is_active = true
+var objectSize # Used for size scaler in the UI
 
 # Highlighting variables
 var original_materials = {}

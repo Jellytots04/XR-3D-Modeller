@@ -1,9 +1,11 @@
 extends Node3D
 
+# Signals
 signal change_page(index) # Signal for changing the page, will be used for state machine implementation
 signal summonable_selected(index) # Singal for changing summonables in Summon script.
 signal remove_selected(index) # Signal for choosing remove funcitons.
 signal edit_selected(index) # Signal for choosing edit functions.
+signal scaleSize(value) # Signal for changing the building Scale size
 
 func _ready():
 	add_to_group("ui_controller")
@@ -15,9 +17,13 @@ func _ready():
 		viewport_scene.connect("tab_changed", Callable(self, "_swap_page"))
 		# Currently the values above do nothing.
 		# But are here to prepare for swapping to state machine scripting
-		var build_options = viewport_scene.get_node("Build/VerticalArrangement/BuildOptions")
-		var remove_options = viewport_scene.get_node("Remove/VerticalArrangement/RemoveOptions")
+		# Build tab used for getting to the children nodes quicker
+		var build_tab = viewport_scene.get_node("Build/VerticalArrangement")
+		var build_options = build_tab.get_node("BuildOptions") # Top hotbar for the build options
+		var build_scaleSize = build_tab.get_node("ScaleOptions/Size")
+		var remove_options = viewport_scene.get_node("Remove/VerticalArrangement/RemoveOptions") 
 		var edit_options = viewport_scene.get_node("Edit/VBoxContainer/EditOptions")
+		
 		# print(build_options)
 		if build_options:
 			for idx in range(build_options.get_child_count()):
@@ -26,6 +32,13 @@ func _ready():
 				print(idx)
 		else:
 			print("BuildOptions node not found!")
+
+		print(build_scaleSize)
+		if build_scaleSize:
+			build_scaleSize.connect("value_changed", Callable(self, "_size_change"))
+			print("Build Scales are connected")
+		else:
+			print("Build Scales not found")
 
 		if remove_options:
 			for idx in range(remove_options.get_child_count()):
@@ -59,3 +72,8 @@ func _edit_option(idx):
 func _swap_page(idx):
 	print("UI Controller idx emit, from _swap_page: ", idx)
 	emit_signal("change_page", idx)
+
+func _size_change(value):
+	print(value)
+	scaleSize.emit(value) # Another way to emit signals with argument(s)
+	print("Size Scaler changed")
