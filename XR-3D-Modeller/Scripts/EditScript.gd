@@ -8,6 +8,7 @@ signal objectMoved
 var is_active = false
 var summonedObjects
 var moveOffset
+var moveBasis
 var currentlyMoving = false
 
 # var objectsCurrentPos
@@ -61,6 +62,7 @@ func update_highlighted_object():
 
 func startMove(obj):
 	moveOffset = obj.global_position - self.global_position # distance between object and controller
+	moveBasis = self.global_transform.basis # starting basis for the object to rotate around
 	print(moveOffset)
 
 func moveObject(obj, delta):
@@ -70,8 +72,8 @@ func moveObject(obj, delta):
 	# Distance should be self - obj.global_position
 	# have it face the forward direction of the Vector3 of the users controller
 	# var offset = self.global_position - obj.global_position
-	
-	obj.global_position = self.global_position + moveOffset
+	var rotation = self.global_transform.basis * moveBasis.inverse()
+	obj.global_position = self.global_position + rotation * moveOffset
 
 	# var move_pos = controller.global_position + -controller.global_transform.basis.z * offset
 	# obj.global_position = controller.global_position + offset * controller.global_transform.basis
