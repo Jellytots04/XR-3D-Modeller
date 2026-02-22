@@ -10,6 +10,7 @@ var summonedObjects
 var moveOffset
 var moveBasis
 var currentlyMoving = false
+var currentSelectedObject # to prevent the user from moving another object when raycast hits new object
 
 # var objectsCurrentPos
 
@@ -35,11 +36,12 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if is_active:
 		if controller.is_button_pressed("grip_click") and highlighted_object:
+			currentSelectedObject = highlighted_object
 			if not currentlyMoving:
-				startMove(highlighted_object)
+				startMove(currentSelectedObject)
 				currentlyMoving = true
 			# print("Grip is active")
-			moveObject(highlighted_object, delta)
+			moveObject(currentSelectedObject, delta)
 		else:
 			currentlyMoving = false
 		update_highlighted_object()
