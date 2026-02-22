@@ -132,7 +132,7 @@ func _process(_delta):
 				if raycast_3d.is_colliding():
 					var obj = raycast_3d.get_collider()
 					if obj in summonedObjects:
-						print("Combined")
+						# print("Combined")
 						combine_objects(summonIndex, obj, raycast_3d.get_collision_point(), raycast_3d.get_collision_normal())
 				else:
 					summon_object(summonIndex)
@@ -171,7 +171,7 @@ func summon_object(index):
 		new_obj.global_transform.origin = spawn_pos
 		new_obj.add_to_group("summonedObjects")
 		# objectsInScene.append(new_obj)
-		print("Added", new_obj)
+		# print("Added", new_obj)
 		# Add the new object to the scene
 		new_obj.scale = objectSize * Vector3.ONE
 		get_tree().current_scene.add_child(new_obj)
@@ -344,58 +344,3 @@ func set_summon_index(idx):
 	
 func set_scale_size(value):
 	objectSize = value
-
-# Functions Below are now obsolete due to CSG usage and moving to Raycast movement, rather than grab movements.
-func _on_function_pickup_has_picked_up(obj):
-	if obj in objectsInScene:
-		last_grabbed_object = obj
-		_apply_transparency(obj)
-		_remove_main_collision(obj)
-
-		print("Old transform : ", obj.global_transform)
-		var grab_position = global_transform.origin + -global_transform.basis.z * 5
-		var new_transform = Transform3D(global_transform.basis, grab_position)
-		obj.global_transform = new_transform
-
-func _on_function_pickup_has_dropped() -> void:
-	if last_grabbed_object:
-		_remove_highlight(last_grabbed_object)
-		_return_collision(last_grabbed_object)
-		last_grabbed_object = null
-
-func _remove_main_collision(obj):
-	if obj.has_node("CollisionShape3D"):
-		var collision = obj.get_node("CollisionShape3D")
-		collision.disabled = true
-
-func _return_collision(obj):
-	if obj.has_node("CollisionShape3D"):
-		var collision = obj.get_node("CollisionShape3D")
-		collision.disabled = false
-
-# Isn't in use do to equip / pick up being in a different script
-func _apply_transparency(obj):
-	var mesh_inst = null
-	if obj is CSGMesh3D:
-		mesh_inst = obj
-	elif obj.has_node("CSGMesh3D"):
-		mesh_inst = obj.get_node("CSGMesh3D")
-	else:
-		print("No CSGMesh3D available on object!")
-		return
-	if not mesh_inst.mesh:
-		print("No mesh resource found on CSGMesh3D!")
-		return
-
-	var mesh = mesh_inst.mesh
-	original_materials[mesh_inst] = []
-	for i in range(mesh.get_surface_count()):
-		original_materials[mesh_inst].append(mesh_inst.get_material(i))
-		var mat = mesh_inst.get_material(i)
-		if mat:
-			mat = mat.duplicate()
-			var c = mat.albedo_color
-			c.a = 0.3
-			mat.albedo_color = c
-			mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-			mesh_inst.set_surface_override_material(i, mat)
