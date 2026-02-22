@@ -198,32 +198,6 @@ func update_highlighted_object():
 			_remove_highlight(highlighted_object)
 			highlighted_object = null
 
-#func _apply_highlight(obj):
-	#var mesh_inst = null
-	#if obj is CSGMesh3D:
-		#print("obj is a CSGMesh3D")
-		#mesh_inst = obj
-		#if obj.get_children():
-			#for child in obj.get_children():
-				#_apply_highlight(child)
-	#elif obj.has_node("CSGMesh3D"):
-		#print("OBJ has a CSGMesh3D")
-		#mesh_inst = obj.get_node("CSGMesh3D")
-	#else:
-		#print("No CSGMesh3D available on object!")
-		#return
-#
-	#if not mesh_inst.mesh:
-		#print("No mesh resource found on CSGMesh3D!")
-		#return
-#
-	#original_materials[mesh_inst] = mesh_inst.material
-#
-	#if mesh_inst.material:
-		#var mat = mesh_inst.material.duplicate()
-		#mat.albedo_color = highlight_color
-		#mesh_inst.material = mat
-
 func _apply_highlight(obj):
 	highlighting_cancelled = true
 	await get_tree().process_frame

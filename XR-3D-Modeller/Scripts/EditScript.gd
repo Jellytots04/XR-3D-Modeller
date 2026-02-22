@@ -38,7 +38,7 @@ func _process(delta: float) -> void:
 				startMove(highlighted_object)
 				currentlyMoving = true
 			# print("Grip is active")
-			moveObject(highlighted_object)
+			moveObject(highlighted_object, delta)
 		else:
 			currentlyMoving = false
 		update_highlighted_object()
@@ -60,9 +60,10 @@ func update_highlighted_object():
 			highlighted_object = null
 
 func startMove(obj):
-	moveOffset = self.global_position - obj.global_position
+	moveOffset = obj.global_position - self.global_position # distance between object and controller
+	print(moveOffset)
 
-func moveObject(obj):
+func moveObject(obj, delta):
 	print("Object is : ", obj)
 	# objectsCurrentPos = obj.global_position
 	
@@ -70,7 +71,7 @@ func moveObject(obj):
 	# have it face the forward direction of the Vector3 of the users controller
 	# var offset = self.global_position - obj.global_position
 	
-	obj.global_position = self.global_position - self.global_transform.basis.z -self.global_transform.basis.y - self.global_transform.basis.x * moveOffset
+	obj.global_position = self.global_position + moveOffset
 
 	# var move_pos = controller.global_position + -controller.global_transform.basis.z * offset
 	# obj.global_position = controller.global_position + offset * controller.global_transform.basis
