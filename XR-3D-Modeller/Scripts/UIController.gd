@@ -23,6 +23,7 @@ func _ready():
 		var build_scaleSize = build_tab.get_node("ScaleOptions/Size")
 		var remove_options = viewport_scene.get_node("Remove/VerticalArrangement/RemoveOptions") 
 		var edit_options = viewport_scene.get_node("Edit/VBoxContainer/EditOptions")
+		#var edit_scaleSize =
 		
 		# print(build_options)
 		if build_options:

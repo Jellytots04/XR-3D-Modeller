@@ -11,10 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://bhbhf16um162j" path="res://ControllerUI/Icons/RotateIcon.aseprite" id="9_u26fo"]
 [ext_resource type="Texture2D" uid="uid://luxrb0qnej8d" path="res://ControllerUI/Icons/ScaleIcon.aseprite" id="10_7oq3b"]
 [ext_resource type="Texture2D" uid="uid://bhaptdgitud0u" path="res://ControllerUI/Icons/MeasureIcon.aseprite" id="11_wjypm"]
-[ext_resource type="Texture2D" uid="uid://d0cyfuiwivtba" path="res://ControllerUI/Icons/UndoIcon.aseprite" id="12_7oq3b"]
 [ext_resource type="Texture2D" uid="uid://cgwq5m46jr53v" path="res://ControllerUI/Icons/TrashIcon.aseprite" id="12_wjypm"]
-[ext_resource type="Texture2D" uid="uid://ljyff1wpqbdy" path="res://ControllerUI/Icons/RedoIcon.aseprite" id="13_wjypm"]
-[ext_resource type="Texture2D" uid="uid://d14oa0mv8ak6f" path="res://ControllerUI/Icons/HistoryIcon.aseprite" id="14_g8fi6"]
 [ext_resource type="Texture2D" uid="uid://qq8cr2pngjy1" path="res://ControllerUI/Icons/StretchIcon.aseprite" id="15_keb40"]
 [ext_resource type="Texture2D" uid="uid://iukg2m2fcqk3" path="res://ControllerUI/Icons/MultiScaleIcon.aseprite" id="16_5tk4o"]
 
@@ -22,9 +19,10 @@
 offset_right = 400.0
 offset_bottom = 200.0
 tab_alignment = 1
-current_tab = 0
+current_tab = 2
 
 [node name="Build" type="MarginContainer" parent="." unique_id=1469485864]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -162,7 +160,6 @@ layout_mode = 2
 icon = ExtResource("11_wjypm")
 
 [node name="Edit" type="MarginContainer" parent="." unique_id=1374180317]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -176,25 +173,27 @@ layout_mode = 2
 [node name="EditOptions" type="HBoxContainer" parent="Edit/VBoxContainer" unique_id=350732837]
 layout_mode = 2
 
-[node name="Undo" type="Button" parent="Edit/VBoxContainer/EditOptions" unique_id=755007639]
+[node name="MultiScaleTool" type="Button" parent="Edit/VBoxContainer/EditOptions" unique_id=27429057]
 layout_mode = 2
-icon = ExtResource("12_7oq3b")
+icon = ExtResource("16_5tk4o")
 
-[node name="Redo" type="Button" parent="Edit/VBoxContainer/EditOptions" unique_id=660008668]
-layout_mode = 2
-icon = ExtResource("13_wjypm")
+[node name="HBoxContainer" type="HBoxContainer" parent="Edit/VBoxContainer/EditOptions/MultiScaleTool" unique_id=2096075756]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 90.0
+offset_right = 67.0
+offset_bottom = 123.0
 
-[node name="History" type="Button" parent="Edit/VBoxContainer/EditOptions" unique_id=530631721]
+[node name="Label" type="Label" parent="Edit/VBoxContainer/EditOptions/MultiScaleTool/HBoxContainer" unique_id=954528708]
 layout_mode = 2
-icon = ExtResource("14_g8fi6")
+text = "Scale : "
+
+[node name="HSlider" type="HSlider" parent="Edit/VBoxContainer/EditOptions/MultiScaleTool/HBoxContainer" unique_id=1092660556]
+layout_mode = 2
 
 [node name="Stretch" type="Button" parent="Edit/VBoxContainer/EditOptions" unique_id=786202542]
 layout_mode = 2
 icon = ExtResource("15_keb40")
-
-[node name="MultiScaleTool" type="Button" parent="Edit/VBoxContainer/EditOptions" unique_id=27429057]
-layout_mode = 2
-icon = ExtResource("16_5tk4o")
 
 [node name="AlwaysEditable" type="HBoxContainer" parent="Edit/VBoxContainer" unique_id=455576601]
 layout_mode = 2

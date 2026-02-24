@@ -11,6 +11,7 @@ var moveOffset
 var moveBasis
 var currentlyMoving = false
 var currentSelectedObject # to prevent the user from moving another object when raycast hits new object
+var editOptionsHolder = [] # Should correspond to the children of the editOptions node
 
 # var objectsCurrentPos
 
