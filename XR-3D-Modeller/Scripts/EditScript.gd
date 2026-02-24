@@ -41,7 +41,7 @@ func _process(delta: float) -> void:
 				startMove(currentSelectedObject)
 				currentlyMoving = true
 			# print("Grip is active")
-			moveObject(currentSelectedObject, delta)
+			moveObject(currentSelectedObject)
 		else:
 			currentSelectedObject = null
 			currentlyMoving = false
@@ -68,7 +68,7 @@ func startMove(obj):
 	moveBasis = self.global_transform.basis # starting basis for the object to rotate around
 	print(moveOffset)
 
-func moveObject(obj, delta):
+func moveObject(obj):
 	print("Object is : ", obj)
 	# objectsCurrentPos = obj.global_position
 	
