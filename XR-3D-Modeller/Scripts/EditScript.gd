@@ -30,6 +30,7 @@ func _ready() -> void:
 		var ui_controller = ui_controllers[0]
 		print("Hello from readying Remover")
 		var connected = ui_controller.connect("change_page", Callable(self, "set_page_index"))
+		
 		print("Connection made: ", connected)
 		print("UI Controller: ", ui_controller)
 	print("Players controller: ", controller)
@@ -46,7 +47,18 @@ func _process(delta: float) -> void:
 		else:
 			currentSelectedObject = null
 			currentlyMoving = false
+			
+	# If the user clicks / presses right trigger on an highlighted object it will become the selected object
+		if controller.is_button_pressed("trigger_click") and highlighted_object:
+			if not currentSelectedObject:
+				currentSelectedObject = highlighted_object
+				# Select case for ensuring the object is selected
+				
+
 		update_highlighted_object()
+		
+				
+		
 
 func update_highlighted_object():
 	# print("Ray update")
@@ -63,6 +75,12 @@ func update_highlighted_object():
 		if highlighted_object:
 			_remove_highlight(highlighted_object)
 			highlighted_object = null
+
+func scaleSelectedObject():
+	# Will be used to scale an object that is selected
+	# Open up scale screen on UI controller
+	print("Will be used to scale")
+	
 
 func startMove(obj):
 	moveOffset = obj.global_position - self.global_position # distance between object and controller

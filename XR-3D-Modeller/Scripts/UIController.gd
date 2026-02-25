@@ -22,8 +22,9 @@ func _ready():
 		var build_options = build_tab.get_node("BuildOptions") # Top hotbar for the build options
 		var build_scaleSize = build_tab.get_node("ScaleOptions/Size")
 		var remove_options = viewport_scene.get_node("Remove/VerticalArrangement/RemoveOptions") 
-		var edit_options = viewport_scene.get_node("Edit/VBoxContainer/EditOptions")
-		#var edit_scaleSize =
+		var edit_tab = viewport_scene.get_node("Edit/VBoxContainer")
+		var edit_options = edit_tab.get_node("EditOptions")
+		var edit_scaleSize = viewport_scene.get_node("MultiScaleTool/ScaleBox/Scale") # HSlider node 
 		
 		# print(build_options)
 		if build_options:
@@ -37,7 +38,7 @@ func _ready():
 		print(build_scaleSize)
 		if build_scaleSize:
 			build_scaleSize.connect("value_changed", Callable(self, "_size_change"))
-			print("Build Scales are connected")
+			# print("Build Scales are connected")
 		else:
 			print("Build Scales not found")
 
@@ -56,6 +57,10 @@ func _ready():
 				# print(idx)
 		else:
 			print("EditOptions node not found!")
+			
+		if edit_scaleSize:
+			edit_scaleSize.connect("value_changed", Callable(self, "_size_change"))
+			print("Edit scales are connected")
 
 	else:
 		print("Viewport root scene not loaded!")
