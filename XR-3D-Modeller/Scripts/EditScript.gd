@@ -1,6 +1,7 @@
 extends Node
 
 signal objectMoved
+signal selectedScale(value) # signal should send the current scale value for the UI
 
 @onready var controller = get_parent().get_parent()
 @onready var raycast_3d = controller.get_node("RayCast3D")
@@ -31,6 +32,7 @@ func _ready() -> void:
 		print("Hello from readying Remover")
 		ui_controller.connect("edit_selected", Callable(self, "set_edit_index"))
 		var connected = ui_controller.connect("change_page", Callable(self, "set_page_index"))
+		ui_controller.connect("scaleSize", Callable(self, "scale_selected_object"))
 		print("Connection made: ", connected)
 		print("UI Controller: ", ui_controller)
 	print("Players controller: ", controller)
@@ -52,8 +54,12 @@ func _process(delta: float) -> void:
 		if controller.is_button_pressed("trigger_click") and highlighted_object:
 			if not currentSelectedObject:
 				currentSelectedObject = highlighted_object
+				selectedScale.emit(currentSelectedObject)
 				# Select case for ensuring the object is selected
 				
+			# Release trigger / click
+			if currentSelectedObject == highlighted_object:
+				currentSelectedObject = null
 
 		update_highlighted_object()
 		
@@ -88,7 +94,7 @@ func startMove(obj):
 	print(moveOffset)
 
 func moveObject(obj):
-	print("Object is : ", obj)
+	# print("Object is : ", obj)
 	# objectsCurrentPos = obj.global_position
 	
 	# Distance should be self - obj.global_position
@@ -103,8 +109,8 @@ func moveObject(obj):
 func _apply_highlight(obj):
 	var mesh_inst = null
 	if obj is CSGMesh3D:
-		print("obj is a CSGMesh3D")
-		print(obj)
+		# print("obj is a CSGMesh3D")
+		# print(obj)
 		mesh_inst = obj
 		if obj.get_children():
 			for child in obj.get_children():
@@ -148,6 +154,9 @@ func _remove_highlight(obj):
 			# mesh_inst.set_surface_override_material(i, original_materials[mesh_inst][i])
 		original_materials.erase(mesh_inst)
 
+func scale_selected_object(value):
+	currentSelectedObject.scale = value
+
 func set_page_index(idx):
 	# print("Hello from remove call index")
 	if idx == 2:
@@ -156,7 +165,7 @@ func set_page_index(idx):
 		is_active = false
 
 func set_edit_index(idx):
-	# print("Summon Called")
+	print("Edit Called")
 	editIndex = idx
 
 func update_list():
