@@ -12,7 +12,7 @@ var moveBasis
 var currentlyMoving = false
 var currentSelectedObject # to prevent the user from moving another object when raycast hits new object
 var editOptionsHolder = [] # Should correspond to the children of the editOptions node
-
+var editIndex # holds the current index value the user has selected
 # var objectsCurrentPos
 
 # Highlighting variables
@@ -29,8 +29,8 @@ func _ready() -> void:
 	if ui_controllers.size() > 0:
 		var ui_controller = ui_controllers[0]
 		print("Hello from readying Remover")
+		ui_controller.connect("edit_selected", Callable(self, "set_edit_index"))
 		var connected = ui_controller.connect("change_page", Callable(self, "set_page_index"))
-		
 		print("Connection made: ", connected)
 		print("UI Controller: ", ui_controller)
 	print("Players controller: ", controller)
@@ -154,6 +154,10 @@ func set_page_index(idx):
 		is_active = true
 	else:
 		is_active = false
+
+func set_edit_index(idx):
+	# print("Summon Called")
+	editIndex = idx
 
 func update_list():
 	print("Hello from Edit script new object update signal")
