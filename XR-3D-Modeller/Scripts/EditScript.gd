@@ -155,7 +155,8 @@ func _remove_highlight(obj):
 		original_materials.erase(mesh_inst)
 
 func scale_selected_object(value):
-	currentSelectedObject.scale = value
+	if currentSelectedObject:
+		currentSelectedObject.scale = value
 
 func set_page_index(idx):
 	# print("Hello from remove call index")

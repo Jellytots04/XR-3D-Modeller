@@ -26,6 +26,7 @@ var ghostingOn = false
 var can_summon = true
 var is_active = true
 var objectSize = 1.0 # Used for size scaler in the UI, starts on 1.0 scaling
+var csgIndex = 0 # Default combine csgIndex
 
 # Highlighting variables
 var original_materials = {}
@@ -95,6 +96,7 @@ func _ready() -> void:
 		ui_controller.connect("change_page", Callable(self, "set_page_index")) # changes the current selected page
 		ui_controller.connect("summonable_selected", Callable(self, "set_summon_index")) # changes the selected summonable object 1 - 4 / 0 - 3
 		ui_controller.connect("scaleSize", Callable(self, "set_scale_size")) # changes the scale size for summoning and ghosting objects
+		ui_controller.connect("csg_operation", Callable(self, "change_csg_operation"))
 		print("Controller found ", ui_controller)
 	else:
 		print("UI Controller not found")
@@ -149,6 +151,7 @@ func combine_objects(index, obj, spawnPoint, objectNormal):
 		# print("Added", new_obj)
 		# Add the new object to the scene
 		new_obj.scale = objectSize * Vector3.ONE
+		new_obj.operation = csgIndex
 		get_tree().current_scene.add_child(new_obj)
 		new_obj.look_at(spawnPoint, objectNormal)
 		new_obj.add_to_group("summonedObjects")
@@ -307,6 +310,10 @@ func set_page_index(idx):
 		is_active = true
 	else:
 		is_active = false
+
+func change_csg_operation(idx):
+	print("The new oepration is : ")
+	csgIndex = idx
 
 func update_list():
 	# print("Hello from update list in Summon")

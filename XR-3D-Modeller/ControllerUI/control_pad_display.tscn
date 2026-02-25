@@ -19,10 +19,9 @@
 offset_right = 400.0
 offset_bottom = 200.0
 tab_alignment = 1
-current_tab = 2
+current_tab = 0
 
 [node name="Build" type="MarginContainer" parent="." unique_id=1469485864]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -57,17 +56,17 @@ icon = ExtResource("4_kkiu2")
 layout_mode = 2
 alignment = 1
 
-[node name="Cut" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=2100843289]
+[node name="Grid" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=671920034]
 layout_mode = 2
-icon = ExtResource("5_rhe20")
+icon = ExtResource("7_b4tso")
 
 [node name="Snap" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=1545857729]
 layout_mode = 2
 icon = ExtResource("6_tpmfw")
 
-[node name="Grid" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=671920034]
+[node name="Cut" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=2100843289]
 layout_mode = 2
-icon = ExtResource("7_b4tso")
+icon = ExtResource("5_rhe20")
 
 [node name="Move" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=806502048]
 layout_mode = 2
@@ -160,6 +159,7 @@ layout_mode = 2
 icon = ExtResource("11_wjypm")
 
 [node name="Edit" type="MarginContainer" parent="." unique_id=1374180317]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5

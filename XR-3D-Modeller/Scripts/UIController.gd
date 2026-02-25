@@ -5,6 +5,7 @@ signal change_page(index) # Signal for changing the page, will be used for state
 signal summonable_selected(index) # Singal for changing summonables in Summon script.
 signal remove_selected(index) # Signal for choosing remove funcitons.
 signal edit_selected(index) # Signal for choosing edit functions.
+signal csg_operation(index) # Signal for choosing the csg operation in each of the scripts
 signal scaleSize(value) # Signal for changing the building Scale size
 
 func _ready():
@@ -21,6 +22,7 @@ func _ready():
 		var build_tab = viewport_scene.get_node("Build/VerticalArrangement")
 		var build_options = build_tab.get_node("BuildOptions") # Top hotbar for the build options
 		var build_scaleSize = build_tab.get_node("ScaleOptions/Size")
+		var build_always = build_tab.get_node("AlwaysEditable")
 		var remove_options = viewport_scene.get_node("Remove/VerticalArrangement/RemoveOptions") 
 		var edit_tab = viewport_scene.get_node("Edit/VBoxContainer")
 		var edit_options = edit_tab.get_node("EditOptions")
@@ -41,6 +43,13 @@ func _ready():
 			# print("Build Scales are connected")
 		else:
 			print("Build Scales not found")
+
+		if build_always:
+			for idx in range(build_always.get_child_count()):
+				var button = build_always.get_child(idx)
+				button.connect("pressed", Callable(self, "_csg_operation").bind(idx))
+		else:
+			print("csg operations are not found")
 
 		if remove_options:
 			for idx in range(remove_options.get_child_count()):
@@ -82,3 +91,6 @@ func _swap_page(idx):
 func _size_change(value):
 	# print(value)
 	scaleSize.emit(value) # Another way to emit signals with argument(s)
+
+func _csg_operation(idx):
+	csg_operation.emit(idx)
