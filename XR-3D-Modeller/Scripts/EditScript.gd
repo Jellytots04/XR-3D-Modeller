@@ -63,6 +63,7 @@ func _process(delta: float) -> void:
 				# Release trigger / click
 				if currentSelectedObject == highlighted_object:
 					print("Goodbye previous selected object", currentSelectedObject)
+					_remove_highlight(currentSelectedObject)
 					currentSelectedObject = null
 
 				elif not currentSelectedObject:
@@ -70,7 +71,8 @@ func _process(delta: float) -> void:
 					currentSelectedObject = highlighted_object
 					# print(currentSelectedObject, highlighted_object)
 					selectedScale.emit(currentSelectedObject)
-					
+					_remove_highlight(currentSelectedObject) # Remove any previous highlighting
+					_select_highlighted_object(currentSelectedObject)
 					# Select case for ensuring the object is selected
 				triggerPressed = true
 				# print(triggerPressed)
@@ -82,6 +84,7 @@ func _process(delta: float) -> void:
 
 func _select_highlighted_object(obj):
 	print("Highlighting this new object : ")
+	_apply_highlight(obj, selected_color)
 
 func update_highlighted_object():
 	# print("Ray update")
@@ -92,12 +95,13 @@ func update_highlighted_object():
 				if highlighted_object:
 					_remove_highlight(highlighted_object)
 				highlighted_object = obj
-				_apply_highlight(highlighted_object)
+				if highlighted_object != currentSelectedObject:
+					_apply_highlight(highlighted_object, highlight_color)
 
 	else:
-		if highlighted_object:
+		if highlighted_object and highlighted_object != currentSelectedObject:
 			_remove_highlight(highlighted_object)
-			highlighted_object = null
+		highlighted_object = null
 
 func scaleSelectedObject():
 	# Will be used to scale an object that is selected
@@ -124,18 +128,18 @@ func moveObject(obj):
 	# obj.global_position = controller.global_position + offset * controller.global_transform.basis
 
 # Highlighting recursive function
-func _apply_highlight(obj):
+func _apply_highlight(obj, color):
 	highlighting_cancelled = true
 	await get_tree().process_frame
 	
 	highlighting_cancelled = false
 	highlighting = true
 	
-	await _apply_highlight_recursive(obj)
+	await _apply_highlight_recursive(obj, color)
 	
 	highlighting = false
 
-func _apply_highlight_recursive(obj):
+func _apply_highlight_recursive(obj, color):
 	# If this is true then cancel the recursive script
 	if highlighting_cancelled:
 		return
@@ -149,7 +153,7 @@ func _apply_highlight_recursive(obj):
 			original_materials[mesh_inst] = mesh_inst.material
 			if mesh_inst.material:
 				var mat = mesh_inst.material.duplicate()
-				mat.albedo_color = highlight_color
+				mat.albedo_color = color
 				mesh_inst.material = mat
 			
 			# Will pause after applying material to reduce lag
@@ -161,7 +165,7 @@ func _apply_highlight_recursive(obj):
 			for child in obj.get_children():
 				if highlighting_cancelled:
 					return
-				await _apply_highlight_recursive(child)
+				await _apply_highlight_recursive(child, color)
 	
 	elif obj.has_node("CSGMesh3D"):
 		print("OBJ has a CSGMesh3D")
