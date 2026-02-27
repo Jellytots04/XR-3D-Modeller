@@ -3,7 +3,8 @@ extends Node
 signal objectMoved
 signal selectedScale(value) # signal should send the current scale value for the UI
 
-@onready var controller = get_parent().get_parent()
+@onready var secondary_controller = get_parent().get_parent().get_parent().get_node("LeftHand") # Left Controller
+@onready var controller = get_parent().get_parent() # Right Controller / Main Controller hence controller as the name
 @onready var raycast_3d = controller.get_node("RayCast3D")
 
 var triggerPressed = false # Flag to signal if the trigger has been clicked
@@ -127,9 +128,6 @@ func moveObject(obj):
 	# var offset = self.global_position - obj.global_position
 	var rotation = self.global_transform.basis * moveBasis.inverse()
 	obj.global_position = self.global_position + rotation * moveOffset
-
-	# var move_pos = controller.global_position + -controller.global_transform.basis.z * offset
-	# obj.global_position = controller.global_position + offset * controller.global_transform.basis
 
 # Highlighting recursive function
 func _apply_highlight(obj, color):
