@@ -7,12 +7,15 @@ signal selectedScale(value) # signal should send the current scale value for the
 @onready var controller = get_parent().get_parent() # Right Controller / Main Controller hence controller as the name
 @onready var raycast_3d = controller.get_node("RayCast3D")
 
+# Flags
 var triggerPressed = false # Flag to signal if the trigger has been clicked
 var is_active = false
+var currentlyMoving = false
+
+
 var summonedObjects
 var moveOffset
 var moveBasis
-var currentlyMoving = false
 var currentlyMovingObject # to prevent the user from moving another object when raycast hits new object
 var currentSelectedObject # for when the user clicks a specific object
 var editOptionsHolder = [] # Should correspond to the children of the editOptions node
@@ -48,7 +51,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if is_active:
-		if controller.is_button_pressed("grip_click") and highlighted_object:
+		if controller.is_button_pressed("grip_click") and highlighted_object: # Moving object only with raycast
 			if not currentlyMoving:
 				currentlyMovingObject = highlighted_object
 				startMove(currentlyMovingObject)
@@ -59,7 +62,7 @@ func _process(delta: float) -> void:
 			currentlyMovingObject = null
 			currentlyMoving = false
 
-	# If the user clicks / presses right trigger on an highlighted object it will become the selected object
+		# If the user clicks / presses right trigger on an highlighted object it will become the selected object
 		if controller.is_button_pressed("trigger_click") and !currentlyMoving and !triggerPressed:
 			if highlighted_object:
 				# Release trigger / click
