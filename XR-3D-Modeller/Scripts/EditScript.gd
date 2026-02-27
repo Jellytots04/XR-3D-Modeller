@@ -16,6 +16,7 @@ var currentlyMovingObject # to prevent the user from moving another object when 
 var currentSelectedObject # for when the user clicks a specific object
 var editOptionsHolder = [] # Should correspond to the children of the editOptions node
 var editIndex # holds the current index value the user has selected
+var ui_controller # holds the Controller node to allow edits to be made
 # var objectsCurrentPos
 
 # Highlighting variables
@@ -35,7 +36,7 @@ func _ready() -> void:
 	summoner.connect("objectSummoned", Callable(self,  "update_list"))
 	var ui_controllers = get_tree().get_nodes_in_group("ui_controller")
 	if ui_controllers.size() > 0:
-		var ui_controller = ui_controllers[0]
+		ui_controller = ui_controllers[0]
 		print("Hello from readying Remover")
 		ui_controller.connect("edit_selected", Callable(self, "set_edit_index"))
 		var connected = ui_controller.connect("change_page", Callable(self, "set_page_index"))
@@ -62,17 +63,20 @@ func _process(delta: float) -> void:
 			if highlighted_object:
 				# Release trigger / click
 				if currentSelectedObject == highlighted_object:
-					print("Goodbye previous selected object", currentSelectedObject)
+					# print("Goodbye previous selected object", currentSelectedObject)
 					_remove_highlight(currentSelectedObject)
+					ui_controller._remove_scale()
 					currentSelectedObject = null
 
 				elif not currentSelectedObject:
-					print("Hello new selected object", highlighted_object)
+					# print("Hello new selected object", highlighted_object)
 					currentSelectedObject = highlighted_object
 					# print(currentSelectedObject, highlighted_object)
 					selectedScale.emit(currentSelectedObject)
 					_remove_highlight(currentSelectedObject) # Remove any previous highlighting
 					_select_highlighted_object(currentSelectedObject)
+					# print(currentSelectedObject.scale)
+					ui_controller._change_scale_value(currentSelectedObject.scale)
 					# Select case for ensuring the object is selected
 				triggerPressed = true
 				# print(triggerPressed)
@@ -232,9 +236,9 @@ func _remove_highlight_recursive(obj):
 
 
 func scale_selected_object(value):
-	print("New scale size should be: ", value)
+	# print("New scale size should be: ", value)
 	if currentSelectedObject:
-		currentSelectedObject.scale = value
+		currentSelectedObject.scale = value * Vector3.ONE
 
 func set_page_index(idx):
 	# print("Hello from remove call index")

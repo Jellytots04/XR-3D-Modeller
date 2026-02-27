@@ -29,7 +29,8 @@ func _ready():
 		var remove_options = viewport_scene.get_node("Remove/VerticalArrangement/RemoveOptions") 
 		var edit_tab = viewport_scene.get_node("Edit/VBoxContainer")
 		var edit_options = edit_tab.get_node("EditOptions")
-		edit_scaleSize = viewport_scene.get_node("ScaleBox/Scale") # HSlider node 
+		edit_scaleSize = edit_tab.get_node("ScaleBox/Scale") # HSlider node
+		print(edit_scaleSize) 
 
 		# print(build_options)
 		if build_options:
@@ -76,6 +77,14 @@ func _ready():
 
 	else:
 		print("Viewport root scene not loaded!")
+
+func _change_scale_value(value):
+	edit_scaleSize.visible = true
+	edit_scaleSize.value = value.x 
+	# can use any of the values z or y as they will always be the same
+
+func _remove_scale():
+	edit_scaleSize.visible = false
 
 func _build_option(idx):
 	# print("Button Pressed Summon", idx)
