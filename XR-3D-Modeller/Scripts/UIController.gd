@@ -79,12 +79,12 @@ func _ready():
 		print("Viewport root scene not loaded!")
 
 func _change_scale_value(value):
-	edit_scaleSize.visible = true
+	edit_scaleSize.get_parent().visible = true
 	edit_scaleSize.value = value.x 
 	# can use any of the values z or y as they will always be the same
 
 func _remove_scale():
-	edit_scaleSize.visible = false
+	edit_scaleSize.get_parent().visible = false
 
 func _build_option(idx):
 	# print("Button Pressed Summon", idx)
