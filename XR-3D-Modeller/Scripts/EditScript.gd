@@ -20,6 +20,7 @@ var editIndex # holds the current index value the user has selected
 var original_materials = {}
 var highlighted_object = null
 var highlight_color = Color(0.587, 0.944, 0.536, 1.0) # Red highlight / Pinkish highlight
+var selected_color = Color(0.913, 0.967, 0.331, 1.0) # When clicked on this is the color the object will assume
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # If there are any existing objects already then load, will be used later on for previous saves
@@ -55,15 +56,14 @@ func _process(delta: float) -> void:
 			if not currentSelectedObject:
 				currentSelectedObject = highlighted_object
 				selectedScale.emit(currentSelectedObject)
-				# Select case for ensuring the object is selected
 				
+				# Select case for ensuring the object is selected
+
 			# Release trigger / click
 			if currentSelectedObject == highlighted_object:
 				currentSelectedObject = null
 
 		update_highlighted_object()
-		
-				
 		
 
 func update_highlighted_object():
@@ -106,7 +106,7 @@ func moveObject(obj):
 	# var move_pos = controller.global_position + -controller.global_transform.basis.z * offset
 	# obj.global_position = controller.global_position + offset * controller.global_transform.basis
 
-func _apply_highlight(obj):
+func _apply_highlight(obj): # General Highlighting, used for hovering
 	var mesh_inst = null
 	if obj is CSGMesh3D:
 		# print("obj is a CSGMesh3D")
@@ -135,7 +135,7 @@ func _apply_highlight(obj):
 		mat.albedo_color = highlight_color
 		mesh_inst.material = mat
 
-func _remove_highlight(obj):
+func _remove_highlight(obj): # General removal highlight, used for hovering
 	var mesh_inst = null
 	if obj is CSGMesh3D:
 		mesh_inst = obj
@@ -154,7 +154,9 @@ func _remove_highlight(obj):
 			# mesh_inst.set_surface_override_material(i, original_materials[mesh_inst][i])
 		original_materials.erase(mesh_inst)
 
+
 func scale_selected_object(value):
+	print("New scale size should be: ", value)
 	if currentSelectedObject:
 		currentSelectedObject.scale = value
 

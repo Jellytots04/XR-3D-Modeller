@@ -19,9 +19,10 @@
 offset_right = 400.0
 offset_bottom = 200.0
 tab_alignment = 1
-current_tab = 0
+current_tab = 2
 
 [node name="Build" type="MarginContainer" parent="." unique_id=1469485864]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -56,11 +57,11 @@ icon = ExtResource("4_kkiu2")
 layout_mode = 2
 alignment = 1
 
-[node name="Grid" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=671920034]
+[node name="Union" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=671920034]
 layout_mode = 2
 icon = ExtResource("7_b4tso")
 
-[node name="Snap" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=1545857729]
+[node name="Intersection" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=1545857729]
 layout_mode = 2
 icon = ExtResource("6_tpmfw")
 
@@ -130,36 +131,19 @@ icon = ExtResource("3_wus27")
 layout_mode = 2
 alignment = 1
 
+[node name="Union" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=1783534531]
+layout_mode = 2
+icon = ExtResource("7_b4tso")
+
+[node name="Intersection" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=1532760391]
+layout_mode = 2
+icon = ExtResource("6_tpmfw")
+
 [node name="Cut" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=1483899179]
 layout_mode = 2
 icon = ExtResource("5_rhe20")
 
-[node name="Snap" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=1532760391]
-layout_mode = 2
-icon = ExtResource("6_tpmfw")
-
-[node name="Grid" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=1783534531]
-layout_mode = 2
-icon = ExtResource("7_b4tso")
-
-[node name="Move" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=1465819339]
-layout_mode = 2
-icon = ExtResource("8_exnw3")
-
-[node name="Rotate" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=444509822]
-layout_mode = 2
-icon = ExtResource("9_u26fo")
-
-[node name="Scale" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=914113346]
-layout_mode = 2
-icon = ExtResource("10_7oq3b")
-
-[node name="Measurements" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=1488414808]
-layout_mode = 2
-icon = ExtResource("11_wjypm")
-
 [node name="Edit" type="MarginContainer" parent="." unique_id=1374180317]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -172,28 +156,11 @@ layout_mode = 2
 
 [node name="EditOptions" type="HBoxContainer" parent="Edit/VBoxContainer" unique_id=350732837]
 layout_mode = 2
+alignment = 1
 
 [node name="MultiScaleTool" type="Button" parent="Edit/VBoxContainer/EditOptions" unique_id=27429057]
 layout_mode = 2
 icon = ExtResource("16_5tk4o")
-
-[node name="ScaleBox" type="HBoxContainer" parent="Edit/VBoxContainer/EditOptions/MultiScaleTool" unique_id=2096075756]
-custom_minimum_size = Vector2(380, 0)
-layout_mode = 0
-offset_left = 2.0
-offset_top = 90.0
-offset_right = 67.0
-offset_bottom = 113.0
-
-[node name="Label" type="Label" parent="Edit/VBoxContainer/EditOptions/MultiScaleTool/ScaleBox" unique_id=954528708]
-layout_mode = 2
-text = "Scale : "
-
-[node name="Scale" type="HSlider" parent="Edit/VBoxContainer/EditOptions/MultiScaleTool/ScaleBox" unique_id=1092660556]
-layout_mode = 2
-size_flags_horizontal = 3
-max_value = 2.0
-step = 0.1
 
 [node name="Stretch" type="Button" parent="Edit/VBoxContainer/EditOptions" unique_id=786202542]
 layout_mode = 2
@@ -201,34 +168,34 @@ icon = ExtResource("15_keb40")
 
 [node name="AlwaysEditable" type="HBoxContainer" parent="Edit/VBoxContainer" unique_id=455576601]
 layout_mode = 2
+alignment = 1
+
+[node name="Union" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=1120634320]
+layout_mode = 2
+icon = ExtResource("7_b4tso")
+
+[node name="Intersection" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=338366233]
+layout_mode = 2
+icon = ExtResource("6_tpmfw")
 
 [node name="Cut" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=913932949]
 layout_mode = 2
 icon = ExtResource("5_rhe20")
 
-[node name="Snap" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=338366233]
+[node name="ScaleBox" type="HBoxContainer" parent="Edit/VBoxContainer" unique_id=2096075756]
+visible = false
+custom_minimum_size = Vector2(380, 0)
 layout_mode = 2
-icon = ExtResource("6_tpmfw")
 
-[node name="Grid" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=1120634320]
+[node name="Label" type="Label" parent="Edit/VBoxContainer/ScaleBox" unique_id=954528708]
 layout_mode = 2
-icon = ExtResource("7_b4tso")
+text = "Scale : "
 
-[node name="Move" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=31971476]
+[node name="Scale" type="HSlider" parent="Edit/VBoxContainer/ScaleBox" unique_id=1092660556]
 layout_mode = 2
-icon = ExtResource("8_exnw3")
-
-[node name="Rotate" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=1018956504]
-layout_mode = 2
-icon = ExtResource("9_u26fo")
-
-[node name="Scale" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=1637147492]
-layout_mode = 2
-icon = ExtResource("10_7oq3b")
-
-[node name="Measurements" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=99918748]
-layout_mode = 2
-icon = ExtResource("11_wjypm")
+size_flags_horizontal = 3
+max_value = 2.0
+step = 0.1
 
 [node name="Physics" type="MarginContainer" parent="." unique_id=1933191177]
 visible = false

@@ -8,6 +8,8 @@ signal edit_selected(index) # Signal for choosing edit functions.
 signal csg_operation(index) # Signal for choosing the csg operation in each of the scripts
 signal scaleSize(value) # Signal for changing the building Scale size
 
+@export var edit_scaleSize: HSlider # Allows this variable to be edited by variables in other scripts
+
 func _ready():
 	add_to_group("ui_controller")
 	var viewport_scene = $PickableObject/Viewport2Din3D/Viewport.get_child(0)
@@ -16,6 +18,7 @@ func _ready():
 		var page = viewport_scene.get_child(index).name
 		print("Current starting page: ", page)
 		viewport_scene.connect("tab_changed", Callable(self, "_swap_page"))
+		# Viewport_scene is = ControlPadDisplay
 		# Currently the values above do nothing.
 		# But are here to prepare for swapping to state machine scripting
 		# Build tab used for getting to the children nodes quicker
@@ -26,8 +29,8 @@ func _ready():
 		var remove_options = viewport_scene.get_node("Remove/VerticalArrangement/RemoveOptions") 
 		var edit_tab = viewport_scene.get_node("Edit/VBoxContainer")
 		var edit_options = edit_tab.get_node("EditOptions")
-		var edit_scaleSize = viewport_scene.get_node("MultiScaleTool/ScaleBox/Scale") # HSlider node 
-		
+		edit_scaleSize = viewport_scene.get_node("ScaleBox/Scale") # HSlider node 
+
 		# print(build_options)
 		if build_options:
 			for idx in range(build_options.get_child_count()):
