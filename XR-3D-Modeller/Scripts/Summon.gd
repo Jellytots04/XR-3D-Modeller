@@ -201,6 +201,7 @@ func update_highlighted_object():
 			_remove_highlight(highlighted_object)
 			highlighted_object = null
 
+# Highlighting recursive function
 func _apply_highlight(obj):
 	highlighting_cancelled = true
 	await get_tree().process_frame
@@ -211,7 +212,6 @@ func _apply_highlight(obj):
 	await _apply_highlight_recursive(obj)
 	
 	highlighting = false
-
 
 func _apply_highlight_recursive(obj):
 	# If this is true then cancel the recursive script
@@ -259,6 +259,7 @@ func _apply_highlight_recursive(obj):
 		print("No mesh resource found on CSGMesh3D!")
 		return
 
+# Remove highlight recursive
 func _remove_highlight(obj):
 	remove_highlighting_cancelled = true
 	

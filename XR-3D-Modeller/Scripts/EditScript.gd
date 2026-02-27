@@ -6,17 +6,23 @@ signal selectedScale(value) # signal should send the current scale value for the
 @onready var controller = get_parent().get_parent()
 @onready var raycast_3d = controller.get_node("RayCast3D")
 
+var triggerPressed = false # Flag to signal if the trigger has been clicked
 var is_active = false
 var summonedObjects
 var moveOffset
 var moveBasis
 var currentlyMoving = false
-var currentSelectedObject # to prevent the user from moving another object when raycast hits new object
+var currentlyMovingObject # to prevent the user from moving another object when raycast hits new object
+var currentSelectedObject # for when the user clicks a specific object
 var editOptionsHolder = [] # Should correspond to the children of the editOptions node
 var editIndex # holds the current index value the user has selected
 # var objectsCurrentPos
 
 # Highlighting variables
+var highlighting_cancelled = false
+var highlighting = false
+var remove_highlighting_cancelled = false
+var remove_highlighting = false
 var original_materials = {}
 var highlighted_object = null
 var highlight_color = Color(0.587, 0.944, 0.536, 1.0) # Red highlight / Pinkish highlight
@@ -42,29 +48,40 @@ func _process(delta: float) -> void:
 	if is_active:
 		if controller.is_button_pressed("grip_click") and highlighted_object:
 			if not currentlyMoving:
-				currentSelectedObject = highlighted_object
-				startMove(currentSelectedObject)
+				currentlyMovingObject = highlighted_object
+				startMove(currentlyMovingObject)
 				currentlyMoving = true
 			# print("Grip is active")
-			moveObject(currentSelectedObject)
+			moveObject(currentlyMovingObject)
 		else:
-			currentSelectedObject = null
+			currentlyMovingObject = null
 			currentlyMoving = false
-			
-	# If the user clicks / presses right trigger on an highlighted object it will become the selected object
-		if controller.is_button_pressed("trigger_click") and highlighted_object:
-			if not currentSelectedObject:
-				currentSelectedObject = highlighted_object
-				selectedScale.emit(currentSelectedObject)
-				
-				# Select case for ensuring the object is selected
 
-			# Release trigger / click
-			if currentSelectedObject == highlighted_object:
-				currentSelectedObject = null
+	# If the user clicks / presses right trigger on an highlighted object it will become the selected object
+		if controller.is_button_pressed("trigger_click") and !currentlyMoving and !triggerPressed:
+			if highlighted_object:
+				# Release trigger / click
+				if currentSelectedObject == highlighted_object:
+					print("Goodbye previous selected object", currentSelectedObject)
+					currentSelectedObject = null
+
+				elif not currentSelectedObject:
+					print("Hello new selected object", highlighted_object)
+					currentSelectedObject = highlighted_object
+					# print(currentSelectedObject, highlighted_object)
+					selectedScale.emit(currentSelectedObject)
+					
+					# Select case for ensuring the object is selected
+				triggerPressed = true
+				# print(triggerPressed)
+
+		elif not controller.is_button_pressed("trigger_click"):
+			triggerPressed = false
 
 		update_highlighted_object()
-		
+
+func _select_highlighted_object(obj):
+	print("Highlighting this new object : ")
 
 func update_highlighted_object():
 	# print("Ray update")
@@ -106,53 +123,108 @@ func moveObject(obj):
 	# var move_pos = controller.global_position + -controller.global_transform.basis.z * offset
 	# obj.global_position = controller.global_position + offset * controller.global_transform.basis
 
-func _apply_highlight(obj): # General Highlighting, used for hovering
+# Highlighting recursive function
+func _apply_highlight(obj):
+	highlighting_cancelled = true
+	await get_tree().process_frame
+	
+	highlighting_cancelled = false
+	highlighting = true
+	
+	await _apply_highlight_recursive(obj)
+	
+	highlighting = false
+
+func _apply_highlight_recursive(obj):
+	# If this is true then cancel the recursive script
+	if highlighting_cancelled:
+		return
+		
 	var mesh_inst = null
 	if obj is CSGMesh3D:
-		# print("obj is a CSGMesh3D")
-		# print(obj)
+		print("obj is a CSGMesh3D")
 		mesh_inst = obj
+		
+		if mesh_inst.mesh:
+			original_materials[mesh_inst] = mesh_inst.material
+			if mesh_inst.material:
+				var mat = mesh_inst.material.duplicate()
+				mat.albedo_color = highlight_color
+				mesh_inst.material = mat
+			
+			# Will pause after applying material to reduce lag
+			await get_tree().process_frame
+		else:
+			print("No Mesh resource found on CSGMesh3D!")
+		
 		if obj.get_children():
 			for child in obj.get_children():
-				# _apply_highlight(obj.find_child("*CSGMesh3D*", true, false))
-				_apply_highlight(child)
+				if highlighting_cancelled:
+					return
+				await _apply_highlight_recursive(child)
+	
 	elif obj.has_node("CSGMesh3D"):
 		print("OBJ has a CSGMesh3D")
 		mesh_inst = obj.get_node("CSGMesh3D")
-
+		
+		if mesh_inst.mesh:
+			original_materials[mesh_inst] = mesh_inst.material
+			if mesh_inst.material:
+				var mat = mesh_inst.material.duplicate()
+				mat.albedo_color = highlight_color
+				mesh_inst.material = mat
+				
+			await get_tree().process_frame
+		else:
+			print("No mesh resource found on CSGMesh3D!")
 	else:
-		print("No CSGMesh3D available on object!")
-		return
-
-	if not mesh_inst.mesh:
 		print("No mesh resource found on CSGMesh3D!")
 		return
 
-	original_materials[mesh_inst] = mesh_inst.material
+# Remove highlight recursive
+func _remove_highlight(obj):
+	remove_highlighting_cancelled = true
+	
+	await get_tree().process_frame
+	
+	remove_highlighting_cancelled = false
+	remove_highlighting = true
+	
+	await _remove_highlight_recursive(obj)
+	
+	remove_highlighting = false
 
-	if mesh_inst.material:
-		var mat = mesh_inst.material.duplicate()
-		mat.albedo_color = highlight_color
-		mesh_inst.material = mat
 
-func _remove_highlight(obj): # General removal highlight, used for hovering
+func _remove_highlight_recursive(obj):
+	if remove_highlighting_cancelled:
+		return
+		
 	var mesh_inst = null
 	if obj is CSGMesh3D:
 		mesh_inst = obj
+		
+		if mesh_inst.mesh:
+			if mesh_inst in original_materials:
+				mesh_inst.material = original_materials[mesh_inst]
+				original_materials.erase(mesh_inst)
+				
+			await get_tree().process_frame
+			
 		if obj.get_children():
 			for child in obj.get_children():
-				# _remove_highlight(obj.find_child("*CSGMesh3D*", true, false))
-				_remove_highlight(child)
+				if remove_highlighting_cancelled:
+					return
+				await  _remove_highlight_recursive(child)
+				
 	elif obj.has_node("CSGMesh3D"):
 		mesh_inst = obj.get_node("CSGMesh3D")
-	else:
-		return
-	if not mesh_inst.mesh:
-		return
-	if mesh_inst in original_materials:
-		mesh_inst.material = original_materials[mesh_inst]
-			# mesh_inst.set_surface_override_material(i, original_materials[mesh_inst][i])
-		original_materials.erase(mesh_inst)
+		
+		if mesh_inst.mesh:
+			if mesh_inst in original_materials:
+				mesh_inst.material = original_materials[mesh_inst]
+				original_materials.erase(mesh_inst)
+				
+			await get_tree().process_frame
 
 
 func scale_selected_object(value):
