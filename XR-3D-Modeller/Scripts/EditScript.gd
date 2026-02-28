@@ -21,6 +21,7 @@ var currentSelectedObject # for when the user clicks a specific object
 var editOptionsHolder = [] # Should correspond to the children of the editOptions node
 var editIndex # holds the current index value the user has selected
 var ui_controller # holds the Controller node to allow edits to be made
+var stretchDistance # holds the value between the two controllers to be compared for stretching
 # var objectsCurrentPos
 
 # Highlighting variables
@@ -63,10 +64,13 @@ func _process(delta: float) -> void:
 			currentlyMovingObject = null
 			currentlyMoving = false
 
-		if controller.is_button_pressed("grip_click") and secondary_controller.is_button_pressed("grip_click"):
+		if controller.is_button_pressed("grip_click") and secondary_controller.is_button_pressed("grip_click") and editIndex == 1:
 			if currentSelectedObject:
 				if not currentlyStretching:
-					
+					startStretch(controller.global_position, secondary_controller.global_position)
+					currentlyStretching = true
+					# print("Distance from stretching process : ", stretchDistance)
+				stretchObject(controller.global_position, secondary_controller.global_position, currentSelectedObject)
 
 		# If the user clicks / presses right trigger on an highlighted object it will become the selected object
 		if controller.is_button_pressed("trigger_click") and !currentlyMoving and !triggerPressed:
@@ -125,10 +129,22 @@ func scaleSelectedObject():
 	# Open up scale screen on UI controller
 	print("Will be used to scale")
 
+# Stretching functions
+# Main and secondary are both controllers
+func startStretch(main, secondary):
+	stretchDistance = main.distance_to(secondary)
+	print(stretchDistance)
+
+# Main and secondary are both controllers and obj is the currently selected object
+func stretchObject(main, secondary, obj):
+	var currentDistance = (main.distance_to(secondary) - stretchDistance) * 10
+	print(currentDistance)
+
+# Moving functions
 func startMove(obj):
 	moveOffset = obj.global_position - self.global_position # distance between object and controller
 	moveBasis = self.global_transform.basis # starting basis for the object to rotate around
-	print(moveOffset)
+	# print(moveOffset)
 
 func moveObject(obj):
 	# print("Object is : ", obj)
