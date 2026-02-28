@@ -22,6 +22,7 @@ var editOptionsHolder = [] # Should correspond to the children of the editOption
 var editIndex # holds the current index value the user has selected
 var ui_controller # holds the Controller node to allow edits to be made
 var stretchDistance # holds the value between the two controllers to be compared for stretching
+var startingScale # holds the starting scale of the object before the scale changes
 # var objectsCurrentPos
 
 # Highlighting variables
@@ -67,7 +68,7 @@ func _process(delta: float) -> void:
 		if controller.is_button_pressed("grip_click") and secondary_controller.is_button_pressed("grip_click") and editIndex == 1: # Stretch the object when gripping controllers and pulling outwards or inwards, second / first index value
 			if currentSelectedObject:
 				if not currentlyStretching:
-					startStretch(controller.global_position, secondary_controller.global_position)
+					startStretch(controller.global_position, secondary_controller.global_position, currentSelectedObject)
 					currentlyStretching = true
 					# print("Distance from stretching process : ", stretchDistance)
 				stretchObject(controller.global_position, secondary_controller.global_position, currentSelectedObject)
@@ -133,16 +134,27 @@ func scaleSelectedObject():
 
 # Stretching functions
 # Main and secondary are both controllers
-func startStretch(main, secondary):
+func startStretch(main, secondary, obj):
 	stretchDistance = main.distance_to(secondary)
+	startingScale = obj.scale
 	print(stretchDistance)
 
 # Main and secondary are both controllers and obj is the currently selected object
 func stretchObject(main, secondary, obj):
-	var currentDistance = floor((main.distance_to(secondary) - stretchDistance) * 2)
-	print(currentDistance)
-	if obj.scale < (Vector3.ONE * 2) and obj.scale > (Vector3.ONE * .1):
-		obj.scale += (currentDistance * Vector3.ONE)
+	var currentDistance = main.distance_to(secondary)
+	
+	# Return if controllers aren't separated
+	if stretchDistance == 0:
+		return
+	
+	var ratio = currentDistance / stretchDistance
+	var newScale = startingScale * ratio
+	
+	newScale = (newScale * 10).round() / 10
+	
+	newScale = newScale.clamp(Vector3.ONE * 0.1, Vector3.ONE * 2.0)
+	obj.scale = newScale
+	ui_controller._change_scale_value(obj.scale)
 
 # Moving functions
 func startMove(obj):
