@@ -11,7 +11,7 @@ signal selectedScale(value) # signal should send the current scale value for the
 var triggerPressed = false # Flag to signal if the trigger has been clicked
 var is_active = false
 var currentlyMoving = false
-
+var currentlyStretching = false
 
 var summonedObjects
 var moveOffset
@@ -50,8 +50,9 @@ func _ready() -> void:
 	print("Players controller: ", controller)
 
 func _process(delta: float) -> void:
+	# Allows this script to be ran
 	if is_active:
-		if controller.is_button_pressed("grip_click") and highlighted_object: # Moving object only with raycast
+		if controller.is_button_pressed("grip_click") and highlighted_object and editIndex == 0: # Moving object only with raycast, default index
 			if not currentlyMoving:
 				currentlyMovingObject = highlighted_object
 				startMove(currentlyMovingObject)
@@ -61,6 +62,11 @@ func _process(delta: float) -> void:
 		else:
 			currentlyMovingObject = null
 			currentlyMoving = false
+
+		if controller.is_button_pressed("grip_click") and secondary_controller.is_button_pressed("grip_click"):
+			if currentSelectedObject:
+				if not currentlyStretching:
+					
 
 		# If the user clicks / presses right trigger on an highlighted object it will become the selected object
 		if controller.is_button_pressed("trigger_click") and !currentlyMoving and !triggerPressed:
@@ -88,6 +94,8 @@ func _process(delta: float) -> void:
 		elif not controller.is_button_pressed("trigger_click"):
 			triggerPressed = false
 
+		
+		# For highlighting an object alerting the user where they're pointing at
 		update_highlighted_object()
 
 func _select_highlighted_object(obj):
@@ -111,11 +119,11 @@ func update_highlighted_object():
 			_remove_highlight(highlighted_object)
 		highlighted_object = null
 
+# Unused function
 func scaleSelectedObject():
 	# Will be used to scale an object that is selected
 	# Open up scale screen on UI controller
 	print("Will be used to scale")
-	
 
 func startMove(obj):
 	moveOffset = obj.global_position - self.global_position # distance between object and controller
@@ -124,11 +132,7 @@ func startMove(obj):
 
 func moveObject(obj):
 	# print("Object is : ", obj)
-	# objectsCurrentPos = obj.global_position
-	
-	# Distance should be self - obj.global_position
-	# have it face the forward direction of the Vector3 of the users controller
-	# var offset = self.global_position - obj.global_position
+	# Moves the objects position based on the rotation and distance the controller has moved
 	var rotation = self.global_transform.basis * moveBasis.inverse()
 	obj.global_position = self.global_position + rotation * moveOffset
 
@@ -234,7 +238,6 @@ func _remove_highlight_recursive(obj):
 				original_materials.erase(mesh_inst)
 				
 			await get_tree().process_frame
-
 
 func scale_selected_object(value):
 	# print("New scale size should be: ", value)
