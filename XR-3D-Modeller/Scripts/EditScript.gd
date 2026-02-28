@@ -64,13 +64,15 @@ func _process(delta: float) -> void:
 			currentlyMovingObject = null
 			currentlyMoving = false
 
-		if controller.is_button_pressed("grip_click") and secondary_controller.is_button_pressed("grip_click") and editIndex == 1:
+		if controller.is_button_pressed("grip_click") and secondary_controller.is_button_pressed("grip_click") and editIndex == 1: # Stretch the object when gripping controllers and pulling outwards or inwards, second / first index value
 			if currentSelectedObject:
 				if not currentlyStretching:
 					startStretch(controller.global_position, secondary_controller.global_position)
 					currentlyStretching = true
 					# print("Distance from stretching process : ", stretchDistance)
 				stretchObject(controller.global_position, secondary_controller.global_position, currentSelectedObject)
+		else:
+			currentlyStretching = false
 
 		# If the user clicks / presses right trigger on an highlighted object it will become the selected object
 		if controller.is_button_pressed("trigger_click") and !currentlyMoving and !triggerPressed:
@@ -137,8 +139,10 @@ func startStretch(main, secondary):
 
 # Main and secondary are both controllers and obj is the currently selected object
 func stretchObject(main, secondary, obj):
-	var currentDistance = (main.distance_to(secondary) - stretchDistance) * 10
+	var currentDistance = floor((main.distance_to(secondary) - stretchDistance) * 2)
 	print(currentDistance)
+	if obj.scale < (Vector3.ONE * 2) and obj.scale > (Vector3.ONE * .1):
+		obj.scale += (currentDistance * Vector3.ONE)
 
 # Moving functions
 func startMove(obj):
