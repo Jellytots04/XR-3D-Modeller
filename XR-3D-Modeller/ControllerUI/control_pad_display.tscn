@@ -5,8 +5,11 @@
 [ext_resource type="Texture2D" uid="uid://ddss0uunw1bww" path="res://ControllerUI/Icons/SphereIcon.aseprite" id="3_wus27"]
 [ext_resource type="Texture2D" uid="uid://ta5e6sy0j6wr" path="res://ControllerUI/Icons/VerticeIcon.aseprite" id="4_kkiu2"]
 [ext_resource type="Texture2D" uid="uid://3nh4a4e6xj5b" path="res://ControllerUI/Icons/CutIcon.aseprite" id="5_rhe20"]
+[ext_resource type="Texture2D" uid="uid://bpju5ct00vr8c" path="res://ControllerUI/Icons/Union.aseprite" id="5_wjypm"]
+[ext_resource type="Texture2D" uid="uid://cq88w3yft0u8o" path="res://ControllerUI/Icons/Intersection.aseprite" id="6_g8fi6"]
 [ext_resource type="Texture2D" uid="uid://341vcjtm7k0f" path="res://ControllerUI/Icons/SnapIcon.aseprite" id="6_tpmfw"]
 [ext_resource type="Texture2D" uid="uid://lc5yadkpxhld" path="res://ControllerUI/Icons/GridIcon.aseprite" id="7_b4tso"]
+[ext_resource type="Texture2D" uid="uid://foa1v7b87nci" path="res://ControllerUI/Icons/Subtraction.aseprite" id="7_keb40"]
 [ext_resource type="Texture2D" uid="uid://csyna0axkoeoh" path="res://ControllerUI/Icons/MoveIcon.aseprite" id="8_exnw3"]
 [ext_resource type="Texture2D" uid="uid://bhbhf16um162j" path="res://ControllerUI/Icons/RotateIcon.aseprite" id="9_u26fo"]
 [ext_resource type="Texture2D" uid="uid://luxrb0qnej8d" path="res://ControllerUI/Icons/ScaleIcon.aseprite" id="10_7oq3b"]
@@ -19,7 +22,7 @@
 offset_right = 400.0
 offset_bottom = 200.0
 tab_alignment = 1
-current_tab = 3
+current_tab = 1
 
 [node name="Build" type="MarginContainer" parent="." unique_id=1469485864]
 visible = false
@@ -59,15 +62,15 @@ alignment = 1
 
 [node name="Union" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=671920034]
 layout_mode = 2
-icon = ExtResource("7_b4tso")
+icon = ExtResource("5_wjypm")
 
 [node name="Intersection" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=1545857729]
 layout_mode = 2
-icon = ExtResource("6_tpmfw")
+icon = ExtResource("6_g8fi6")
 
 [node name="Cut" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=2100843289]
 layout_mode = 2
-icon = ExtResource("5_rhe20")
+icon = ExtResource("7_keb40")
 
 [node name="Move" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=806502048]
 layout_mode = 2
@@ -100,7 +103,6 @@ step = 0.1
 value = 1.0
 
 [node name="Remove" type="MarginContainer" parent="." unique_id=1607584328]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -133,15 +135,15 @@ alignment = 1
 
 [node name="Union" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=1783534531]
 layout_mode = 2
-icon = ExtResource("7_b4tso")
+icon = ExtResource("5_wjypm")
 
 [node name="Intersection" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=1532760391]
 layout_mode = 2
-icon = ExtResource("6_tpmfw")
+icon = ExtResource("6_g8fi6")
 
 [node name="Cut" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=1483899179]
 layout_mode = 2
-icon = ExtResource("5_rhe20")
+icon = ExtResource("7_keb40")
 
 [node name="Edit" type="MarginContainer" parent="." unique_id=1374180317]
 visible = false
@@ -173,15 +175,15 @@ alignment = 1
 
 [node name="Union" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=1120634320]
 layout_mode = 2
-icon = ExtResource("7_b4tso")
+icon = ExtResource("5_wjypm")
 
 [node name="Intersection" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=338366233]
 layout_mode = 2
-icon = ExtResource("6_tpmfw")
+icon = ExtResource("6_g8fi6")
 
 [node name="Cut" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=913932949]
 layout_mode = 2
-icon = ExtResource("5_rhe20")
+icon = ExtResource("7_keb40")
 
 [node name="ScaleBox" type="HBoxContainer" parent="Edit/VBoxContainer" unique_id=2096075756]
 visible = false
@@ -199,6 +201,7 @@ max_value = 2.0
 step = 0.1
 
 [node name="Physics" type="MarginContainer" parent="." unique_id=1933191177]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
