@@ -156,6 +156,7 @@ func combine_objects(index, obj, spawnPoint, objectNormal):
 		new_obj.look_at(spawnPoint, objectNormal)
 		new_obj.add_to_group("summonedObjects")
 		new_obj.reparent(obj)
+		new_obj.use_collision = true
 		print("Parent is : ", new_obj.get_parent())
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Updates the summoned list within script
 		emit_signal("objectSummoned") # This gets called as an upadte is to be sent out due to a reparenting
@@ -168,16 +169,29 @@ func summon_object(index):
 	if index < summonableObjects.size():
 		# Instantiate the object in the scene
 		var new_obj = summonableObjects[index].instantiate()
+		
+		var combiner = CSGCombiner3D.new()
 		# Grabs the position of the hand and will add to it to spawn the hand in
 		# Will replace this with a marker tag later on
 		var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
-		new_obj.global_transform.origin = spawn_pos
-		new_obj.add_to_group("summonedObjects")
+		
+		combiner.global_transform.origin = spawn_pos
+		#new_obj.global_transform.origin = spawn_pos
+		#new_obj.add_to_group("summonedObjects")
 		# objectsInScene.append(new_obj)
 		# print("Added", new_obj)
 		# Add the new object to the scene
 		new_obj.scale = objectSize * Vector3.ONE
-		get_tree().current_scene.add_child(new_obj)
+		get_tree().current_scene.add_child(combiner)
+		combiner.add_child(new_obj)
+		new_obj.position = Vector3.ZERO
+		combiner.use_collision = true
+		
+		combiner.collision_layer = combiner.collision_layer | (1 << 20)
+		combiner.collision_mask = combiner.collision_mask | (1 << 20)
+		
+		new_obj.use_collision = true
+		combiner.add_to_group("summonedObjects")
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Updates the summoned list within script
 		emit_signal("objectSummoned")
 		print(summonedObjects)
@@ -188,6 +202,9 @@ func update_highlighted_object():
 	# print("Ray update")
 	if raycast_3d.is_colliding():
 		var obj = raycast_3d.get_collider()
+		#print("Hit: ", raycast_3d.get_collider())
+		#print("Parent: ", raycast_3d.get_collider().get_parent())
+		#print("In group: ", raycast_3d.get_collider() in summonedObjects)
 		if obj in summonedObjects:
 			# print("Object was found in summonedObjects")
 			if obj != highlighted_object:
@@ -217,34 +234,40 @@ func _apply_highlight_recursive(obj):
 	# If this is true then cancel the recursive script
 	if highlighting_cancelled:
 		return
-		
+	
 	var mesh_inst = null
-	if obj is CSGMesh3D:
-		print("obj is a CSGMesh3D")
+	if obj is CSGCombiner3D:
+		for child in obj.get_children():
+			if highlighting_cancelled:
+				return
+			await _apply_highlight_recursive(child)
+
+		print("obj is a CSGCombiner3D")
+	
+	elif obj is CSGMesh3D:
 		mesh_inst = obj
-		
 		if mesh_inst.mesh:
 			original_materials[mesh_inst] = mesh_inst.material
 			if mesh_inst.material:
 				var mat = mesh_inst.material.duplicate()
 				mat.albedo_color = highlight_color
 				mesh_inst.material = mat
-			
+
 			# Will pause after applying material to reduce lag
 			await get_tree().process_frame
 		else:
 			print("No Mesh resource found on CSGMesh3D!")
-		
+
 		if obj.get_children():
 			for child in obj.get_children():
 				if highlighting_cancelled:
 					return
 				await _apply_highlight_recursive(child)
-	
+
 	elif obj.has_node("CSGMesh3D"):
 		print("OBJ has a CSGMesh3D")
 		mesh_inst = obj.get_node("CSGMesh3D")
-		
+
 		if mesh_inst.mesh:
 			original_materials[mesh_inst] = mesh_inst.material
 			if mesh_inst.material:
@@ -278,9 +301,14 @@ func _remove_highlight_recursive(obj):
 		return
 		
 	var mesh_inst = null
-	if obj is CSGMesh3D:
+	if obj is CSGCombiner3D:
+		for child in obj.get_children():
+			if highlighting_cancelled:
+				return
+			await _remove_highlight_recursive(child)
+
+	elif obj is CSGMesh3D:
 		mesh_inst = obj
-		
 		if mesh_inst.mesh:
 			if mesh_inst in original_materials:
 				mesh_inst.material = original_materials[mesh_inst]

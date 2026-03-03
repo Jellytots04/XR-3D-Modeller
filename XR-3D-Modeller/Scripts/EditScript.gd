@@ -13,17 +13,22 @@ var is_active = false
 var currentlyMoving = false
 var currentlyStretching = false
 
-var summonedObjects
+# Moving variables
 var moveOffset
 var moveBasis
 var currentlyMovingObject # to prevent the user from moving another object when raycast hits new object
-var currentSelectedObject # for when the user clicks a specific object
-var editOptionsHolder = [] # Should correspond to the children of the editOptions node
-var editIndex # holds the current index value the user has selected
-var ui_controller # holds the Controller node to allow edits to be made
+
+# Stretching varibales
 var stretchDistance # holds the value between the two controllers to be compared for stretching
 var startingScale # holds the starting scale of the object before the scale changes
-# var objectsCurrentPos
+
+# Scene and UI variables
+var summonedObjects
+var editIndex # holds the current index value the user has selected
+var ui_controller # holds the Controller node to allow edits to be made
+
+# Select variables
+var currentSelectedObject # for when the user clicks a specific object
 
 # Highlighting variables
 var highlighting_cancelled = false

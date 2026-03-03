@@ -1,10 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://dysmwvlfidhvv"]
+[gd_scene format=3 uid="uid://dysmwvlfidhvv"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_3gppu"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rexdy"]
 
-[node name="CSGMesh3D" type="CSGMesh3D"]
+[node name="CSGMesh3D" type="CSGMesh3D" unique_id=347734615]
 use_collision = true
 collision_layer = 1048577
 collision_mask = 1048576
