@@ -191,6 +191,13 @@ func _apply_highlight_recursive(obj, color):
 		return
 		
 	var mesh_inst = null
+	
+	if obj is CSGCombiner3D:
+		for child in obj.get_children():
+			if highlighting_cancelled:
+				return
+			await _apply_highlight_recursive(child, color)
+	
 	if obj is CSGMesh3D:
 		print("obj is a CSGMesh3D")
 		mesh_inst = obj
@@ -250,6 +257,12 @@ func _remove_highlight_recursive(obj):
 		return
 		
 	var mesh_inst = null
+	
+	if obj is CSGCombiner3D:
+		for child in obj.get_children():
+			return
+		await _remove_highlight_recursive(obj)
+		
 	if obj is CSGMesh3D:
 		mesh_inst = obj
 		
