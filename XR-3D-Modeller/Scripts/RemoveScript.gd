@@ -8,10 +8,17 @@ signal objectRemoved
 var is_active = false
 var summonedObjects
 
-# Highlighting variables
+# Select Variables
+var currentSelectedObject
+
+var highlighting_cancelled = false
+var highlighting = false
+var remove_highlighting_cancelled = false
+var remove_highlighting = false
 var original_materials = {}
 var highlighted_object = null
 var highlight_color = Color(0.833, 0.363, 0.379, 1.0) # Red highlight / Pinkish highlight
+var selected_color = Color(0.913, 0.967, 0.331, 1.0) # When clicked on this is the color the object will assume
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -46,60 +53,129 @@ func update_highlighted_object():
 				if highlighted_object:
 					_remove_highlight(highlighted_object)
 				highlighted_object = obj
-				_apply_highlight(highlighted_object)
+				if highlighted_object != currentSelectedObject:
+					_apply_highlight(highlighted_object, highlight_color)
 
 	else:
-		if highlighted_object:
+		if highlighted_object and highlighted_object != currentSelectedObject:
 			_remove_highlight(highlighted_object)
-			highlighted_object = null
+		highlighted_object = null
 
-func _apply_highlight(obj):
+# Highlighting recursive function
+func _apply_highlight(obj, color):
+	highlighting_cancelled = true
+	await get_tree().process_frame
+	
+	highlighting_cancelled = false
+	highlighting = true
+	
+	await _apply_highlight_recursive(obj, color)
+	
+	highlighting = false
+
+func _apply_highlight_recursive(obj, color):
+	# If this is true then cancel the recursive script
+	if highlighting_cancelled:
+		return
+		
 	var mesh_inst = null
+	
+	if obj is CSGCombiner3D:
+		for child in obj.get_children():
+			if highlighting_cancelled:
+				return
+			await _apply_highlight_recursive(child, color)
+	
 	if obj is CSGMesh3D:
 		print("obj is a CSGMesh3D")
-		print(obj)
 		mesh_inst = obj
+		
+		if mesh_inst.mesh:
+			original_materials[mesh_inst] = mesh_inst.material
+			if mesh_inst.material:
+				var mat = mesh_inst.material.duplicate()
+				mat.albedo_color = color
+				mesh_inst.material = mat
+			
+			# Will pause after applying material to reduce lag
+			await get_tree().process_frame
+		else:
+			print("No Mesh resource found on CSGMesh3D!")
+		
 		if obj.get_children():
 			for child in obj.get_children():
-				# _apply_highlight(obj.find_child("*CSGMesh3D*", true, false))
-				_apply_highlight(child)
+				if highlighting_cancelled:
+					return
+				await _apply_highlight_recursive(child, color)
+	
 	elif obj.has_node("CSGMesh3D"):
 		print("OBJ has a CSGMesh3D")
 		mesh_inst = obj.get_node("CSGMesh3D")
-
+		
+		if mesh_inst.mesh:
+			original_materials[mesh_inst] = mesh_inst.material
+			if mesh_inst.material:
+				var mat = mesh_inst.material.duplicate()
+				mat.albedo_color = highlight_color
+				mesh_inst.material = mat
+				
+			await get_tree().process_frame
+		else:
+			print("No mesh resource found on CSGMesh3D!")
 	else:
-		print("No CSGMesh3D available on object!")
-		return
-
-	if not mesh_inst.mesh:
 		print("No mesh resource found on CSGMesh3D!")
 		return
 
-	original_materials[mesh_inst] = mesh_inst.material
-
-	if mesh_inst.material:
-		var mat = mesh_inst.material.duplicate()
-		mat.albedo_color = highlight_color
-		mesh_inst.material = mat
-
+# Remove highlight recursive
 func _remove_highlight(obj):
+	remove_highlighting_cancelled = true
+	
+	await get_tree().process_frame
+	
+	remove_highlighting_cancelled = false
+	remove_highlighting = true
+	
+	await _remove_highlight_recursive(obj)
+	
+	remove_highlighting = false
+
+
+func _remove_highlight_recursive(obj):
+	if remove_highlighting_cancelled:
+		return
+		
 	var mesh_inst = null
+	
+	if obj is CSGCombiner3D:
+		for child in obj.get_children():
+			return
+		await _remove_highlight_recursive(obj)
+		
 	if obj is CSGMesh3D:
 		mesh_inst = obj
+		
+		if mesh_inst.mesh:
+			if mesh_inst in original_materials:
+				mesh_inst.material = original_materials[mesh_inst]
+				original_materials.erase(mesh_inst)
+				
+			await get_tree().process_frame
+			
 		if obj.get_children():
 			for child in obj.get_children():
-				# _remove_highlight(obj.find_child("*CSGMesh3D*", true, false))
-				_remove_highlight(child)
+				if remove_highlighting_cancelled:
+					return
+				await  _remove_highlight_recursive(child)
+				
 	elif obj.has_node("CSGMesh3D"):
 		mesh_inst = obj.get_node("CSGMesh3D")
-	else:
-		return
-	if not mesh_inst.mesh:
-		return
-	if mesh_inst in original_materials:
-		mesh_inst.material = original_materials[mesh_inst]
-			# mesh_inst.set_surface_override_material(i, original_materials[mesh_inst][i])
-		original_materials.erase(mesh_inst)
+		
+		if mesh_inst.mesh:
+			if mesh_inst in original_materials:
+				mesh_inst.material = original_materials[mesh_inst]
+				original_materials.erase(mesh_inst)
+				
+			await get_tree().process_frame
 
 func remove_object():
 	if highlighted_object and highlighted_object.is_in_group("summonedObjects"):
