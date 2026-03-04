@@ -52,7 +52,6 @@ var last_grabbed_object = null
 	"res://Summonables_Folder/Objects_Ghosted/ghosted_prism.tscn",
 	"res://Summonables_Folder/Objects_Ghosted/ghosted_sphere.tscn",
 	"res://Summonables_Folder/Objects_Ghosted/ghosted_Vertice.tscn"
-
 ]
 
 # Loaded scenes will be stored here
@@ -157,6 +156,7 @@ func combine_objects(index, obj, spawnPoint, objectNormal):
 		new_obj.add_to_group("summonedObjects")
 		new_obj.reparent(obj)
 		new_obj.use_collision = true
+		new_obj.collision_layer = 2
 		print("Parent is : ", new_obj.get_parent())
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Updates the summoned list within script
 		emit_signal("objectSummoned") # This gets called as an upadte is to be sent out due to a reparenting
@@ -191,6 +191,7 @@ func summon_object(index):
 		combiner.collision_mask = combiner.collision_mask | (1 << 20)
 		
 		new_obj.use_collision = true
+		new_obj.collision_layer = 2
 		combiner.add_to_group("summonedObjects")
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Updates the summoned list within script
 		emit_signal("objectSummoned")

@@ -106,7 +106,6 @@ func _process(delta: float) -> void:
 		elif not controller.is_button_pressed("trigger_click"):
 			triggerPressed = false
 
-		
 		# For highlighting an object alerting the user where they're pointing at
 		update_highlighted_object()
 
@@ -250,7 +249,6 @@ func _remove_highlight(obj):
 	await _remove_highlight_recursive(obj)
 	
 	remove_highlighting = false
-
 
 func _remove_highlight_recursive(obj):
 	if remove_highlighting_cancelled:

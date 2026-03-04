@@ -4,13 +4,19 @@ signal objectRemoved
 # Since this will always be attached to the right controller
 @onready var controller = get_parent().get_parent()
 @onready var raycast_3d = controller.get_node("RayCast3D")
+@onready var selectCast_3d = controller.get_node("SelectRayCast")
 
+# Flags
+var triggerPressed = false
 var is_active = false
 var summonedObjects
 
 # Select Variables
 var currentSelectedObject
+var selectIndex = 0 # Default Group select
+var multiSelectHolder = [] # Holds the objects that are currently selected
 
+# Highlighting variables
 var highlighting_cancelled = false
 var highlighting = false
 var remove_highlighting_cancelled = false
@@ -44,17 +50,61 @@ func _process(delta: float) -> void:
 			remove_object()
 		update_highlighted_object()
 
+		# If the user clicks / presses right trigger on an highlighted object it will become the selected object
+		if controller.is_button_pressed("trigger_click") and !triggerPressed: # This is group select aka entire object because highlighted_object will be the CSGCombiner
+			if highlighted_object:
+				if selectIndex == 0:
+					print("This is Group / All select")
+					# Release trigger / click
+					if currentSelectedObject == highlighted_object:
+						# print("Goodbye previous selected object", currentSelectedObject)
+						_remove_highlight(currentSelectedObject)
+						currentSelectedObject = null
+
+					elif not currentSelectedObject:
+						# print("Hello new selected object", highlighted_object)
+						currentSelectedObject = highlighted_object
+						# print(currentSelectedObject, highlighted_object)
+						_remove_highlight(currentSelectedObject) # Remove any previous highlighting
+						_select_highlighted_object(currentSelectedObject)
+						# print(currentSelectedObject.scale)
+						# Select case for ensuring the object is selected
+					triggerPressed = true
+					# print(triggerPressed)
+				elif selectIndex == 1: # Multi Select
+					print("This will be multi select")
+					
+					
+
+				elif selectIndex == 2: # Single Select
+					print("This will be single select")
+					
+					if not currentSelectedObject:
+						currentSelectedObject = highlighted_object
+
+		elif not controller.is_button_pressed("trigger_click"):
+			triggerPressed = false
+
+func _select_highlighted_object(obj):
+	print("Highlighting this new object : ")
+	_apply_highlight(obj, selected_color)
+
 func update_highlighted_object():
 	# print("Ray update")
 	if raycast_3d.is_colliding():
-		var obj = raycast_3d.get_collider()
-		if obj in summonedObjects:
-			if obj != highlighted_object:
-				if highlighted_object:
-					_remove_highlight(highlighted_object)
-				highlighted_object = obj
-				if highlighted_object != currentSelectedObject:
-					_apply_highlight(highlighted_object, highlight_color)
+		if selectIndex == 0:
+			print("For Group / All select")
+			var obj = raycast_3d.get_collider()
+			if obj in summonedObjects:
+				if obj != highlighted_object:
+					if highlighted_object:
+						_remove_highlight(highlighted_object)
+					highlighted_object = obj
+					if highlighted_object != currentSelectedObject:
+						_apply_highlight(highlighted_object, highlight_color)
+		else:
+			print("For Multi and Single selecting")
+			var obj = raycast_3d.get_collider().get_parent()
 
 	else:
 		if highlighted_object and highlighted_object != currentSelectedObject:
@@ -180,7 +230,6 @@ func _remove_highlight_recursive(obj):
 func remove_object():
 	if highlighted_object and highlighted_object.is_in_group("summonedObjects"):
 		# Clean up highlight first if you want
-		_remove_highlight(highlighted_object)
 		# Remove the actual instance from scene
 		highlighted_object.queue_free()
 		highlighted_object.remove_from_group("summonedObjects")
