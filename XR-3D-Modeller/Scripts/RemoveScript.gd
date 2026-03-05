@@ -9,6 +9,8 @@ signal objectRemoved
 # Flags
 var triggerPressed = false
 var is_active = false
+
+# Scene Variables
 var summonedObjects
 
 # Select Variables
@@ -16,7 +18,7 @@ var currentSelectedObject
 var selectIndex = 2 # Default Group select
 var multiSelectHolder = [] # Holds the objects that are currently selected
 
-# Highlighting variables
+# Highlighting Variables
 var highlighting_cancelled = false
 var highlighting = false
 var remove_highlighting_cancelled = false
@@ -124,18 +126,22 @@ func update_highlighted_object():
 						_apply_highlight(highlighted_object, highlight_color)
 		else:
 			# print("For Multi and Single selecting")
-			if selectCast_3d.is_colliding():
+			if raycast_3d.is_colliding():
 				var combiner = raycast_3d.get_collider()
-				var obj = selectCast_3d.get_collider()
 				if combiner in summonedObjects:
-					# print("This combiner is infact a part of this deal")
-					if obj != highlighted_object:
-						_remove_highlight(highlighted_object)
-					highlighted_object = obj
-					print(obj)
-					print(highlighted_object)
-					if highlighted_object != currentSelectedObject:
-						_apply_highlight(highlighted_object, highlight_color)
+					var hit_point = raycast_3d.get_collision_point()
+					var closest_obj = null
+					var closest_dist = INF
+
+					for child in combiner.get_children():
+						if child is CSGMesh3D:
+							var dist = child.global_transform.origin.distance_to(hit_point)
+							if dist < closest_dist:
+								closest_dist = dist
+								closest_obj = child
+					
+					currentSelectedObject = closest_obj
+					print("Selected this child : ", currentSelectedObject)
 
 	else:
 		if highlighted_object and highlighted_object != currentSelectedObject:
