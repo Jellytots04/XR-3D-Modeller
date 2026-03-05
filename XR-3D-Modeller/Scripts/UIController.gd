@@ -7,6 +7,7 @@ signal remove_selected(index) # Signal for choosing remove funcitons.
 signal edit_selected(index) # Signal for choosing edit functions.
 signal csg_operation(index) # Signal for choosing the csg operation in each of the scripts
 signal scaleSize(value) # Signal for changing the building Scale size
+signal select_change(index) # Signal for changing the selected (select) option
 
 @export var edit_scaleSize: HSlider # Allows this variable to be edited by variables in other scripts
 
@@ -27,8 +28,10 @@ func _ready():
 		var build_scaleSize = build_tab.get_node("ScaleOptions/Size")
 		var build_always = build_tab.get_node("AlwaysEditable")
 		var remove_options = viewport_scene.get_node("Remove/VerticalArrangement/RemoveOptions") 
+		var remove_select = viewport_scene.get_node("Remove/VerticalArrangement/SelectOptions")
 		var edit_tab = viewport_scene.get_node("Edit/VBoxContainer")
 		var edit_options = edit_tab.get_node("EditOptions")
+		
 		edit_scaleSize = edit_tab.get_node("ScaleBox/Scale") # HSlider node
 		print(edit_scaleSize) 
 
@@ -59,9 +62,16 @@ func _ready():
 			for idx in range(remove_options.get_child_count()):
 				var button = remove_options.get_child(idx)
 				button.connect("pressed", Callable(self, "_remove_option").bind(idx))
-				# print(idx)
+
 		else:
 			print("RemoveOptions node not found!")
+
+		if remove_select:
+			for idx in range(remove_select.get_child_count()):
+				var button = remove_select.get_child(idx)
+				button.connect("pressed", Callable(self, "_select_option").bind(idx))
+		else:
+			print("Remove select is not available")
 
 		if edit_options:
 			for idx in range(edit_options.get_child_count()):
@@ -106,3 +116,6 @@ func _size_change(value):
 
 func _csg_operation(idx):
 	csg_operation.emit(idx)
+
+func _select_option(idx):
+	emit_signal("select_change", idx)

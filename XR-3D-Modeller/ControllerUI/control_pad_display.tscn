@@ -15,6 +15,9 @@
 [ext_resource type="Texture2D" uid="uid://luxrb0qnej8d" path="res://ControllerUI/Icons/ScaleIcon.aseprite" id="10_7oq3b"]
 [ext_resource type="Texture2D" uid="uid://bhaptdgitud0u" path="res://ControllerUI/Icons/MeasureIcon.aseprite" id="11_wjypm"]
 [ext_resource type="Texture2D" uid="uid://cgwq5m46jr53v" path="res://ControllerUI/Icons/TrashIcon.aseprite" id="12_wjypm"]
+[ext_resource type="Texture2D" uid="uid://dal57lyb0m5ul" path="res://ControllerUI/Icons/WholeSelect.aseprite" id="13_5tk4o"]
+[ext_resource type="Texture2D" uid="uid://bvcowhfr02f6l" path="res://ControllerUI/Icons/MultiSelect.aseprite" id="14_qydld"]
+[ext_resource type="Texture2D" uid="uid://baljqlsa6l0qi" path="res://ControllerUI/Icons/SingleSelect.aseprite" id="15_a121i"]
 [ext_resource type="Texture2D" uid="uid://qq8cr2pngjy1" path="res://ControllerUI/Icons/StretchIcon.aseprite" id="15_keb40"]
 [ext_resource type="Texture2D" uid="uid://iukg2m2fcqk3" path="res://ControllerUI/Icons/MultiScaleIcon.aseprite" id="16_5tk4o"]
 
@@ -72,21 +75,21 @@ icon = ExtResource("6_g8fi6")
 layout_mode = 2
 icon = ExtResource("7_keb40")
 
-[node name="Move" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=806502048]
+[node name="SelectOptions" type="HBoxContainer" parent="Build/VerticalArrangement" unique_id=1933781202]
 layout_mode = 2
-icon = ExtResource("8_exnw3")
+alignment = 1
 
-[node name="Rotate" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=1731578506]
+[node name="GroupSelect" type="Button" parent="Build/VerticalArrangement/SelectOptions" unique_id=113945856]
 layout_mode = 2
-icon = ExtResource("9_u26fo")
+icon = ExtResource("13_5tk4o")
 
-[node name="Scale" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=1003785290]
+[node name="MultiSelect" type="Button" parent="Build/VerticalArrangement/SelectOptions" unique_id=966085947]
 layout_mode = 2
-icon = ExtResource("10_7oq3b")
+icon = ExtResource("14_qydld")
 
-[node name="Measurements" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=487865367]
+[node name="SingleSelect" type="Button" parent="Build/VerticalArrangement/SelectOptions" unique_id=651447939]
 layout_mode = 2
-icon = ExtResource("11_wjypm")
+icon = ExtResource("15_a121i")
 
 [node name="ScaleOptions" type="HBoxContainer" parent="Build/VerticalArrangement" unique_id=398199526]
 layout_mode = 2
@@ -129,21 +132,21 @@ icon = ExtResource("12_wjypm")
 layout_mode = 2
 icon = ExtResource("3_wus27")
 
-[node name="AlwaysEditable" type="HBoxContainer" parent="Remove/VerticalArrangement" unique_id=1173170899]
+[node name="SelectOptions" type="HBoxContainer" parent="Remove/VerticalArrangement" unique_id=1214415797]
 layout_mode = 2
 alignment = 1
 
-[node name="Union" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=1783534531]
+[node name="GroupSelect" type="Button" parent="Remove/VerticalArrangement/SelectOptions" unique_id=1587975995]
 layout_mode = 2
-icon = ExtResource("5_wjypm")
+icon = ExtResource("13_5tk4o")
 
-[node name="Intersection" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=1532760391]
+[node name="MultiSelect" type="Button" parent="Remove/VerticalArrangement/SelectOptions" unique_id=1841897820]
 layout_mode = 2
-icon = ExtResource("6_g8fi6")
+icon = ExtResource("14_qydld")
 
-[node name="Cut" type="Button" parent="Remove/VerticalArrangement/AlwaysEditable" unique_id=1483899179]
+[node name="SingleSelect" type="Button" parent="Remove/VerticalArrangement/SelectOptions" unique_id=416765426]
 layout_mode = 2
-icon = ExtResource("7_keb40")
+icon = ExtResource("15_a121i")
 
 [node name="Edit" type="MarginContainer" parent="." unique_id=1374180317]
 visible = false
@@ -184,6 +187,22 @@ icon = ExtResource("6_g8fi6")
 [node name="Cut" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=913932949]
 layout_mode = 2
 icon = ExtResource("7_keb40")
+
+[node name="SelectOptions" type="HBoxContainer" parent="Edit/VBoxContainer" unique_id=939294884]
+layout_mode = 2
+alignment = 1
+
+[node name="GroupSelect" type="Button" parent="Edit/VBoxContainer/SelectOptions" unique_id=513395112]
+layout_mode = 2
+icon = ExtResource("13_5tk4o")
+
+[node name="MultiSelect" type="Button" parent="Edit/VBoxContainer/SelectOptions" unique_id=500660377]
+layout_mode = 2
+icon = ExtResource("14_qydld")
+
+[node name="SingleSelect" type="Button" parent="Edit/VBoxContainer/SelectOptions" unique_id=1845030662]
+layout_mode = 2
+icon = ExtResource("15_a121i")
 
 [node name="ScaleBox" type="HBoxContainer" parent="Edit/VBoxContainer" unique_id=2096075756]
 visible = false

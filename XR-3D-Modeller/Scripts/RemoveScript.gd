@@ -13,7 +13,7 @@ var summonedObjects
 
 # Select Variables
 var currentSelectedObject
-var selectIndex = 0 # Default Group select
+var selectIndex = 2 # Default Group select
 var multiSelectHolder = [] # Holds the objects that are currently selected
 
 # Highlighting variables
@@ -28,6 +28,7 @@ var selected_color = Color(0.913, 0.967, 0.331, 1.0) # When clicked on this is t
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	print(selectCast_3d.collision_mask)
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # If there are any existing objects already then load, will be used later on for previous saves
 	var summoner = get_node("../..") # Later this path should reach the summon part of function tool node
 	# print(summoner)
@@ -70,17 +71,36 @@ func _process(delta: float) -> void:
 						# print(currentSelectedObject.scale)
 						# Select case for ensuring the object is selected
 					triggerPressed = true
-					# print(triggerPressed)
+
 				elif selectIndex == 1: # Multi Select
 					print("This will be multi select")
-					
-					
+					if currentSelectedObject == highlighted_object:
+						# print("Goodbye previous selected object", currentSelectedObject)
+						_remove_highlight(currentSelectedObject)
+						currentSelectedObject = null
+
+					elif not currentSelectedObject:
+						# print("Hello new selected object", highlighted_object)
+						currentSelectedObject = highlighted_object
+						# print(currentSelectedObject, highlighted_object)
+						_remove_highlight(currentSelectedObject) # Remove any previous highlighting
+						_select_highlighted_object(currentSelectedObject)
+						# print(currentSelectedObject.scale)
+						# Select case for ensuring the object is selected
+					triggerPressed = true
 
 				elif selectIndex == 2: # Single Select
 					print("This will be single select")
-					
-					if not currentSelectedObject:
+					if currentSelectedObject == highlighted_object:
+						_remove_highlight(currentSelectedObject)
+						currentSelectedObject = null
+
+					elif not currentSelectedObject:
 						currentSelectedObject = highlighted_object
+						
+						_remove_highlight(currentSelectedObject)
+						_select_highlighted_object(currentSelectedObject)
+					triggerPressed = true
 
 		elif not controller.is_button_pressed("trigger_click"):
 			triggerPressed = false
@@ -103,8 +123,19 @@ func update_highlighted_object():
 					if highlighted_object != currentSelectedObject:
 						_apply_highlight(highlighted_object, highlight_color)
 		else:
-			print("For Multi and Single selecting")
-			var obj = raycast_3d.get_collider().get_parent()
+			# print("For Multi and Single selecting")
+			if selectCast_3d.is_colliding():
+				var combiner = raycast_3d.get_collider()
+				var obj = selectCast_3d.get_collider()
+				if combiner in summonedObjects:
+					# print("This combiner is infact a part of this deal")
+					if obj != highlighted_object:
+						_remove_highlight(highlighted_object)
+					highlighted_object = obj
+					print(obj)
+					print(highlighted_object)
+					if highlighted_object != currentSelectedObject:
+						_apply_highlight(highlighted_object, highlight_color)
 
 	else:
 		if highlighted_object and highlighted_object != currentSelectedObject:

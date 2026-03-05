@@ -192,6 +192,8 @@ func summon_object(index):
 		
 		new_obj.use_collision = true
 		new_obj.collision_layer = 2
+		print("Object Collision", new_obj.use_collision)
+		print("Object Layer", new_obj.collision_layer)
 		combiner.add_to_group("summonedObjects")
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Updates the summoned list within script
 		emit_signal("objectSummoned")
