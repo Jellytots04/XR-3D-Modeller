@@ -124,24 +124,35 @@ func update_highlighted_object():
 					highlighted_object = obj
 					if highlighted_object != currentSelectedObject:
 						_apply_highlight(highlighted_object, highlight_color)
+
 		else:
 			# print("For Multi and Single selecting")
-			if raycast_3d.is_colliding():
-				var combiner = raycast_3d.get_collider()
-				if combiner in summonedObjects:
-					var hit_point = raycast_3d.get_collision_point()
-					var closest_obj = null
-					var closest_dist = INF
+			var combiner = raycast_3d.get_collider()
+			if combiner in summonedObjects:
+				var hit_point = raycast_3d.get_collision_point()
+				var selected_obj = null # Object holder variable
 
-					for child in combiner.get_children():
-						if child is CSGMesh3D:
-							var dist = child.global_transform.origin.distance_to(hit_point)
-							if dist < closest_dist:
-								closest_dist = dist
-								closest_obj = child
-					
-					currentSelectedObject = closest_obj
+				for child in combiner.get_children():
+					if child is CSGMesh3D:
+						var aabb = child.get_aabb()
+						var global_aabb = child.global_transform * aabb
+						if global_aabb.has_point(hit_point):
+							selected_obj = child
+							break
+
+				#if selected_obj == null: # If the AABB doesn't work reuse the distance formula
+					#print("Using distance formula")
+					#var closest_dist = INF
+					#for child in combiner.get_children():
+						#var dist = child.global_transform.origin.distance_to(hit_point)
+						#if dist < closest_dist:
+							#closest_dist = dist
+							#selected_obj = child
+				if selected_obj != null:
+					currentSelectedObject = selected_obj
 					print("Selected this child : ", currentSelectedObject)
+				else:
+					print("No child has been found here")
 
 	else:
 		if highlighted_object and highlighted_object != currentSelectedObject:
