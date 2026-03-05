@@ -15,7 +15,7 @@ var summonedObjects
 
 # Select Variables
 var currentSelectedObject
-var selectIndex = 2 # Default Group select
+var selectIndex = 1 # Default Group select
 var multiSelectHolder = [] # Holds the objects that are currently selected
 
 # Highlighting Variables
@@ -78,32 +78,36 @@ func _process(delta: float) -> void:
 				elif selectIndex == 1: # Multi Select
 					triggerPressed = true
 					print("This will be multi select")
-					if currentSelectedObject == highlighted_object:
-						# print("Goodbye previous selected object", currentSelectedObject)
-						_remove_highlight(currentSelectedObject)
-						currentSelectedObject = null
+					if highlighted_object in multiSelectHolder:
+						print("Removing : ", highlighted_object, " : To the multiSelectHolder")
+						var deselect_object = highlighted_object
+						highlighted_object = null
+						multiSelectHolder.erase(deselect_object)
+						await _remove_highlight(deselect_object)
 
-					elif not currentSelectedObject:
+					elif highlighted_object not in multiSelectHolder:
+						print("Adding : ", highlighted_object, " : To the multiSelectHolder")
 						# print("Hello new selected object", highlighted_object)
-						currentSelectedObject = highlighted_object
 						# print(currentSelectedObject, highlighted_object)
-						_remove_highlight(currentSelectedObject) # Remove any previous highlighting
-						_select_highlighted_object(currentSelectedObject)
+						# _remove_highlight(currentSelectedObject) # Remove any previous highlighting
+						_apply_highlight(highlighted_object, selected_color)
+						multiSelectHolder.append(highlighted_object)
 						# print(currentSelectedObject.scale)
 						# Select case for ensuring the object is selected
+						currentSelectedObject = null
 
 				elif selectIndex == 2: # Single Select
 					triggerPressed = true
-					print("This will be single select")
+					# print("This will be single select")
 					if currentSelectedObject == highlighted_object:
-						print("Object is no longer selected")
+						# print("Object is no longer selected")
 						var deselect_object = currentSelectedObject
 						currentSelectedObject = null
 						highlighted_object = null
 						await _remove_highlight(deselect_object)
 
 					elif not currentSelectedObject:
-						print("Object is selected")
+						# print("Object is selected")
 						currentSelectedObject = highlighted_object
 						await _apply_highlight(currentSelectedObject, selected_color)
 
@@ -148,17 +152,27 @@ func update_highlighted_object():
 							break
 
 				if selected_obj != null:
-					if highlighted_object and highlighted_object != currentSelectedObject:
+					if selectIndex == 2 and highlighted_object and highlighted_object != currentSelectedObject: # Checking for single select
 						_remove_highlight(highlighted_object)
+					
+					elif selectIndex == 1 and highlighted_object not in multiSelectHolder:
+						_remove_highlight(highlighted_object)
+					
 					highlighted_object = selected_obj
-					if highlighted_object != currentSelectedObject:
+					
+					if selectIndex == 2 and highlighted_object != currentSelectedObject:
 						_apply_highlight(highlighted_object, highlight_color)
+					elif selectIndex == 1 and highlighted_object not in multiSelectHolder:
+						_apply_highlight(highlighted_object, highlight_color) 
 					# print("Selected this child : ", currentSelectedObject)
 
 	else:
-		if highlighted_object and highlighted_object != currentSelectedObject:
-			_remove_highlight(highlighted_object)
-		highlighted_object = null
+		if highlighted_object:
+			if selectIndex == 2 and highlighted_object != currentSelectedObject:
+				_remove_highlight(highlighted_object)
+			elif selectIndex == 1 and highlighted_object not in multiSelectHolder:
+				_remove_highlight(highlighted_object)
+			highlighted_object = null
 
 # Highlighting recursive function
 func _apply_highlight(obj, color):
