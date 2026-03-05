@@ -24,6 +24,7 @@ var highlighting = false
 var remove_highlighting_cancelled = false
 var remove_highlighting = false
 var original_materials = {}
+var true_materials = {}
 var highlighted_object = null
 var highlight_color = Color(0.833, 0.363, 0.379, 1.0) # Red highlight / Pinkish highlight
 var selected_color = Color(0.913, 0.967, 0.331, 1.0) # When clicked on this is the color the object will assume
@@ -57,6 +58,7 @@ func _process(delta: float) -> void:
 		if controller.is_button_pressed("trigger_click") and !triggerPressed: # This is group select aka entire object because highlighted_object will be the CSGCombiner
 			if highlighted_object:
 				if selectIndex == 0:
+					triggerPressed = true
 					print("This is Group / All select")
 					# Release trigger / click
 					if currentSelectedObject == highlighted_object:
@@ -72,9 +74,9 @@ func _process(delta: float) -> void:
 						_select_highlighted_object(currentSelectedObject)
 						# print(currentSelectedObject.scale)
 						# Select case for ensuring the object is selected
-					triggerPressed = true
 
 				elif selectIndex == 1: # Multi Select
+					triggerPressed = true
 					print("This will be multi select")
 					if currentSelectedObject == highlighted_object:
 						# print("Goodbye previous selected object", currentSelectedObject)
@@ -89,45 +91,50 @@ func _process(delta: float) -> void:
 						_select_highlighted_object(currentSelectedObject)
 						# print(currentSelectedObject.scale)
 						# Select case for ensuring the object is selected
-					triggerPressed = true
 
 				elif selectIndex == 2: # Single Select
+					triggerPressed = true
 					print("This will be single select")
 					if currentSelectedObject == highlighted_object:
-						_remove_highlight(currentSelectedObject)
+						print("Object is no longer selected")
+						var deselect_object = currentSelectedObject
 						currentSelectedObject = null
+						highlighted_object = null
+						await _remove_highlight(deselect_object)
 
 					elif not currentSelectedObject:
+						print("Object is selected")
 						currentSelectedObject = highlighted_object
-						
-						_remove_highlight(currentSelectedObject)
-						_select_highlighted_object(currentSelectedObject)
-					triggerPressed = true
+						await _apply_highlight(currentSelectedObject, selected_color)
+
 
 		elif not controller.is_button_pressed("trigger_click"):
 			triggerPressed = false
 
 func _select_highlighted_object(obj):
-	print("Highlighting this new object : ")
+	print("Highlighting this new object : ", obj)
 	_apply_highlight(obj, selected_color)
 
 func update_highlighted_object():
+	print("highlighted_object : ", highlighted_object)#
+	print("currently selected object : ", currentSelectedObject)
 	# print("Ray update")
 	if raycast_3d.is_colliding():
+		var combiner = raycast_3d.get_collider()
+		print("Combiner : ", combiner)
+		print("Inside summonedObjects : ", combiner in summonedObjects)
 		if selectIndex == 0:
 			print("For Group / All select")
-			var obj = raycast_3d.get_collider()
-			if obj in summonedObjects:
-				if obj != highlighted_object:
+			if combiner in summonedObjects:
+				if combiner != highlighted_object:
 					if highlighted_object:
 						_remove_highlight(highlighted_object)
-					highlighted_object = obj
+					highlighted_object = combiner
 					if highlighted_object != currentSelectedObject:
 						_apply_highlight(highlighted_object, highlight_color)
 
 		else:
 			# print("For Multi and Single selecting")
-			var combiner = raycast_3d.get_collider()
 			if combiner in summonedObjects:
 				var hit_point = raycast_3d.get_collision_point()
 				var selected_obj = null # Object holder variable
@@ -141,7 +148,7 @@ func update_highlighted_object():
 							break
 
 				if selected_obj != null:
-					if highlighted_object:
+					if highlighted_object and highlighted_object != currentSelectedObject:
 						_remove_highlight(highlighted_object)
 					highlighted_object = selected_obj
 					if highlighted_object != currentSelectedObject:
@@ -182,10 +189,14 @@ func _apply_highlight_recursive(obj, color):
 			await _apply_highlight_recursive(child, color)
 	
 	if obj is CSGMesh3D:
-		print("obj is a CSGMesh3D")
+		# print("obj is a CSGMesh3D")
 		mesh_inst = obj
 		
 		if mesh_inst.mesh:
+			
+			if not mesh_inst in true_materials:
+				true_materials[mesh_inst] = mesh_inst.material
+			
 			original_materials[mesh_inst] = mesh_inst.material
 			if mesh_inst.material:
 				var mat = mesh_inst.material.duplicate()
@@ -212,10 +223,14 @@ func _apply_highlight_recursive(obj, color):
 		mesh_inst = obj.get_node("CSGMesh3D")
 		
 		if mesh_inst.mesh:
+
+			if not mesh_inst in true_materials:
+				true_materials[mesh_inst] = mesh_inst.material
+
 			original_materials[mesh_inst] = mesh_inst.material
 			if mesh_inst.material:
 				var mat = mesh_inst.material.duplicate()
-				mat.albedo_color = highlight_color
+				mat.albedo_color = color
 				mesh_inst.material = mat
 				
 			await get_tree().process_frame
@@ -256,38 +271,46 @@ func _remove_highlight_recursive(obj):
 				return
 			if not is_instance_valid(child):
 				continue
-			await _remove_highlight_recursive(obj)
+			await _remove_highlight_recursive(child)
 		
-	if obj is CSGMesh3D:
+	elif obj is CSGMesh3D:
 		mesh_inst = obj
 		
 		if mesh_inst.mesh:
-			if mesh_inst in original_materials:
-				mesh_inst.material = original_materials[mesh_inst]
-				original_materials.erase(mesh_inst)
+			if mesh_inst in true_materials:
+				mesh_inst.material = true_materials[mesh_inst]
+				if not currentSelectedObject:
+					true_materials.erase(mesh_inst)
+					original_materials.erase(mesh_inst)
 				
 			await get_tree().process_frame
+			if not is_instance_valid(obj):
+				return
 
-		
 		if obj.get_children():
 			for child in obj.get_children():
 				if remove_highlighting_cancelled:
 					return
-				await  _remove_highlight_recursive(child)
+				await _remove_highlight_recursive(child)
 				
 	elif obj.has_node("CSGMesh3D"):
 		mesh_inst = obj.get_node("CSGMesh3D")
 		
 		if mesh_inst.mesh:
-			if mesh_inst in original_materials:
-				mesh_inst.material = original_materials[mesh_inst]
-				original_materials.erase(mesh_inst)
+			if mesh_inst in true_materials:
+				mesh_inst.material = true_materials[mesh_inst]
+				if not currentSelectedObject:
+					true_materials.erase(mesh_inst)
+					original_materials.erase(mesh_inst)
 				
 			await get_tree().process_frame
 			if not is_instance_valid(obj):
 				return
 
 func remove_object():
+	print("Highlighted object", highlighted_object)
+	print("Is this inside the group?", highlighted_object.is_in_group("summonedObjects") if highlighted_object else "null")
+	print("If it is a valid instance", is_instance_valid(highlighted_object))
 	if highlighted_object and highlighted_object.is_in_group("summonedObjects"):
 		# Object to be removed
 		var removing_obj = highlighted_object
