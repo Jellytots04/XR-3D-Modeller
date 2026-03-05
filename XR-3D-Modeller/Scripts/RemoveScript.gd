@@ -140,19 +140,13 @@ func update_highlighted_object():
 							selected_obj = child
 							break
 
-				#if selected_obj == null: # If the AABB doesn't work reuse the distance formula
-					#print("Using distance formula")
-					#var closest_dist = INF
-					#for child in combiner.get_children():
-						#var dist = child.global_transform.origin.distance_to(hit_point)
-						#if dist < closest_dist:
-							#closest_dist = dist
-							#selected_obj = child
 				if selected_obj != null:
-					currentSelectedObject = selected_obj
-					print("Selected this child : ", currentSelectedObject)
-				else:
-					print("No child has been found here")
+					if highlighted_object:
+						_remove_highlight(highlighted_object)
+					highlighted_object = selected_obj
+					if highlighted_object != currentSelectedObject:
+						_apply_highlight(highlighted_object, highlight_color)
+					# print("Selected this child : ", currentSelectedObject)
 
 	else:
 		if highlighted_object and highlighted_object != currentSelectedObject:
@@ -175,7 +169,10 @@ func _apply_highlight_recursive(obj, color):
 	# If this is true then cancel the recursive script
 	if highlighting_cancelled:
 		return
-		
+	
+	if not is_instance_valid(obj):
+		return
+	
 	var mesh_inst = null
 	
 	if obj is CSGCombiner3D:
@@ -197,13 +194,17 @@ func _apply_highlight_recursive(obj, color):
 			
 			# Will pause after applying material to reduce lag
 			await get_tree().process_frame
+			if not is_instance_valid(obj):
+				return
 		else:
 			print("No Mesh resource found on CSGMesh3D!")
-		
+
 		if obj.get_children():
 			for child in obj.get_children():
 				if highlighting_cancelled:
 					return
+				if not is_instance_valid(child):
+					continue
 				await _apply_highlight_recursive(child, color)
 	
 	elif obj.has_node("CSGMesh3D"):
@@ -218,6 +219,8 @@ func _apply_highlight_recursive(obj, color):
 				mesh_inst.material = mat
 				
 			await get_tree().process_frame
+			if not is_instance_valid(obj):
+				return
 		else:
 			print("No mesh resource found on CSGMesh3D!")
 	else:
@@ -241,13 +244,19 @@ func _remove_highlight(obj):
 func _remove_highlight_recursive(obj):
 	if remove_highlighting_cancelled:
 		return
-		
+	
+	if not is_instance_valid(obj):
+			return
+
 	var mesh_inst = null
 	
 	if obj is CSGCombiner3D:
 		for child in obj.get_children():
-			return
-		await _remove_highlight_recursive(obj)
+			if remove_highlighting_cancelled:
+				return
+			if not is_instance_valid(child):
+				continue
+			await _remove_highlight_recursive(obj)
 		
 	if obj is CSGMesh3D:
 		mesh_inst = obj
@@ -258,7 +267,8 @@ func _remove_highlight_recursive(obj):
 				original_materials.erase(mesh_inst)
 				
 			await get_tree().process_frame
-			
+
+		
 		if obj.get_children():
 			for child in obj.get_children():
 				if remove_highlighting_cancelled:
@@ -274,14 +284,21 @@ func _remove_highlight_recursive(obj):
 				original_materials.erase(mesh_inst)
 				
 			await get_tree().process_frame
+			if not is_instance_valid(obj):
+				return
 
 func remove_object():
 	if highlighted_object and highlighted_object.is_in_group("summonedObjects"):
+		# Object to be removed
+		var removing_obj = highlighted_object
+		highlighted_object = null
+		
+		await _remove_highlight(highlighted_object)
 		# Clean up highlight first if you want
 		# Remove the actual instance from scene
-		highlighted_object.queue_free()
-		highlighted_object.remove_from_group("summonedObjects")
-		highlighted_object = null
+		if is_instance_valid(removing_obj):
+			removing_obj.queue_free()
+
 		emit_signal("objectRemoved")
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Update the list
 		# print(summonedObjects)
