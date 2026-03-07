@@ -327,7 +327,17 @@ func remove_object():
 				removed_obj.queue_free()
 			emit_signal("objectRemoved")
 			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
-			
+	
+	if selectIndex == 1:
+		if !multiSelectHolder.is_empty():
+			for obj in multiSelectHolder:
+				if is_instance_valid(obj):
+					obj.queue_free()
+			multiSelectHolder.clear()
+			highlighted_object = null
+			emit_signal("objectRemoved")
+			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+
 	if highlighted_object and highlighted_object.is_in_group("summonedObjects"):
 		# Object to be removed
 		var removing_obj = highlighted_object
