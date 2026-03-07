@@ -318,6 +318,16 @@ func _remove_highlight_recursive(obj):
 				return
 
 func remove_object():
+	if selectIndex == 0:
+		if currentSelectedObject and is_instance_valid(currentSelectedObject):
+			var removed_obj = currentSelectedObject
+			currentSelectedObject = null
+			highlighted_object = null
+			if is_instance_valid(removed_obj):
+				removed_obj.queue_free()
+			emit_signal("objectRemoved")
+			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+			
 	if highlighted_object and highlighted_object.is_in_group("summonedObjects"):
 		# Object to be removed
 		var removing_obj = highlighted_object
@@ -328,7 +338,7 @@ func remove_object():
 		# Remove the actual instance from scene
 		if is_instance_valid(removing_obj):
 			removing_obj.queue_free()
-
+	
 		emit_signal("objectRemoved")
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Update the list
 		# print(summonedObjects)
