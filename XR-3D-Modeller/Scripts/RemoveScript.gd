@@ -15,7 +15,7 @@ var summonedObjects
 
 # Select Variables
 var currentSelectedObject
-var selectIndex = 1 # Default Group select
+var selectIndex = 0 # Default Group select
 var multiSelectHolder = [] # Holds the objects that are currently selected
 
 # Highlighting Variables
@@ -40,8 +40,8 @@ func _ready() -> void:
 	if ui_controllers.size() > 0:
 		var ui_controller = ui_controllers[0]
 		print("Hello from readying Remover")
-		var connected = ui_controller.connect("change_page", Callable(self, "set_page_index"))
-		print("Connection made: ", connected)
+		ui_controller.connect("change_page", Callable(self, "set_page_index"))
+		ui_controller.connect("select_change", Callable(self, "select_index_change"))
 		print("UI Controller: ", ui_controller)
 	print("Players controller: ", controller)
 
@@ -59,21 +59,20 @@ func _process(delta: float) -> void:
 			if highlighted_object:
 				if selectIndex == 0:
 					triggerPressed = true
-					print("This is Group / All select")
+					# print("This is Group / All select")
 					# Release trigger / click
 					if currentSelectedObject == highlighted_object:
 						# print("Goodbye previous selected object", currentSelectedObject)
-						_remove_highlight(currentSelectedObject)
+						var deselct_object = currentSelectedObject
 						currentSelectedObject = null
+						highlighted_object = null
+						await _remove_highlight(deselct_object)
 
 					elif not currentSelectedObject:
 						# print("Hello new selected object", highlighted_object)
 						currentSelectedObject = highlighted_object
-						# print(currentSelectedObject, highlighted_object)
-						_remove_highlight(currentSelectedObject) # Remove any previous highlighting
-						_select_highlighted_object(currentSelectedObject)
-						# print(currentSelectedObject.scale)
-						# Select case for ensuring the object is selected
+						highlighted_object = null
+						await _apply_highlight(currentSelectedObject, selected_color)
 
 				elif selectIndex == 1: # Multi Select
 					triggerPressed = true
@@ -120,18 +119,13 @@ func _select_highlighted_object(obj):
 	_apply_highlight(obj, selected_color)
 
 func update_highlighted_object():
-	print("highlighted_object : ", highlighted_object)#
-	print("currently selected object : ", currentSelectedObject)
 	# print("Ray update")
 	if raycast_3d.is_colliding():
 		var combiner = raycast_3d.get_collider()
-		print("Combiner : ", combiner)
-		print("Inside summonedObjects : ", combiner in summonedObjects)
 		if selectIndex == 0:
-			print("For Group / All select")
 			if combiner in summonedObjects:
 				if combiner != highlighted_object:
-					if highlighted_object:
+					if highlighted_object and highlighted_object != currentSelectedObject:
 						_remove_highlight(highlighted_object)
 					highlighted_object = combiner
 					if highlighted_object != currentSelectedObject:
@@ -168,11 +162,13 @@ func update_highlighted_object():
 
 	else:
 		if highlighted_object:
+			if selectIndex == 0 and highlighted_object != currentSelectedObject:
+				_remove_highlight(highlighted_object)
 			if selectIndex == 2 and highlighted_object != currentSelectedObject:
 				_remove_highlight(highlighted_object)
 			elif selectIndex == 1 and highlighted_object not in multiSelectHolder:
 				_remove_highlight(highlighted_object)
-			highlighted_object = null
+		highlighted_object = null
 
 # Highlighting recursive function
 func _apply_highlight(obj, color):
@@ -322,15 +318,12 @@ func _remove_highlight_recursive(obj):
 				return
 
 func remove_object():
-	print("Highlighted object", highlighted_object)
-	print("Is this inside the group?", highlighted_object.is_in_group("summonedObjects") if highlighted_object else "null")
-	print("If it is a valid instance", is_instance_valid(highlighted_object))
 	if highlighted_object and highlighted_object.is_in_group("summonedObjects"):
 		# Object to be removed
 		var removing_obj = highlighted_object
 		highlighted_object = null
 		
-		await _remove_highlight(highlighted_object)
+		await _remove_highlight(removing_obj)
 		# Clean up highlight first if you want
 		# Remove the actual instance from scene
 		if is_instance_valid(removing_obj):
@@ -339,6 +332,20 @@ func remove_object():
 		emit_signal("objectRemoved")
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Update the list
 		# print(summonedObjects)
+
+# Called when a new select index is chosen
+func clear_select(idx):
+	if selectIndex == 0 or selectIndex == 2:
+		var cleared_object = currentSelectedObject
+		currentSelectedObject = null
+		_remove_highlight(cleared_object)
+	
+	if selectIndex == 1:
+		for child in multiSelectHolder:
+			await _remove_highlight(child)
+		multiSelectHolder.clear()
+
+	selectIndex = idx
 
 func set_page_index(idx):
 	# print("Hello from remove call index")
@@ -350,3 +357,7 @@ func set_page_index(idx):
 func update_list():
 	print("Hello from remove script new object update signal")
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+
+# Add a clearance previous select on change
+func select_index_change(idx):
+	await clear_select(idx) # Clears and sets the new index
