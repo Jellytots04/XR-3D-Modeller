@@ -57,6 +57,7 @@ func _process(delta: float) -> void:
 		# If the user clicks / presses right trigger on an highlighted object it will become the selected object
 		if controller.is_button_pressed("trigger_click") and !triggerPressed: # This is group select aka entire object because highlighted_object will be the CSGCombiner
 			if highlighted_object:
+				# Group selecting (Entire CSGCombiner included)
 				if selectIndex == 0:
 					triggerPressed = true
 					# print("This is Group / All select")
@@ -74,6 +75,7 @@ func _process(delta: float) -> void:
 						highlighted_object = null
 						await _apply_highlight(currentSelectedObject, selected_color)
 
+				# Multiple selecting (Can select an infinite amount of objects)
 				elif selectIndex == 1: # Multi Select
 					triggerPressed = true
 					print("This will be multi select")
@@ -95,6 +97,7 @@ func _process(delta: float) -> void:
 						# Select case for ensuring the object is selected
 						currentSelectedObject = null
 
+				# Single object selecting (Select a single object at a time)
 				elif selectIndex == 2: # Single Select
 					triggerPressed = true
 					# print("This will be single select")
@@ -110,14 +113,58 @@ func _process(delta: float) -> void:
 						currentSelectedObject = highlighted_object
 						await _apply_highlight(currentSelectedObject, selected_color)
 
-
 		elif not controller.is_button_pressed("trigger_click"):
 			triggerPressed = false
 
-func _select_highlighted_object(obj):
-	print("Highlighting this new object : ", obj)
-	_apply_highlight(obj, selected_color)
+func remove_object():
+	if selectIndex == 0:
+		if currentSelectedObject and is_instance_valid(currentSelectedObject):
+			var removed_obj = currentSelectedObject
+			currentSelectedObject = null
+			highlighted_object = null
+			if is_instance_valid(removed_obj):
+				removed_obj.queue_free()
+			emit_signal("objectRemoved")
+			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+	
+	if selectIndex == 1:
+		var combiners = []
+		if !multiSelectHolder.is_empty():
+			for obj in multiSelectHolder:
+				if is_instance_valid(obj):
+					var combiner_parent = obj.get_parent() # Get the combiner
+					if combiner_parent not in combiners: # Ensure the combiner is not already inside the array
+						combiners.append(combiner_parent) # Add the unique combiner to the array
+					obj.queue_free()
+			
+			await get_tree().process_frame # Ensure that the frame has passed and the above loop is processed
+			
+			for combiner in combiners: # If the combiner has no more children it shall be cleared
+				if is_instance_valid(combiner) and combiner.get_child_count() == 0: # Check if there is no more children existing
+					combiner.queue_free() 
 
+			multiSelectHolder.clear()
+			highlighted_object = null
+			emit_signal("objectRemoved")
+			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+
+	if selectIndex == 2:
+		if currentSelectedObject and is_instance_valid(currentSelectedObject):
+			var removed_obj = currentSelectedObject
+			var combiner = removed_obj.get_parent()
+			currentSelectedObject = null
+			highlighted_object = null
+			
+			removed_obj.queue_free()
+			
+			await get_tree().process_frame 
+			if is_instance_valid(combiner) and combiner.get_child_count() == 0:
+				combiner.queue_free()
+			
+			emit_signal("objectRemoved")
+			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+
+# Highlighting Functions
 func update_highlighted_object():
 	# print("Ray update")
 	if raycast_3d.is_colliding():
@@ -265,7 +312,6 @@ func _remove_highlight(obj):
 	
 	remove_highlighting = false
 
-
 func _remove_highlight_recursive(obj):
 	if remove_highlighting_cancelled:
 		return
@@ -316,54 +362,6 @@ func _remove_highlight_recursive(obj):
 			await get_tree().process_frame
 			if not is_instance_valid(obj):
 				return
-
-func remove_object():
-	if selectIndex == 0:
-		if currentSelectedObject and is_instance_valid(currentSelectedObject):
-			var removed_obj = currentSelectedObject
-			currentSelectedObject = null
-			highlighted_object = null
-			if is_instance_valid(removed_obj):
-				removed_obj.queue_free()
-			emit_signal("objectRemoved")
-			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
-	
-	if selectIndex == 1:
-		var combiners = []
-		if !multiSelectHolder.is_empty():
-			for obj in multiSelectHolder:
-				if is_instance_valid(obj):
-					var combiner_parent = obj.get_parent() # Get the combiner
-					if combiner_parent not in combiners: # Ensure the combiner is not already inside the array
-						combiners.append(combiner_parent) # Add the unique combiner to the array
-					obj.queue_free()
-			
-			await get_tree().process_frame # Ensure that the frame has passed and the above loop is processed
-			
-			for combiner in combiners: # If the combiner has no more children it shall be cleared
-				if is_instance_valid(combiner) and combiner.get_child_count() == 0: # Check if there is no more children existing
-					combiner.queue_free() 
-
-			multiSelectHolder.clear()
-			highlighted_object = null
-			emit_signal("objectRemoved")
-			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
-
-	if selectIndex == 2:
-		if currentSelectedObject and is_instance_valid(currentSelectedObject):
-			var removed_obj = currentSelectedObject
-			var combiner = removed_obj.get_parent()
-			currentSelectedObject = null
-			highlighted_object = null
-			
-			removed_obj.queue_free()
-			
-			await get_tree().process_frame 
-			if is_instance_valid(combiner) and combiner.get_child_count() == 0:
-				combiner.queue_free()
-			
-			emit_signal("objectRemoved")
-			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
 
 # Called when a new select index is chosen
 func clear_select(idx):
