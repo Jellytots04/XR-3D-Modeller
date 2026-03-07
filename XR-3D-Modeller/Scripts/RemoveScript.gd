@@ -329,10 +329,21 @@ func remove_object():
 			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
 	
 	if selectIndex == 1:
+		var combiners = []
 		if !multiSelectHolder.is_empty():
 			for obj in multiSelectHolder:
 				if is_instance_valid(obj):
+					var combiner_parent = obj.get_parent() # Get the combiner
+					if combiner_parent not in combiners: # Ensure the combiner is not already inside the array
+						combiners.append(combiner_parent) # Add the unique combiner to the array
 					obj.queue_free()
+			
+			await get_tree().process_frame # Ensure that the frame has passed and the above loop is processed
+			
+			for combiner in combiners: # If the combiner has no more children it shall be cleared
+				if is_instance_valid(combiner) and combiner.get_child_count() == 0: # Check if there is no more children existing
+					combiner.queue_free() 
+
 			multiSelectHolder.clear()
 			highlighted_object = null
 			emit_signal("objectRemoved")
