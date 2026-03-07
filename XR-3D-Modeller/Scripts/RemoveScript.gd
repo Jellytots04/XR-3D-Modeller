@@ -349,20 +349,21 @@ func remove_object():
 			emit_signal("objectRemoved")
 			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
 
-	if highlighted_object and highlighted_object.is_in_group("summonedObjects"):
-		# Object to be removed
-		var removing_obj = highlighted_object
-		highlighted_object = null
-		
-		await _remove_highlight(removing_obj)
-		# Clean up highlight first if you want
-		# Remove the actual instance from scene
-		if is_instance_valid(removing_obj):
-			removing_obj.queue_free()
-	
-		emit_signal("objectRemoved")
-		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Update the list
-		# print(summonedObjects)
+	if selectIndex == 2:
+		if currentSelectedObject and is_instance_valid(currentSelectedObject):
+			var removed_obj = currentSelectedObject
+			var combiner = removed_obj.get_parent()
+			currentSelectedObject = null
+			highlighted_object = null
+			
+			removed_obj.queue_free()
+			
+			await get_tree().process_frame 
+			if is_instance_valid(combiner) and combiner.get_child_count() == 0:
+				combiner.queue_free()
+			
+			emit_signal("objectRemoved")
+			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
 
 # Called when a new select index is chosen
 func clear_select(idx):
