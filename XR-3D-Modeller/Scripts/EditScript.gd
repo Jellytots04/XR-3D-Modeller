@@ -22,6 +22,7 @@ var moveBasis
 # Stretching varibales
 var stretchDistance # holds the value between the two controllers to be compared for stretching
 var startingScale # holds the starting scale of the object before the scale changes
+var startingScaleMulti = {}
 
 # Scene and UI variables
 var summonedObjects
@@ -82,12 +83,18 @@ func _process(delta: float) -> void:
 			currentlyMoving = false
 
 		if controller.is_button_pressed("grip_click") and secondary_controller.is_button_pressed("grip_click") and editIndex == 1: # Stretch the object when gripping controllers and pulling outwards or inwards, second / first index value
-			if currentSelectedObject:
-				if not currentlyStretching:
-					startStretch(controller.global_position, secondary_controller.global_position, currentSelectedObject)
-					currentlyStretching = true
-					# print("Distance from stretching process : ", stretchDistance)
-				stretchObject(controller.global_position, secondary_controller.global_position, currentSelectedObject)
+			if selectIndex == 0 or selectIndex == 1:
+				if currentSelectedObject:
+					if not currentlyStretching:
+						startStretch(controller.global_position, secondary_controller.global_position)
+						currentlyStretching = true
+						# print("Distance from stretching process : ", stretchDistance)
+					stretchObject(controller.global_position, secondary_controller.global_position)
+				elif selectIndex == 1 and !multiSelectHolder.is_empty():
+					if not currentlyStretching:
+						startStretch(controller.global_position, secondary_controller.global_position)
+						currentlyStretching = true
+					stretchObject(controller.global_position, secondary_controller.global_position)
 		else:
 			currentlyStretching = false
 
@@ -163,27 +170,40 @@ func scaleSelectedObject():
 
 # Stretching functions
 # Main and secondary are both controllers
-func startStretch(main, secondary, obj):
+func startStretch(main, secondary):
 	stretchDistance = main.distance_to(secondary)
-	startingScale = obj.scale
-	print(stretchDistance)
+	if selectIndex == 0 or selectIndex == 2:
+		startingScale = currentSelectedObject.scale
+	
+	elif selectIndex == 1 and !multiSelectHolder.is_empty():
+		for obj in multiSelectHolder:
+			startingScaleMulti[obj] = obj.scale
 
 # Main and secondary are both controllers and obj is the currently selected object
-func stretchObject(main, secondary, obj):
+func stretchObject(main, secondary):
 	var currentDistance = main.distance_to(secondary)
-	
 	# Return if controllers aren't separated
 	if stretchDistance == 0:
 		return
-	
+
 	var ratio = currentDistance / stretchDistance
-	var newScale = startingScale * ratio
 	
-	newScale = (newScale * 10).round() / 10
-	
-	newScale = newScale.clamp(Vector3.ONE * 0.1, Vector3.ONE * 2.0)
-	obj.scale = newScale
-	ui_controller._change_scale_value(obj.scale)
+	if selectIndex == 0 or selectIndex == 2:
+		var newScale = startingScale * ratio
+		
+		newScale = (newScale * 10).round() / 10
+		
+		newScale = newScale.clamp(Vector3.ONE * 0.1, Vector3.ONE * 2.0)
+		currentSelectedObject.scale = newScale
+		ui_controller._change_scale_value(currentSelectedObject.scale)
+
+	if selectIndex == 1 and !multiSelectHolder.is_empty():
+		for obj in multiSelectHolder:
+			var newScale = startingScaleMulti[obj] * ratio
+			newScale = (newScale * 10).round() / 10
+			newScale = newScale.clamp(Vector3.ONE * 0.1, Vector3.ONE * 2.0)
+			obj.scale = newScale
+		
 	emit_signal("objectEdited")
 
 # Moving functions
