@@ -33,9 +33,11 @@ var selected_color = Color(0.913, 0.967, 0.331, 1.0) # When clicked on this is t
 func _ready() -> void:
 	print(selectCast_3d.collision_mask)
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # If there are any existing objects already then load, will be used later on for previous saves
-	var summoner = get_node("../..") # Later this path should reach the summon part of function tool node
+	var summoner = get_node("../..") # Summoner is the main script and is and will be attached to the main user
 	# print(summoner)
 	summoner.connect("objectSummoned", Callable(self,  "update_list"))
+	var editor = get_node("../EditFunction")
+	editor.connect("objectEdited", Callable(self, "update_list"))
 	var ui_controllers = get_tree().get_nodes_in_group("ui_controller")
 	if ui_controllers.size() > 0:
 		var ui_controller = ui_controllers[0]
@@ -49,6 +51,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	# print(controller.is_button_pressed("ax_button"))
 	if is_active:
+		# Delete the selected objects
 		if controller.is_button_pressed("ax_button"):
 			# print("Hello From remove Script")
 			remove_object()
@@ -78,16 +81,16 @@ func _process(delta: float) -> void:
 				# Multiple selecting (Can select an infinite amount of objects)
 				elif selectIndex == 1: # Multi Select
 					triggerPressed = true
-					print("This will be multi select")
+					# print("This will be multi select")
 					if highlighted_object in multiSelectHolder:
-						print("Removing : ", highlighted_object, " : To the multiSelectHolder")
+						# print("Removing : ", highlighted_object, " : To the multiSelectHolder")
 						var deselect_object = highlighted_object
 						highlighted_object = null
 						multiSelectHolder.erase(deselect_object)
 						await _remove_highlight(deselect_object)
 
 					elif highlighted_object not in multiSelectHolder:
-						print("Adding : ", highlighted_object, " : To the multiSelectHolder")
+						# print("Adding : ", highlighted_object, " : To the multiSelectHolder")
 						# print("Hello new selected object", highlighted_object)
 						# print(currentSelectedObject, highlighted_object)
 						# _remove_highlight(currentSelectedObject) # Remove any previous highlighting
@@ -276,7 +279,7 @@ func _apply_highlight_recursive(obj, color):
 				await _apply_highlight_recursive(child, color)
 	
 	elif obj.has_node("CSGMesh3D"):
-		print("OBJ has a CSGMesh3D")
+		# print("OBJ has a CSGMesh3D")
 		mesh_inst = obj.get_node("CSGMesh3D")
 		
 		if mesh_inst.mesh:

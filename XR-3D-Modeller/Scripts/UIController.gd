@@ -31,6 +31,7 @@ func _ready():
 		var remove_select = viewport_scene.get_node("Remove/VerticalArrangement/SelectOptions")
 		var edit_tab = viewport_scene.get_node("Edit/VBoxContainer")
 		var edit_options = edit_tab.get_node("EditOptions")
+		var edit_select = edit_tab.get_node("SelectOptions")
 		
 		edit_scaleSize = edit_tab.get_node("ScaleBox/Scale") # HSlider node
 		print(edit_scaleSize) 
@@ -84,6 +85,11 @@ func _ready():
 		if edit_scaleSize:
 			edit_scaleSize.connect("value_changed", Callable(self, "_size_change"))
 			print("Edit scales are connected")
+			
+		if edit_select:
+			for idx in range(edit_select.get_child_count()):
+				var button = edit_select.get_child(idx)
+				button.connect("pressed", Callable(self, "_select_option").bind(idx))
 
 	else:
 		print("Viewport root scene not loaded!")

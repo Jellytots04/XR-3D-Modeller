@@ -85,9 +85,11 @@ func _ready() -> void:
 	# Get the path for the left Hand controller
 	
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
-	var remover = get_node("FunctionToolNode/RemoveFunction") # Change to new location when the toolbox is finished
+	var remover = get_node("FunctionToolNode/RemoveFunction") # Remove Function
 	# print(remover)
 	remover.connect("objectRemoved", Callable(self, "update_list"))
+	var editor = get_node("FunctionToolNode/EditFunction") # Editing function
+	editor.connect("objectEdited", Callable(self, "update_list"))
 	var ui_controllers = get_tree().get_nodes_in_group("ui_controller")
 	if ui_controllers.size() > 0:
 		var ui_controller = ui_controllers[0]
@@ -348,7 +350,7 @@ func change_csg_operation(idx):
 	csgIndex = idx
 
 func update_list():
-	# print("Hello from update list in Summon")
+	print("Hello from update list in Summon")
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
 
 func set_summon_index(idx):
