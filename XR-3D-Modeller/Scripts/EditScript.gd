@@ -15,8 +15,9 @@ var currentlyStretching = false
 
 # Moving variables
 var moveOffset
+var moveOffsetMulti = {}
 var moveBasis
-var currentlyMovingObject # to prevent the user from moving another object when raycast hits new object
+# var currentlyMovingObject # to prevent the user from moving another object when raycast hits new object
 
 # Stretching varibales
 var stretchDistance # holds the value between the two controllers to be compared for stretching
@@ -65,15 +66,19 @@ func _process(delta: float) -> void:
 	# Allows this script to be ran
 	if is_active:
 		if controller.is_button_pressed("grip_click") and editIndex == 0: # Moving object only with raycast, default index
-			if currentSelectedObject:
+			if selectIndex == 0 or selectIndex == 2:
+				if currentSelectedObject:
+					if not currentlyMoving:
+						startMove()
+						currentlyMoving = true
+					# print("Grip is active")
+					moveObject()
+			elif selectIndex == 1 and !multiSelectHolder.is_empty():
 				if not currentlyMoving:
-					currentlyMovingObject = currentSelectedObject
-					startMove(currentlyMovingObject)
+					startMove()
 					currentlyMoving = true
-				# print("Grip is active")
-				moveObject(currentlyMovingObject)
+				moveObject()
 		else:
-			currentlyMovingObject = null
 			currentlyMoving = false
 
 		if controller.is_button_pressed("grip_click") and secondary_controller.is_button_pressed("grip_click") and editIndex == 1: # Stretch the object when gripping controllers and pulling outwards or inwards, second / first index value
@@ -182,16 +187,26 @@ func stretchObject(main, secondary, obj):
 	emit_signal("objectEdited")
 
 # Moving functions
-func startMove(obj):
-	moveOffset = obj.global_position - self.global_position # distance between object and controller
-	moveBasis = self.global_transform.basis # starting basis for the object to rotate around
-	# print(moveOffset)
+func startMove():
+	if selectIndex == 0 or selectIndex == 2:
+		moveOffset = currentSelectedObject.global_position - self.global_position # distance between object and controller
+		moveBasis = self.global_transform.basis # starting basis for the object to rotate around
+		# print(moveOffset)
+	elif selectIndex == 1 and !multiSelectHolder.is_empty():
+		for obj in multiSelectHolder:
+			moveOffsetMulti[obj] = obj.global_position - self.global_position
+		moveBasis = self.global_transform.basis
 
-func moveObject(obj):
-	# print("Object is : ", obj)
-	# Moves the objects position based on the rotation and distance the controller has moved
+func moveObject():
 	var rotation = self.global_transform.basis * moveBasis.inverse()
-	obj.global_position = self.global_position + rotation * moveOffset
+	if selectIndex == 0 or selectIndex == 2:
+		# Moves the objects position based on the rotation and distance the controller has moved
+		currentSelectedObject.global_position = self.global_position + rotation * moveOffset
+
+	elif selectIndex == 1 and !multiSelectHolder.is_empty():
+		for obj in multiSelectHolder:
+			obj.global_position = self.global_position + rotation * moveOffsetMulti[obj]
+
 	emit_signal("objectEdited")
 
 # Highlighting Functions
