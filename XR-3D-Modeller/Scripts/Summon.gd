@@ -227,27 +227,23 @@ func _process(_delta):
 						# print("Object is selected")
 						currentSelectedObject = highlighted_object
 						await _apply_highlight(currentSelectedObject, selected_color)
-			
-			# Vertex select
-			elif highlighted_vertex:
-				triggerPressed = true
-				if !currentlyConnecting:
-					currentlyConnecting = highlighted_vertex # Set the selected vertex as the chosen vertex to create edges from.
-					await _apply_highlight(currentlyConnecting, selected_color)
-					highlighted_object = null
-					
-				elif currentlyConnecting == highlighted_vertex:
-					var deselect_vertex = currentlyConnecting
-					currentlyConnecting = null
-					highlighted_vertex = null
-					await _remove_highlight(deselect_vertex)
 
 		elif not is_button_pressed("trigger_click"):
 			triggerPressed = false
 			
 		# Grip logic for gripping a vertex to connect it to another vertex creating an edge
 		if is_button_pressed("grip"):
-			print("Grip caught")
+			if not currentlyConnecting and highlighted_vertex:
+				currentlyConnecting = highlighted_vertex
+				await _apply_highlight(currentlyConnecting, selected_color)
+
+		else:
+			if currentlyConnecting:
+				var deselect_color = currentlyConnecting
+				if highlighted_vertex and highlighted_vertex != currentlyConnecting:
+					connect_vertex(currentlyConnecting, highlighted_vertex)
+				currentlyConnecting = null
+				await _remove_highlight(deselect_color)
 
 func combine_objects(index, combiner, spawnPoint, objectNormal):
 	if index < summonableObjects.size():
@@ -328,17 +324,44 @@ func summon_vertex():
 	placed_vertices = get_tree().get_nodes_in_group("placedVertices")
 	connect_vertices[vertex] = []
 	emit_signal("verticeSummoned")
-	print("Vertex placed : ", vertex.global_position)
+	# print("Vertex placed : ", vertex.global_position)
 
 func connect_vertex(vertex_1, vertex_2): # Assuming the this follows grip logic
-	print("Connecting vertex : ", " : With vertex : ")
+	print("Connecting vertex : ", vertex_1, " : With vertex : ", vertex_2)
+	if not is_instance_valid(vertex_1) or not is_instance_valid(vertex_2):
+		return
+	
+	if vertex_2 not in connect_vertices[vertex_1]:
+		connect_vertices[vertex_1].append(vertex_2)
+	if vertex_1 not in connect_vertices[vertex_2]:
+		connect_vertices[vertex_2].append(vertex_1)
+	
+	draw_edge(vertex_1, vertex_2)
+
+# Draw the edge that was created by connecting the two vertices
+func draw_edge(vertex_1, vertex_2):
+	var edge = CylinderMesh.new()
+	var mesh = MeshInstance3D.new()
+	var dist = vertex_1.global_position.distance_to(vertex_2.global_position)
+	var mid = (vertex_1.global_position + vertex_2.global_position) / 2
+	
+	edge.top_radius = 0.01
+	edge.bottom_radius = 0.01
+	edge.height = dist
+	mesh.mesh = edge
+	
+	get_tree().current_scene.add_child(mesh)
+	
+	mesh.global_position = mid
+	mesh.look_at(vertex_1.global_position, Vector3.UP)
+	mesh.rotate_object_local(Vector3.RIGHT, PI / 2)
 
 # Vertex highlighting
 func update_highlighted_vertex():
 	if vertexRaycast.is_colliding():
 		var obj = vertexRaycast.get_collider()
-		print("Vertex raycast hit: ", obj)
-		print("In placed_vertices: ", obj in placed_vertices)
+		# print("Vertex raycast hit: ", obj)
+		# print("In placed_vertices: ", obj in placed_vertices)
 		if obj in placed_vertices:
 			if obj != highlighted_vertex:
 				if highlighted_vertex:
@@ -347,7 +370,8 @@ func update_highlighted_vertex():
 				_apply_highlight(highlighted_vertex, highlight_color)
 	else:
 		if highlighted_vertex:
-			_remove_highlight(highlighted_vertex)
+			if highlighted_vertex != currentlyConnecting:
+				_remove_highlight(highlighted_vertex)
 			highlighted_vertex = null
 
 # Highlighting Functions
