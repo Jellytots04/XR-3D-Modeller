@@ -17,6 +17,7 @@ var currentlyStretching = false
 var moveOffset
 var moveOffsetMulti = {}
 var moveBasis
+var moveSpeed = 2.0 # Variable to direct how fast the object will move towards the user using the joystick
 # var currentlyMovingObject # to prevent the user from moving another object when raycast hits new object
 
 # Stretching varibales
@@ -73,14 +74,17 @@ func _process(delta: float) -> void:
 						startMove()
 						currentlyMoving = true
 					# print("Grip is active")
-					moveObject()
+					moveObject(delta)
+
 			elif selectIndex == 1 and !multiSelectHolder.is_empty():
 				if not currentlyMoving:
 					startMove()
 					currentlyMoving = true
-				moveObject()
+				moveObject(delta)
 		else:
 			currentlyMoving = false
+
+		
 
 		if controller.is_button_pressed("grip_click") and secondary_controller.is_button_pressed("grip_click") and editIndex == 1: # Stretch the object when gripping controllers and pulling outwards or inwards, second / first index value
 			if selectIndex == 0 or selectIndex == 1:
@@ -217,15 +221,29 @@ func startMove():
 			moveOffsetMulti[obj] = obj.global_position - self.global_position
 		moveBasis = self.global_transform.basis
 
-func moveObject():
+func moveObject(delta):
 	var rotation = self.global_transform.basis * moveBasis.inverse()
 	if selectIndex == 0 or selectIndex == 2:
 		# Moves the objects position based on the rotation and distance the controller has moved
 		currentSelectedObject.global_position = self.global_position + rotation * moveOffset
+		var joystick = controller.get_vector2("primary")
+		print(joystick)
+		if abs(joystick.y) > 0.1:
+			print("Object is being pulled towards me : ", joystick.y)
+			var offset_direction = -controller.global_transform.basis.z
+			print("offset direction : ", offset_direction)
+			moveOffset += offset_direction * joystick.y * moveSpeed * delta
+			print("Moving objects location : ",currentSelectedObject.global_position)
 
 	elif selectIndex == 1 and !multiSelectHolder.is_empty():
 		for obj in multiSelectHolder:
 			obj.global_position = self.global_position + rotation * moveOffsetMulti[obj]
+
+			var joystick = controller.get_vector2("primary")
+			print(joystick)
+			if abs(joystick.y) > 0.1:
+				var offset_direction = -controller.global_transform.basis.z
+				obj.global_position += offset_direction * joystick.y * moveSpeed * delta
 
 	emit_signal("objectEdited")
 
