@@ -223,27 +223,24 @@ func startMove():
 
 func moveObject(delta):
 	var rotation = self.global_transform.basis * moveBasis.inverse()
+	var offset_direction = -controller.global_transform.basis.z
+	var joystick = controller.get_vector2("primary")
 	if selectIndex == 0 or selectIndex == 2:
 		# Moves the objects position based on the rotation and distance the controller has moved
 		currentSelectedObject.global_position = self.global_position + rotation * moveOffset
-		var joystick = controller.get_vector2("primary")
 		print(joystick)
 		if abs(joystick.y) > 0.1:
-			print("Object is being pulled towards me : ", joystick.y)
-			var offset_direction = -controller.global_transform.basis.z
-			print("offset direction : ", offset_direction)
+			#print("Object is being pulled towards me : ", joystick.y)
+			#print("offset direction : ", offset_direction)
 			moveOffset += offset_direction * joystick.y * moveSpeed * delta
-			print("Moving objects location : ",currentSelectedObject.global_position)
+			#print("Moving objects location : ",currentSelectedObject.global_position)
 
 	elif selectIndex == 1 and !multiSelectHolder.is_empty():
 		for obj in multiSelectHolder:
 			obj.global_position = self.global_position + rotation * moveOffsetMulti[obj]
 
-			var joystick = controller.get_vector2("primary")
-			print(joystick)
 			if abs(joystick.y) > 0.1:
-				var offset_direction = -controller.global_transform.basis.z
-				obj.global_position += offset_direction * joystick.y * moveSpeed * delta
+				moveOffsetMulti[obj] += offset_direction * joystick.y * moveSpeed * delta
 
 	emit_signal("objectEdited")
 
