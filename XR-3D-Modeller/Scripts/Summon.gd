@@ -25,6 +25,7 @@ var multiSelectHolder = []
 
 # var summonableObjects = []
 # var ghostedObjects = []
+# Summon variables
 var summonedObjects
 var objectsInScene = []
 var summonIndex = 0 # Default index value defined by the build pages button value on the UI controller
@@ -36,6 +37,11 @@ var is_active = true
 var objectSize = 1.0 # Used for size scaler in the UI, starts on 1.0 scaling
 var csgIndex = 0 # Default combine csgIndex
 
+# Vertex variables
+var placed_vertices = []
+var connect_vertices = {}
+var currentlyConnecting = null 
+
 # Highlighting variables
 var highlighting_cancelled = false
 var highlighting = false
@@ -46,9 +52,6 @@ var true_materials = {}
 var highlighted_object = null
 var highlight_color = Color(0.756, 0.453, 0.105, 1.0) # Red highlight / Pinkish highlight
 var selected_color = Color(0.913, 0.967, 0.331, 1.0) # When clicked on this is the color the object will assume
-
-# For Pickup and relase signalling
-var last_grabbed_object = null
 
 # Replace folder variables with arrays of file paths
 @export var summonablePaths := [
@@ -284,7 +287,13 @@ func summon_object(index):
 
 func summon_vertex():
 	print("Summoning the vertex")
-
+	var vertex = summonableObjects[3].instantiate()
+	var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
+	vertex.global_position = spawn_pos
+	get_tree().current_scene.add_child(vertex)
+	placed_vertices.append(vertex)
+	connect_vertices[vertex] = []
+	print("Vertex placed : ", vertex.global_position)
 
 # Highlighting Functions
 func update_highlighted_object():
