@@ -125,16 +125,19 @@ func _process(_delta):
 				ghostInstance.scale = objectSize * Vector3.ONE # sets all of the values to objectSize
 				get_tree().current_scene.add_child(ghostInstance)
 				ghostingOn = true
-
-			if raycast_3d.is_colliding():
-				var obj = raycast_3d.get_collider()
-				if obj in summonedObjects:
-					var snap_pos = raycast_3d.get_collision_point() + raycast_3d.get_collision_normal() * 0.01
-					ghostInstance.global_position = snap_pos
-					ghostInstance.look_at(raycast_3d.get_collision_point(), raycast_3d.get_collision_normal())
-			else:
+			if summonIndex == 3:
 				var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
 				ghostInstance.global_transform.origin = spawn_pos
+			else:
+				if raycast_3d.is_colliding():
+					var obj = raycast_3d.get_collider()
+					if obj in summonedObjects:
+						var snap_pos = raycast_3d.get_collision_point() + raycast_3d.get_collision_normal() * 0.01
+						ghostInstance.global_position = snap_pos
+						ghostInstance.look_at(raycast_3d.get_collision_point(), raycast_3d.get_collision_normal())
+				else:
+					var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
+					ghostInstance.global_transform.origin = spawn_pos
 
 		else:
 			if ghostingOn:
@@ -143,13 +146,16 @@ func _process(_delta):
 				ghostingOn = false
 				timer.start()
 				can_summon = false
-				if raycast_3d.is_colliding():
-					var obj = raycast_3d.get_collider()
-					if obj in summonedObjects:
-						# print("Combined")
-						combine_objects(summonIndex, obj, raycast_3d.get_collision_point(), raycast_3d.get_collision_normal())
+				if summonIndex == 3:
+					summon_vertex()
 				else:
-					summon_object(summonIndex)
+					if raycast_3d.is_colliding():
+						var obj = raycast_3d.get_collider()
+						if obj in summonedObjects:
+							# print("Combined")
+							combine_objects(summonIndex, obj, raycast_3d.get_collision_point(), raycast_3d.get_collision_normal())
+					else:
+						summon_object(summonIndex)
 		update_highlighted_object()
 		
 				# If the user clicks / presses right trigger on an highlighted object it will become the selected object
@@ -275,6 +281,10 @@ func summon_object(index):
 		print(summonedObjects)
 	else:
 		print("Summonables out of index")
+
+func summon_vertex():
+	print("Summoning the vertex")
+
 
 # Highlighting Functions
 func update_highlighted_object():
