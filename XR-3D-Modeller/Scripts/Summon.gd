@@ -169,7 +169,7 @@ func _process(_delta):
 		update_highlighted_object()
 		update_highlighted_vertex()
 		
-				# If the user clicks / presses right trigger on an highlighted object it will become the selected object
+		# If the user clicks / presses right trigger on an highlighted object it will become the selected object
 		if is_button_pressed("trigger_click") and !triggerPressed: # This is group select aka entire object because highlighted_object will be the CSGCombiner
 			if highlighted_object:
 				# Group selecting (Entire CSGCombiner included)
@@ -227,9 +227,27 @@ func _process(_delta):
 						# print("Object is selected")
 						currentSelectedObject = highlighted_object
 						await _apply_highlight(currentSelectedObject, selected_color)
+			
+			# Vertex select
+			elif highlighted_vertex:
+				triggerPressed = true
+				if !currentlyConnecting:
+					currentlyConnecting = highlighted_vertex # Set the selected vertex as the chosen vertex to create edges from.
+					await _apply_highlight(currentlyConnecting, selected_color)
+					highlighted_object = null
+					
+				elif currentlyConnecting == highlighted_vertex:
+					var deselect_vertex = currentlyConnecting
+					currentlyConnecting = null
+					highlighted_vertex = null
+					await _remove_highlight(deselect_vertex)
 
 		elif not is_button_pressed("trigger_click"):
 			triggerPressed = false
+			
+		# Grip logic for gripping a vertex to connect it to another vertex creating an edge
+		if is_button_pressed("grip"):
+			print("Grip caught")
 
 func combine_objects(index, combiner, spawnPoint, objectNormal):
 	if index < summonableObjects.size():
@@ -311,6 +329,9 @@ func summon_vertex():
 	connect_vertices[vertex] = []
 	emit_signal("verticeSummoned")
 	print("Vertex placed : ", vertex.global_position)
+
+func connect_vertex(vertex_1, vertex_2): # Assuming the this follows grip logic
+	print("Connecting vertex : ", " : With vertex : ")
 
 # Vertex highlighting
 func update_highlighted_vertex():
