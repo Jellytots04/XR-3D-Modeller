@@ -28,8 +28,10 @@ script = ExtResource("1_5pt0g")
 max_speed = 3.3
 strafe = true
 
-[node name="Marker3D" type="Marker3D" parent="LeftHand/LeftHand" unique_id=2111490497]
+[node name="Docking" type="Marker3D" parent="LeftHand/LeftHand" unique_id=2111490497]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.1, 0, 0.36)
+
+[node name="Levitate" type="Marker3D" parent="LeftHand/LeftHand" unique_id=1565467319]
 
 [node name="FunctionPointer" parent="LeftHand" unique_id=699509882 instance=ExtResource("3_ayg2o")]
 show_laser = 2
