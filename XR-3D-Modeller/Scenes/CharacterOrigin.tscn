@@ -74,9 +74,9 @@ debug_shape_thickness = 5
 [node name="MovementTurn" parent="RightHand" unique_id=1076150263 instance=ExtResource("10_55u2w")]
 turn_mode = 2
 
-[node name="SelectRayCast" type="RayCast3D" parent="RightHand" unique_id=387871037]
+[node name="BuildRayCast" type="RayCast3D" parent="RightHand" unique_id=387871037]
 target_position = Vector3(0, 0, -8)
-collision_mask = 2
+collision_mask = 8
 debug_shape_custom_color = Color(0.80813736, 3.272891e-06, 7.70092e-07, 1)
 debug_shape_thickness = 5
 

@@ -1,13 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://dlg6w5bafkbpa"]
+[gd_scene format=3 uid="uid://dlg6w5bafkbpa"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_ab2ed"]
-radius = 0.1
-height = 0.2
+radius = 0.05
+height = 0.1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cvim3"]
 transparency = 1
 albedo_color = Color(1, 1, 1, 0.3137255)
 
-[node name="MeshInstance3D" type="MeshInstance3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" unique_id=2055233293]
 mesh = SubResource("SphereMesh_ab2ed")
 surface_material_override/0 = SubResource("StandardMaterial3D_cvim3")

@@ -4,7 +4,6 @@ signal objectRemoved
 # Since this will always be attached to the right controller
 @onready var controller = get_parent().get_parent()
 @onready var raycast_3d = controller.get_node("RayCast3D")
-@onready var selectCast_3d = controller.get_node("SelectRayCast")
 
 # Flags
 var triggerPressed = false
@@ -12,6 +11,7 @@ var is_active = false
 
 # Scene Variables
 var summonedObjects
+var placed_vertices = []
 
 # Select Variables
 var currentSelectedObject
@@ -31,11 +31,11 @@ var selected_color = Color(0.913, 0.967, 0.331, 1.0) # When clicked on this is t
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	print(selectCast_3d.collision_mask)
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # If there are any existing objects already then load, will be used later on for previous saves
 	var summoner = get_node("../..") # Summoner is the main script and is and will be attached to the main user
 	# print(summoner)
 	summoner.connect("objectSummoned", Callable(self,  "update_list"))
+	summoner.connect("verticeSummoned", Callable(self, "update_list"))
 	var editor = get_node("../EditFunction")
 	editor.connect("objectEdited", Callable(self, "update_list"))
 	var ui_controllers = get_tree().get_nodes_in_group("ui_controller")
@@ -390,6 +390,7 @@ func set_page_index(idx):
 func update_list():
 	#print("Hello from remove script new object update signal")
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+	placed_vertices = get_tree().get_nodes_in_group("placedVertices")
 
 # Add a clearance previous select on change
 func select_index_change(idx):

@@ -5,6 +5,7 @@ extends XRController3D
 # Not allowing the players to pick up the objets via grabbing.
 # Will use a separate function for that.
 signal objectSummoned
+signal verticeSummoned
 
 @export var object_scene: PackedScene
 @export var spawn_distance := 1.0
@@ -13,6 +14,7 @@ signal objectSummoned
 # Onready variables used 
 @onready var timer = $Timer
 @onready var raycast_3d = $RayCast3D # Fix path later when the ToolNodebox is implemented
+@onready var vertexRaycast = $BuildRayCast
 # @export var bland
 
 # Flags
@@ -98,6 +100,7 @@ func _ready() -> void:
 	# Get the path for the left Hand controller
 	
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+	placed_vertices = get_tree().get_node_count_in_group("placedVertices")
 	var remover = get_node("FunctionToolNode/RemoveFunction") # Remove Function
 	# print(remover)
 	remover.connect("objectRemoved", Callable(self, "update_list"))
@@ -291,8 +294,17 @@ func summon_vertex():
 	var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
 	vertex.global_position = spawn_pos
 	get_tree().current_scene.add_child(vertex)
-	placed_vertices.append(vertex)
+	
+	await get_tree().process_frame
+	
+	vertex.use_collision = true
+	vertex.collision_layer = 4
+	vertex.collision_mask = 4
+	vertex.add_to_group("placedVertices")
+	
+	placed_vertices = get_tree().get_nodes_in_group("placedVertices")
 	connect_vertices[vertex] = []
+	emit_signal("verticeSummoned")
 	print("Vertex placed : ", vertex.global_position)
 
 # Highlighting Functions
@@ -523,6 +535,7 @@ func change_csg_operation(idx):
 func update_list():
 	#print("Hello from update list in Summon")
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+	placed_vertices = get_tree().get_nodes_in_group("placedVertices")
 
 func set_summon_index(idx):
 	print("Summon Called")
