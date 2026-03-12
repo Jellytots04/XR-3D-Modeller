@@ -6,5 +6,8 @@ height = 0.1
 radial_segments = 8
 rings = 8
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y85f3"]
+
 [node name="CSGMesh3D" type="CSGMesh3D" unique_id=647124383]
 mesh = SubResource("SphereMesh_y85f3")
+material = SubResource("StandardMaterial3D_y85f3")

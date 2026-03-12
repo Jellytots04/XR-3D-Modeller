@@ -44,6 +44,9 @@ var placed_vertices = []
 var connect_vertices = {}
 var currentlyConnecting = null 
 
+# Vertex highlighting variables
+var highlighted_vertex = null
+
 # Highlighting variables
 var highlighting_cancelled = false
 var highlighting = false
@@ -100,7 +103,7 @@ func _ready() -> void:
 	# Get the path for the left Hand controller
 	
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
-	placed_vertices = get_tree().get_node_count_in_group("placedVertices")
+	placed_vertices = get_tree().get_nodes_in_group("placedVertices")
 	var remover = get_node("FunctionToolNode/RemoveFunction") # Remove Function
 	# print(remover)
 	remover.connect("objectRemoved", Callable(self, "update_list"))
@@ -162,7 +165,9 @@ func _process(_delta):
 							combine_objects(summonIndex, obj, raycast_3d.get_collision_point(), raycast_3d.get_collision_normal())
 					else:
 						summon_object(summonIndex)
+		
 		update_highlighted_object()
+		update_highlighted_vertex()
 		
 				# If the user clicks / presses right trigger on an highlighted object it will become the selected object
 		if is_button_pressed("trigger_click") and !triggerPressed: # This is group select aka entire object because highlighted_object will be the CSGCombiner
@@ -298,14 +303,31 @@ func summon_vertex():
 	await get_tree().process_frame
 	
 	vertex.use_collision = true
-	vertex.collision_layer = 4
-	vertex.collision_mask = 4
+	vertex.collision_layer = 8
+	vertex.collision_mask = 8
 	vertex.add_to_group("placedVertices")
 	
 	placed_vertices = get_tree().get_nodes_in_group("placedVertices")
 	connect_vertices[vertex] = []
 	emit_signal("verticeSummoned")
 	print("Vertex placed : ", vertex.global_position)
+
+# Vertex highlighting
+func update_highlighted_vertex():
+	if vertexRaycast.is_colliding():
+		var obj = vertexRaycast.get_collider()
+		print("Vertex raycast hit: ", obj)
+		print("In placed_vertices: ", obj in placed_vertices)
+		if obj in placed_vertices:
+			if obj != highlighted_vertex:
+				if highlighted_vertex:
+					_remove_highlight(highlighted_vertex)
+				highlighted_vertex = obj
+				_apply_highlight(highlighted_vertex, highlight_color)
+	else:
+		if highlighted_vertex:
+			_remove_highlight(highlighted_vertex)
+			highlighted_vertex = null
 
 # Highlighting Functions
 func update_highlighted_object():
