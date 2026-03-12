@@ -28,6 +28,9 @@ script = ExtResource("1_5pt0g")
 max_speed = 3.3
 strafe = true
 
+[node name="Marker3D" type="Marker3D" parent="LeftHand/LeftHand" unique_id=2111490497]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.1, 0, 0.36)
+
 [node name="FunctionPointer" parent="LeftHand" unique_id=699509882 instance=ExtResource("3_ayg2o")]
 show_laser = 2
 laser_length = 1
@@ -76,6 +79,7 @@ debug_shape_custom_color = Color(0.80813736, 3.272891e-06, 7.70092e-07, 1)
 debug_shape_thickness = 5
 
 [node name="PlayerBody" parent="." unique_id=1094677019 instance=ExtResource("9_55u2w")]
+collision_mask = 1019
 
 [connection signal="has_dropped" from="RightHand/RightHand/FunctionPickup" to="RightHand" method="_on_function_pickup_has_dropped"]
 [connection signal="has_picked_up" from="RightHand/RightHand/FunctionPickup" to="RightHand" method="_on_function_pickup_has_picked_up"]
