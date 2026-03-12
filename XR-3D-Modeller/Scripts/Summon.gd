@@ -15,6 +15,14 @@ signal objectSummoned
 @onready var raycast_3d = $RayCast3D # Fix path later when the ToolNodebox is implemented
 # @export var bland
 
+# Flags
+var triggerPressed = false
+
+# Select variables
+var selectIndex = 0
+var currentSelectedObject 
+var multiSelectHolder = []
+
 # var summonableObjects = []
 # var ghostedObjects = []
 var summonedObjects
@@ -29,13 +37,15 @@ var objectSize = 1.0 # Used for size scaler in the UI, starts on 1.0 scaling
 var csgIndex = 0 # Default combine csgIndex
 
 # Highlighting variables
+var highlighting_cancelled = false
+var highlighting = false
+var remove_highlighting_cancelled = false
+var remove_highlighting = false
 var original_materials = {}
+var true_materials = {}
 var highlighted_object = null
 var highlight_color = Color(0.756, 0.453, 0.105, 1.0) # Red highlight / Pinkish highlight
-var highlighting = false
-var highlighting_cancelled = false
-var remove_highlighting = false
-var remove_highlighting_cancelled = false
+var selected_color = Color(0.913, 0.967, 0.331, 1.0) # When clicked on this is the color the object will assume
 
 # For Pickup and relase signalling
 var last_grabbed_object = null
@@ -98,6 +108,7 @@ func _ready() -> void:
 		ui_controller.connect("summonable_selected", Callable(self, "set_summon_index")) # changes the selected summonable object 1 - 4 / 0 - 3
 		ui_controller.connect("scaleSize", Callable(self, "set_scale_size")) # changes the scale size for summoning and ghosting objects
 		ui_controller.connect("csg_operation", Callable(self, "change_csg_operation"))
+		ui_controller.connect("select_change", Callable(self, "select_index_change"))
 		print("Controller found ", ui_controller)
 	else:
 		print("UI Controller not found")
@@ -140,8 +151,70 @@ func _process(_delta):
 				else:
 					summon_object(summonIndex)
 		update_highlighted_object()
+		
+				# If the user clicks / presses right trigger on an highlighted object it will become the selected object
+		if is_button_pressed("trigger_click") and !triggerPressed: # This is group select aka entire object because highlighted_object will be the CSGCombiner
+			if highlighted_object:
+				# Group selecting (Entire CSGCombiner included)
+				if selectIndex == 0:
+					triggerPressed = true
+					# print("This is Group / All select")
+					# Release trigger / click
+					if currentSelectedObject == highlighted_object:
+						# print("Goodbye previous selected object", currentSelectedObject)
+						var deselct_object = currentSelectedObject
+						currentSelectedObject = null
+						highlighted_object = null
+						await _remove_highlight(deselct_object)
 
-func combine_objects(index, obj, spawnPoint, objectNormal):
+					elif not currentSelectedObject:
+						# print("Hello new selected object", highlighted_object)
+						currentSelectedObject = highlighted_object
+						highlighted_object = null
+						await _apply_highlight(currentSelectedObject, selected_color)
+
+				# Multiple selecting (Can select an infinite amount of objects)
+				elif selectIndex == 1: # Multi Select
+					triggerPressed = true
+					# print("This will be multi select")
+					if highlighted_object in multiSelectHolder:
+						# print("Removing : ", highlighted_object, " : To the multiSelectHolder")
+						var deselect_object = highlighted_object
+						highlighted_object = null
+						multiSelectHolder.erase(deselect_object)
+						await _remove_highlight(deselect_object)
+
+					elif highlighted_object not in multiSelectHolder:
+						# print("Adding : ", highlighted_object, " : To the multiSelectHolder")
+						# print("Hello new selected object", highlighted_object)
+						# print(currentSelectedObject, highlighted_object)
+						# _remove_highlight(currentSelectedObject) # Remove any previous highlighting
+						_apply_highlight(highlighted_object, selected_color)
+						multiSelectHolder.append(highlighted_object)
+						# print(currentSelectedObject.scale)
+						# Select case for ensuring the object is selected
+						currentSelectedObject = null
+
+				# Single object selecting (Select a single object at a time)
+				elif selectIndex == 2: # Single Select
+					triggerPressed = true
+					# print("This will be single select")
+					if currentSelectedObject == highlighted_object:
+						# print("Object is no longer selected")
+						var deselect_object = currentSelectedObject
+						currentSelectedObject = null
+						highlighted_object = null
+						await _remove_highlight(deselect_object)
+
+					elif not currentSelectedObject:
+						# print("Object is selected")
+						currentSelectedObject = highlighted_object
+						await _apply_highlight(currentSelectedObject, selected_color)
+
+		elif not is_button_pressed("trigger_click"):
+			triggerPressed = false
+
+func combine_objects(index, combiner, spawnPoint, objectNormal):
 	if index < summonableObjects.size():
 		# Instantiate the object in the scene
 		var new_obj = summonableObjects[index].instantiate()
@@ -156,7 +229,7 @@ func combine_objects(index, obj, spawnPoint, objectNormal):
 		get_tree().current_scene.add_child(new_obj)
 		new_obj.look_at(spawnPoint, objectNormal)
 		new_obj.add_to_group("summonedObjects")
-		new_obj.reparent(obj)
+		new_obj.reparent(combiner)
 		new_obj.use_collision = true
 		new_obj.collision_layer = 2
 		print("Parent is : ", new_obj.get_parent())
@@ -203,63 +276,106 @@ func summon_object(index):
 	else:
 		print("Summonables out of index")
 
+# Highlighting Functions
 func update_highlighted_object():
 	# print("Ray update")
 	if raycast_3d.is_colliding():
-		var obj = raycast_3d.get_collider()
-		#print("Hit: ", raycast_3d.get_collider())
-		#print("Parent: ", raycast_3d.get_collider().get_parent())
-		#print("In group: ", raycast_3d.get_collider() in summonedObjects)
-		if obj in summonedObjects:
-			# print("Object was found in summonedObjects")
-			if obj != highlighted_object:
-				if highlighted_object:
-					_remove_highlight(highlighted_object)
-				highlighted_object = obj
-				_apply_highlight(highlighted_object)
+		var combiner = raycast_3d.get_collider()
+		if selectIndex == 0:
+			if combiner in summonedObjects:
+				if combiner != highlighted_object:
+					if highlighted_object and highlighted_object != currentSelectedObject:
+						_remove_highlight(highlighted_object)
+					highlighted_object = combiner
+					if highlighted_object != currentSelectedObject:
+						_apply_highlight(highlighted_object, highlight_color)
+
+		else:
+			# print("For Multi and Single selecting")
+			if combiner in summonedObjects:
+				var hit_point = raycast_3d.get_collision_point()
+				var selected_obj = null # Object holder variable
+
+				for child in combiner.get_children():
+					if child is CSGMesh3D:
+						var aabb = child.get_aabb()
+						var global_aabb = child.global_transform * aabb
+						if global_aabb.has_point(hit_point):
+							selected_obj = child
+							break
+
+				if selected_obj != null:
+					if selectIndex == 2 and highlighted_object and highlighted_object != currentSelectedObject: # Checking for single select
+						_remove_highlight(highlighted_object)
+					
+					elif selectIndex == 1 and highlighted_object not in multiSelectHolder:
+						_remove_highlight(highlighted_object)
+					
+					highlighted_object = selected_obj
+					
+					if selectIndex == 2 and highlighted_object != currentSelectedObject:
+						_apply_highlight(highlighted_object, highlight_color)
+					elif selectIndex == 1 and highlighted_object not in multiSelectHolder:
+						_apply_highlight(highlighted_object, highlight_color) 
+					# print("Selected this child : ", currentSelectedObject)
+
 	else:
 		if highlighted_object:
-			remove_highlighting_cancelled = true
-			_remove_highlight(highlighted_object)
-			highlighted_object = null
+			if selectIndex == 0 and highlighted_object != currentSelectedObject:
+				_remove_highlight(highlighted_object)
+			if selectIndex == 2 and highlighted_object != currentSelectedObject:
+				_remove_highlight(highlighted_object)
+			elif selectIndex == 1 and highlighted_object not in multiSelectHolder:
+				_remove_highlight(highlighted_object)
+		highlighted_object = null
 
 # Highlighting recursive function
-func _apply_highlight(obj):
+func _apply_highlight(obj, color):
 	highlighting_cancelled = true
 	await get_tree().process_frame
 	
 	highlighting_cancelled = false
 	highlighting = true
 	
-	await _apply_highlight_recursive(obj)
+	await _apply_highlight_recursive(obj, color)
 	
 	highlighting = false
 
-func _apply_highlight_recursive(obj):
+func _apply_highlight_recursive(obj, color):
 	# If this is true then cancel the recursive script
 	if highlighting_cancelled:
 		return
 	
+	if not is_instance_valid(obj):
+		return
+	
 	var mesh_inst = null
+	
 	if obj is CSGCombiner3D:
 		for child in obj.get_children():
 			if highlighting_cancelled:
 				return
-			await _apply_highlight_recursive(child)
-
-		print("obj is a CSGCombiner3D")
+			await _apply_highlight_recursive(child, color)
 	
-	elif obj is CSGMesh3D:
+	if obj is CSGMesh3D:
+		# print("obj is a CSGMesh3D")
 		mesh_inst = obj
+		
 		if mesh_inst.mesh:
+			
+			if not mesh_inst in true_materials:
+				true_materials[mesh_inst] = mesh_inst.material
+			
 			original_materials[mesh_inst] = mesh_inst.material
 			if mesh_inst.material:
 				var mat = mesh_inst.material.duplicate()
-				mat.albedo_color = highlight_color
+				mat.albedo_color = color
 				mesh_inst.material = mat
-
+			
 			# Will pause after applying material to reduce lag
 			await get_tree().process_frame
+			if not is_instance_valid(obj):
+				return
 		else:
 			print("No Mesh resource found on CSGMesh3D!")
 
@@ -267,20 +383,28 @@ func _apply_highlight_recursive(obj):
 			for child in obj.get_children():
 				if highlighting_cancelled:
 					return
-				await _apply_highlight_recursive(child)
-
+				if not is_instance_valid(child):
+					continue
+				await _apply_highlight_recursive(child, color)
+	
 	elif obj.has_node("CSGMesh3D"):
-		print("OBJ has a CSGMesh3D")
+		# print("OBJ has a CSGMesh3D")
 		mesh_inst = obj.get_node("CSGMesh3D")
-
+		
 		if mesh_inst.mesh:
+
+			if not mesh_inst in true_materials:
+				true_materials[mesh_inst] = mesh_inst.material
+
 			original_materials[mesh_inst] = mesh_inst.material
 			if mesh_inst.material:
 				var mat = mesh_inst.material.duplicate()
-				mat.albedo_color = highlight_color
+				mat.albedo_color = color
 				mesh_inst.material = mat
 				
 			await get_tree().process_frame
+			if not is_instance_valid(obj):
+				return
 		else:
 			print("No mesh resource found on CSGMesh3D!")
 	else:
@@ -300,42 +424,70 @@ func _remove_highlight(obj):
 	
 	remove_highlighting = false
 
-
 func _remove_highlight_recursive(obj):
 	if remove_highlighting_cancelled:
 		return
-		
+	
+	if not is_instance_valid(obj):
+			return
+
 	var mesh_inst = null
+	
 	if obj is CSGCombiner3D:
 		for child in obj.get_children():
-			if highlighting_cancelled:
+			if remove_highlighting_cancelled:
 				return
+			if not is_instance_valid(child):
+				continue
 			await _remove_highlight_recursive(child)
-
+		
 	elif obj is CSGMesh3D:
 		mesh_inst = obj
+		
 		if mesh_inst.mesh:
-			if mesh_inst in original_materials:
-				mesh_inst.material = original_materials[mesh_inst]
-				original_materials.erase(mesh_inst)
+			if mesh_inst in true_materials:
+				mesh_inst.material = true_materials[mesh_inst]
+				if not currentSelectedObject:
+					true_materials.erase(mesh_inst)
+					original_materials.erase(mesh_inst)
 				
 			await get_tree().process_frame
-			
+			if not is_instance_valid(obj):
+				return
+
 		if obj.get_children():
 			for child in obj.get_children():
 				if remove_highlighting_cancelled:
 					return
-				await  _remove_highlight_recursive(child)
+				await _remove_highlight_recursive(child)
 				
 	elif obj.has_node("CSGMesh3D"):
 		mesh_inst = obj.get_node("CSGMesh3D")
 		
 		if mesh_inst.mesh:
-			if mesh_inst in original_materials:
-				mesh_inst.material = original_materials[mesh_inst]
-				original_materials.erase(mesh_inst)
+			if mesh_inst in true_materials:
+				mesh_inst.material = true_materials[mesh_inst]
+				if not currentSelectedObject:
+					true_materials.erase(mesh_inst)
+					original_materials.erase(mesh_inst)
 				
 			await get_tree().process_frame
+			if not is_instance_valid(obj):
+				return
+
+# Called when a new select index is chosen
+func clear_select(idx):
+	if selectIndex == 0 or selectIndex == 2:
+		var cleared_object = currentSelectedObject
+		currentSelectedObject = null
+		await _remove_highlight(cleared_object)
+	
+	if selectIndex == 1:
+		for child in multiSelectHolder:
+			await _remove_highlight(child)
+		multiSelectHolder.clear()
+
+	selectIndex = idx
 
 # Signals going and coming
 func set_page_index(idx):
@@ -350,7 +502,7 @@ func change_csg_operation(idx):
 	csgIndex = idx
 
 func update_list():
-	print("Hello from update list in Summon")
+	#print("Hello from update list in Summon")
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
 
 func set_summon_index(idx):
@@ -359,3 +511,7 @@ func set_summon_index(idx):
 	
 func set_scale_size(value):
 	objectSize = value
+
+# Add a clearance previous select on change
+func select_index_change(idx):
+	await clear_select(idx) # Clears and sets the new index

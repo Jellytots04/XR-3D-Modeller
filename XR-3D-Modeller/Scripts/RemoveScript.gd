@@ -388,7 +388,7 @@ func set_page_index(idx):
 		is_active = false
 
 func update_list():
-	print("Hello from remove script new object update signal")
+	#print("Hello from remove script new object update signal")
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
 
 # Add a clearance previous select on change

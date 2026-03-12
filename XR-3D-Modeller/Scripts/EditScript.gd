@@ -166,12 +166,6 @@ func _process(delta: float) -> void:
 		elif not controller.is_button_pressed("trigger_click"):
 			triggerPressed = false
 
-# Unused function
-func scaleSelectedObject():
-	# Will be used to scale an object that is selected
-	# Open up scale screen on UI controller
-	print("Will be used to scale")
-
 # Stretching functions
 # Main and secondary are both controllers
 func startStretch(main, secondary):
@@ -228,7 +222,6 @@ func moveObject(delta):
 	if selectIndex == 0 or selectIndex == 2:
 		# Moves the objects position based on the rotation and distance the controller has moved
 		currentSelectedObject.global_position = self.global_position + rotation * moveOffset
-		print(joystick)
 		if abs(joystick.y) > 0.1:
 			#print("Object is being pulled towards me : ", joystick.y)
 			#print("offset direction : ", offset_direction)

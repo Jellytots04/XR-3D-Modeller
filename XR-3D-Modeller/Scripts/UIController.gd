@@ -27,6 +27,7 @@ func _ready():
 		var build_options = build_tab.get_node("BuildOptions") # Top hotbar for the build options
 		var build_scaleSize = build_tab.get_node("ScaleOptions/Size")
 		var build_always = build_tab.get_node("AlwaysEditable")
+		var build_select = build_tab.get_node("SelectOptions")
 		var remove_options = viewport_scene.get_node("Remove/VerticalArrangement/RemoveOptions") 
 		var remove_select = viewport_scene.get_node("Remove/VerticalArrangement/SelectOptions")
 		var edit_tab = viewport_scene.get_node("Edit/VBoxContainer")
@@ -58,6 +59,11 @@ func _ready():
 				button.connect("pressed", Callable(self, "_csg_operation").bind(idx))
 		else:
 			print("csg operations are not found")
+
+		if build_select:
+			for idx in range(build_select.get_child_count()):
+				var button = build_select.get_child(idx)
+				button.connect("pressed", Callable(self, "_select_option").bind(idx))
 
 		if remove_options:
 			for idx in range(remove_options.get_child_count()):
