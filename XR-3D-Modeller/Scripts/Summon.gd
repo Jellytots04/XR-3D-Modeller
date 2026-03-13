@@ -43,6 +43,7 @@ var csgIndex = 0 # Default combine csgIndex
 var placed_vertices = []
 var connect_vertices = {}
 var currentlyConnecting = null 
+var ghostEdge = null
 
 # Vertex highlighting variables
 var highlighted_vertex = null
@@ -236,6 +237,12 @@ func _process(_delta):
 			if not currentlyConnecting and highlighted_vertex:
 				currentlyConnecting = highlighted_vertex
 				await _apply_highlight(currentlyConnecting, selected_color)
+			if currentlyConnecting and highlighted_vertex:
+				preview_edge(currentlyConnecting, highlighted_vertex)
+			else:
+				if ghostEdge and is_instance_valid(ghostEdge):
+					ghostEdge.queue_free()
+					ghostEdge = null
 
 		else:
 			if currentlyConnecting:
@@ -245,6 +252,7 @@ func _process(_delta):
 				currentlyConnecting = null
 				await _remove_highlight(deselect_color)
 
+# Summoning Functions
 func combine_objects(index, combiner, spawnPoint, objectNormal):
 	if index < summonableObjects.size():
 		# Instantiate the object in the scene
@@ -307,6 +315,7 @@ func summon_object(index):
 	else:
 		print("Summonables out of index")
 
+# Vertex / Verticies Functions
 func summon_vertex():
 	print("Summoning the vertex")
 	var vertex = summonableObjects[3].instantiate()
@@ -336,6 +345,10 @@ func connect_vertex(vertex_1, vertex_2): # Assuming the this follows grip logic
 	if vertex_1 not in connect_vertices[vertex_2]:
 		connect_vertices[vertex_2].append(vertex_1)
 	
+	if ghostEdge and is_instance_valid(ghostEdge):
+		ghostEdge.queue_free()
+		ghostEdge = null
+
 	draw_edge(vertex_1, vertex_2)
 
 # Draw the edge that was created by connecting the two vertices
@@ -355,6 +368,34 @@ func draw_edge(vertex_1, vertex_2):
 	mesh.global_position = mid
 	mesh.look_at(vertex_1.global_position, Vector3.UP)
 	mesh.rotate_object_local(Vector3.RIGHT, PI / 2)
+
+func preview_edge(vertex_1, vertex_2):
+	if ghostEdge and is_instance_valid(ghostEdge):
+		ghostEdge.queue_free()
+		ghostEdge = null
+	
+	var edge = CylinderMesh.new()
+	var mesh = MeshInstance3D.new()
+	var dist = vertex_1.global_position.distance_to(vertex_2.global_position)
+	var mid = (vertex_1.global_position + vertex_2.global_position) / 2
+	
+	edge.top_radius = 0.01
+	edge.bottom_radius = 0.01
+	edge.height = dist
+	mesh.mesh = edge
+	
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = Color(1, 1, 1, 0.4)
+	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	mesh.material_override = mat
+	
+	get_tree().current_scene.add_child(mesh)
+	
+	mesh.global_position = mid
+	mesh.look_at(vertex_1.global_position, Vector3.UP)
+	mesh.rotate_object_local(Vector3.RIGHT, PI / 2)
+
+	ghostEdge = mesh
 
 # Vertex highlighting
 func update_highlighted_vertex():
