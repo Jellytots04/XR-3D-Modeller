@@ -397,6 +397,63 @@ func preview_edge(vertex_1, vertex_2):
 
 	ghostEdge = mesh
 
+func validate_mesh() -> bool:
+	if placed_vertices.size() < 4:
+		print("Required Vertices is 4")
+		return false
+		
+	var vertices_usable = []
+	for vertex in placed_vertices:
+		if connect_vertices[vertex].size() == 0:
+			print("Skip this vertex: Empty Connections :, ", vertex.global_position)
+			continue
+		if connect_vertices.size() < 3:
+			print("Required connections is 3: ", vertex.global_position, " : only has : ", connect_vertices[vertex].size())
+		vertices_usable.append(vertex)
+		
+	if vertices_usable.size() < 4:
+		print("Required usable (connected) vertices is 4")
+		return false
+		
+	var edge_count = 0
+	for vertex in vertices_usable:
+		edge_count += connect_vertices[vertex].size()
+	edge_count /= 2
+	
+	var face_count = 0
+	var vertex_index = {}
+	for index in vertices_usable.size(): # Give each of the nodes dictionary index
+		vertex_index[vertices_usable[index]] = index
+	
+	for vertex_1 in vertices_usable:
+		for vertex_2 in connect_vertices[vertex_1]:
+			for vertex_3 in connect_vertices[vertex_1]:
+				if vertex_2 == vertex_3: # Ensure the loop passes same vertex loops
+					continue
+				if vertex_3 not in connect_vertices[vertex_2]: # Ensure vertex 3 is connected to vertex 2 to create a plane
+					continue
+				# Using the indexes to ensure there is no repeat / duplicate face counting
+				var index_1 = vertex_index[vertex_1]
+				var index_2 = vertex_index[vertex_2]
+				var index_3 = vertex_index[vertex_3]
+				if index_1 < index_2 and index_2 < index_3:
+					face_count += 1
+	
+	# Euler's Formula Vertices - Edges + Faces == 2
+	var V = vertices_usable.size()
+	var E = edge_count
+	var F = face_count
+	print("Vertices : ", V, " : Edges : ", E, " : Faces : ", F)
+	
+	if V - E + F != 2:
+		print("Mesh isn't a closed manifold mesh")
+		return false
+		
+	print("Valid Shape")
+	return true
+# func build_mesh():
+
+
 # Vertex highlighting
 func update_highlighted_vertex():
 	if vertexRaycast.is_colliding():
