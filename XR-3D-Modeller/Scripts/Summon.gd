@@ -44,6 +44,7 @@ var placed_vertices = []
 var connect_vertices = {}
 var currentlyConnecting = null 
 var ghostEdge = null
+var csg
 
 # Vertex highlighting variables
 var highlighted_vertex = null
@@ -58,6 +59,9 @@ var true_materials = {}
 var highlighted_object = null
 var highlight_color = Color(0.756, 0.453, 0.105, 1.0) # Red highlight / Pinkish highlight
 var selected_color = Color(0.913, 0.967, 0.331, 1.0) # When clicked on this is the color the object will assume
+
+# UI Controller
+var ui_controller
 
 # Replace folder variables with arrays of file paths
 @export var summonablePaths := [
@@ -97,6 +101,7 @@ func load_ghosted():
 
 func _ready() -> void:
 	# Load the summonables when started
+	csg = load("res://Summonables_Folder/CSG_Editables/csg_spare.tscn")
 	load_summonables()
 	load_ghosted()
 	timer.wait_time = 1.0 / summon_rate
@@ -112,13 +117,14 @@ func _ready() -> void:
 	editor.connect("objectEdited", Callable(self, "update_list"))
 	var ui_controllers = get_tree().get_nodes_in_group("ui_controller")
 	if ui_controllers.size() > 0:
-		var ui_controller = ui_controllers[0]
+		ui_controller = ui_controllers[0]
 		# Connect the script to the summonable Selected function with a signal to call the set_summon_index
 		ui_controller.connect("change_page", Callable(self, "set_page_index")) # changes the current selected page
 		ui_controller.connect("summonable_selected", Callable(self, "set_summon_index")) # changes the selected summonable object 1 - 4 / 0 - 3
 		ui_controller.connect("scaleSize", Callable(self, "set_scale_size")) # changes the scale size for summoning and ghosting objects
 		ui_controller.connect("csg_operation", Callable(self, "change_csg_operation"))
 		ui_controller.connect("select_change", Callable(self, "select_index_change"))
+		ui_controller.connect("load_mesh", Callable(self, "_load_mesh"))
 		print("Controller found ", ui_controller)
 	else:
 		print("UI Controller not found")
@@ -280,7 +286,7 @@ func combine_objects(index, combiner, spawnPoint, objectNormal):
 
 func summon_object(index):
 	# Checks to see if index is inside the size of the array
-	if index < summonableObjects.size():
+	if index < summonableObjects.size(): # Prevent from spawning in a vertex
 		# Instantiate the object in the scene
 		var new_obj = summonableObjects[index].instantiate()
 		
@@ -407,8 +413,9 @@ func validate_mesh() -> bool:
 		if connect_vertices[vertex].size() == 0:
 			print("Skip this vertex: Empty Connections :, ", vertex.global_position)
 			continue
-		if connect_vertices.size() < 3:
+		if connect_vertices[vertex].size() < 3:
 			print("Required connections is 3: ", vertex.global_position, " : only has : ", connect_vertices[vertex].size())
+			continue
 		vertices_usable.append(vertex)
 		
 	if vertices_usable.size() < 4:
@@ -451,8 +458,108 @@ func validate_mesh() -> bool:
 		
 	print("Valid Shape")
 	return true
-# func build_mesh():
 
+func build_mesh():
+	var vertices_usable = []
+	
+	for vertex in placed_vertices:
+		if connect_vertices[vertex].size() == 0:
+			continue
+		if connect_vertices[vertex].size() < 3:
+			continue
+		vertices_usable.append(vertex)
+	
+	if vertices_usable.size() < 4:
+		print("Need at least 4 connected vertices")
+		return
+	
+	var center = Vector3.ZERO
+	for vertex in vertices_usable:
+		center += vertex.global_position
+	center /= vertices_usable.size()
+	
+	var vertex_index = {}
+	for index in vertices_usable.size():
+		vertex_index[vertices_usable[index]] = index
+	
+	var csg_mesh = csg.instantiate()
+	var combiner = CSGCombiner3D.new()
+	get_tree().current_scene.add_child(combiner)
+	combiner.global_position = center
+	combiner.add_child(csg_mesh)
+	csg_mesh.position = Vector3.ZERO
+	
+	await get_tree().process_frame
+	
+	# Now convert world positions to local AFTER node is in scene tree
+	var positions = []
+	for v in vertices_usable:
+		positions.append(csg_mesh.to_local(v.global_position))
+	
+	print("positions after to_local: ", positions)
+	
+	var vertices = PackedVector3Array()
+	var normals = PackedVector3Array()
+	
+	for vertex_1 in vertices_usable:
+		for vertex_2 in connect_vertices[vertex_1]:
+			for vertex_3 in connect_vertices[vertex_1]:
+				if vertex_2 == vertex_3:
+					continue
+				if vertex_3 not in connect_vertices[vertex_2]:
+					continue
+				var i1 = vertex_index[vertex_1]
+				var i2 = vertex_index[vertex_2]
+				var i3 = vertex_index[vertex_3]
+				if i1 < i2 and i2 < i3:
+					var p1 = positions[i1]
+					var p2 = positions[i2]
+					var p3 = positions[i3]
+					var e1 = p2 - p1
+					var e2 = p3 - p1
+					var n = e1.cross(e2).normalized()
+					vertices.push_back(p1)
+					vertices.push_back(p2)
+					vertices.push_back(p3)
+					normals.push_back(n)
+					normals.push_back(n)
+					normals.push_back(n)
+	
+	print("vertices size after loop: ", vertices.size())
+	var arr_mesh = ArrayMesh.new()
+	var arrays = []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = vertices
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arr_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	
+	var mat = StandardMaterial3D.new()
+	mat.albedo_color = Color(1, 0, 0)
+	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
+	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	arr_mesh.surface_set_material(0, mat)
+	csg_mesh.material = mat
+	
+	csg_mesh.mesh = arr_mesh
+	await get_tree().process_frame
+	print("csg_mesh visible: ", csg_mesh.visible)
+	print("combiner visible: ", combiner.visible)
+	print("mesh assigned: ", csg_mesh.mesh)
+	print("surface count: ", csg_mesh.mesh.get_surface_count())
+	print("aabb: ", csg_mesh.mesh.get_aabb())
+	
+	await get_tree().process_frame
+	
+	csg_mesh.use_collision = true
+	csg_mesh.collision_layer = 2
+	combiner.use_collision = true
+	combiner.collision_layer = combiner.collision_layer | (1 << 20)
+	combiner.collision_mask = combiner.collision_mask | (1 << 20)
+	
+	combiner.add_to_group("summonedObjects")
+	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+	emit_signal("objectSummoned")
+	print("Mesh built at: ", combiner.global_position)
 
 # Vertex highlighting
 func update_highlighted_vertex():
@@ -705,6 +812,10 @@ func update_list():
 func set_summon_index(idx):
 	print("Summon Called")
 	summonIndex = idx
+	if summonIndex == 3:
+		ui_controller.build_load.visible = true
+	else:
+		ui_controller.build_load.visible = false
 	
 func set_scale_size(value):
 	objectSize = value
@@ -712,3 +823,11 @@ func set_scale_size(value):
 # Add a clearance previous select on change
 func select_index_change(idx):
 	await clear_select(idx) # Clears and sets the new index
+
+func _load_mesh():
+	if validate_mesh():
+		#print("Loading mesh has been pressed")
+		build_mesh()
+		#print("Object has been created and loaded!!")
+	else:
+		print("No valid mesh is present")

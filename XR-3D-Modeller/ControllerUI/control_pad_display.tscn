@@ -58,6 +58,11 @@ icon = ExtResource("3_wus27")
 layout_mode = 2
 icon = ExtResource("4_kkiu2")
 
+[node name="Load" type="Button" parent="Build/VerticalArrangement" unique_id=1316880549]
+visible = false
+layout_mode = 2
+text = "Load"
+
 [node name="AlwaysEditable" type="HBoxContainer" parent="Build/VerticalArrangement" unique_id=616117351]
 layout_mode = 2
 alignment = 1

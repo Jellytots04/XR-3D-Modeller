@@ -8,8 +8,10 @@ signal edit_selected(index) # Signal for choosing edit functions.
 signal csg_operation(index) # Signal for choosing the csg operation in each of the scripts
 signal scaleSize(value) # Signal for changing the building Scale size
 signal select_change(index) # Signal for changing the selected (select) option
+signal load_mesh()
 
 @export var edit_scaleSize: HSlider # Allows this variable to be edited by variables in other scripts
+@export var build_load: Button
 
 func _ready():
 	add_to_group("ui_controller")
@@ -35,8 +37,8 @@ func _ready():
 		var edit_select = edit_tab.get_node("SelectOptions")
 		
 		edit_scaleSize = edit_tab.get_node("ScaleBox/Scale") # HSlider node
-		print(edit_scaleSize) 
 
+		build_load = build_tab.get_node("Load") # Button Node
 		# print(build_options)
 		if build_options:
 			for idx in range(build_options.get_child_count()):
@@ -64,6 +66,9 @@ func _ready():
 			for idx in range(build_select.get_child_count()):
 				var button = build_select.get_child(idx)
 				button.connect("pressed", Callable(self, "_select_option").bind(idx))
+
+		if build_load:
+			build_load.connect("pressed", Callable(self, "_load_mesh"))
 
 		if remove_options:
 			for idx in range(remove_options.get_child_count()):
@@ -131,3 +136,6 @@ func _csg_operation(idx):
 
 func _select_option(idx):
 	emit_signal("select_change", idx)
+
+func _load_mesh():
+	emit_signal("load_mesh")
