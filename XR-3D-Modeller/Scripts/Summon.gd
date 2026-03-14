@@ -125,6 +125,7 @@ func _ready() -> void:
 		ui_controller.connect("csg_operation", Callable(self, "change_csg_operation"))
 		ui_controller.connect("select_change", Callable(self, "select_index_change"))
 		ui_controller.connect("load_mesh", Callable(self, "_load_mesh"))
+		ui_controller.connect("clear_vertices", Callable(self, "_clear_vertices"))
 		print("Controller found ", ui_controller)
 	else:
 		print("UI Controller not found")
@@ -370,6 +371,7 @@ func draw_edge(vertex_1, vertex_2):
 	mesh.mesh = edge
 	
 	get_tree().current_scene.add_child(mesh)
+	mesh.add_to_group("placedEdges")
 	
 	mesh.global_position = mid
 	mesh.look_at(vertex_1.global_position, Vector3.UP)
@@ -540,11 +542,26 @@ func build_mesh():
 	
 	await get_tree().process_frame
 	
+	clear_vertices()
+	
 	#if is_instance_valid(mesh_instance):
 		#convert_to_csg(mesh_instance)
 		#print("Converting the new mesh to a CSG")
 
 	# print("Mesh built at: ", mesh_instance.global_position)
+
+func clear_vertices():
+	for mesh in get_tree().get_nodes_in_group("placedEdges"):
+		mesh.queue_free()
+		
+	for vertex in placed_vertices:
+		if is_instance_valid(vertex):
+			vertex.queue_free()
+		
+	placed_vertices.clear()
+	connect_vertices.clear()
+	currentlyConnecting = null
+	highlighted_vertex = null
 
 # Unused function due to CSGMesh3D not working with Dynamic ArrayMesh at Runtime 
 func convert_to_csg(mesh_instance):
@@ -858,9 +875,9 @@ func set_summon_index(idx):
 	print("Summon Called")
 	summonIndex = idx
 	if summonIndex == 3:
-		ui_controller.build_load.visible = true
+		ui_controller.build_vertex.visible = true
 	else:
-		ui_controller.build_load.visible = false
+		ui_controller.build_vertex.visible = false
 	
 func set_scale_size(value):
 	objectSize = value
@@ -876,3 +893,6 @@ func _load_mesh():
 		#print("Object has been created and loaded!!")
 	else:
 		print("No valid mesh is present")
+
+func _clear_vertices():
+	clear_vertices()

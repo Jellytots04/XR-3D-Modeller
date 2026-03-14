@@ -9,9 +9,12 @@ signal csg_operation(index) # Signal for choosing the csg operation in each of t
 signal scaleSize(value) # Signal for changing the building Scale size
 signal select_change(index) # Signal for changing the selected (select) option
 signal load_mesh()
+signal clear_vertices()
 
 @export var edit_scaleSize: HSlider # Allows this variable to be edited by variables in other scripts
 @export var build_load: Button
+@export var build_clear: Button
+@export var build_vertex: HBoxContainer
 
 func _ready():
 	add_to_group("ui_controller")
@@ -38,7 +41,10 @@ func _ready():
 		
 		edit_scaleSize = edit_tab.get_node("ScaleBox/Scale") # HSlider node
 
-		build_load = build_tab.get_node("Load") # Button Node
+		build_vertex = build_tab.get_node("VertexBuild") # HBoxContainer node
+		build_load = build_vertex.get_node("Load") # Button Node
+		build_clear = build_vertex.get_node("Clear") # Button Node
+		
 		# print(build_options)
 		if build_options:
 			for idx in range(build_options.get_child_count()):
@@ -69,6 +75,9 @@ func _ready():
 
 		if build_load:
 			build_load.connect("pressed", Callable(self, "_load_mesh"))
+			
+		if build_clear:
+			build_clear.connect("pressed", Callable(self, "_clear_vertices"))
 
 		if remove_options:
 			for idx in range(remove_options.get_child_count()):
@@ -139,3 +148,6 @@ func _select_option(idx):
 
 func _load_mesh():
 	emit_signal("load_mesh")
+
+func _clear_vertices():
+	emit_signal("clear_vertices")

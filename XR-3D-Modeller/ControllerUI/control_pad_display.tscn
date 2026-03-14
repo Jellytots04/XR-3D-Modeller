@@ -58,10 +58,19 @@ icon = ExtResource("3_wus27")
 layout_mode = 2
 icon = ExtResource("4_kkiu2")
 
-[node name="Load" type="Button" parent="Build/VerticalArrangement" unique_id=1316880549]
+[node name="VertexBuild" type="HBoxContainer" parent="Build/VerticalArrangement" unique_id=1613122196]
 visible = false
 layout_mode = 2
+
+[node name="Load" type="Button" parent="Build/VerticalArrangement/VertexBuild" unique_id=1316880549]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Load"
+
+[node name="Clear" type="Button" parent="Build/VerticalArrangement/VertexBuild" unique_id=439873645]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Clear"
 
 [node name="AlwaysEditable" type="HBoxContainer" parent="Build/VerticalArrangement" unique_id=616117351]
 layout_mode = 2
