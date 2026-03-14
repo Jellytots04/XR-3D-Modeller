@@ -482,21 +482,15 @@ func build_mesh():
 	for index in vertices_usable.size():
 		vertex_index[vertices_usable[index]] = index
 	
-	var csg_mesh = csg.instantiate()
-	var combiner = CSGCombiner3D.new()
-	get_tree().current_scene.add_child(combiner)
-	combiner.global_position = center
-	combiner.add_child(csg_mesh)
-	csg_mesh.position = Vector3.ZERO
+	var mesh_instance = MeshInstance3D.new()
+	get_tree().current_scene.add_child(mesh_instance)
+	mesh_instance.global_position = center
 	
 	await get_tree().process_frame
 	
-	# Now convert world positions to local AFTER node is in scene tree
 	var positions = []
 	for v in vertices_usable:
-		positions.append(csg_mesh.to_local(v.global_position))
-	
-	print("positions after to_local: ", positions)
+		positions.append(mesh_instance.to_local(v.global_position))
 	
 	var vertices = PackedVector3Array()
 	var normals = PackedVector3Array()
@@ -525,7 +519,11 @@ func build_mesh():
 					normals.push_back(n)
 					normals.push_back(n)
 	
-	print("vertices size after loop: ", vertices.size())
+	if vertices.size() == 0:
+		print("No triangles found")
+		mesh_instance.queue_free()
+		return
+	
 	var arr_mesh = ArrayMesh.new()
 	var arrays = []
 	arrays.resize(Mesh.ARRAY_MAX)
@@ -534,32 +532,13 @@ func build_mesh():
 	arr_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	
 	var mat = StandardMaterial3D.new()
-	mat.albedo_color = Color(1, 0, 0)
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	arr_mesh.surface_set_material(0, mat)
-	csg_mesh.material = mat
 	
-	csg_mesh.mesh = arr_mesh
-	await get_tree().process_frame
-	print("csg_mesh visible: ", csg_mesh.visible)
-	print("combiner visible: ", combiner.visible)
-	print("mesh assigned: ", csg_mesh.mesh)
-	print("surface count: ", csg_mesh.mesh.get_surface_count())
-	print("aabb: ", csg_mesh.mesh.get_aabb())
+	mesh_instance.mesh = arr_mesh
+	mesh_instance.material_override = mat
 	
-	await get_tree().process_frame
-	
-	csg_mesh.use_collision = true
-	csg_mesh.collision_layer = 2
-	combiner.use_collision = true
-	combiner.collision_layer = combiner.collision_layer | (1 << 20)
-	combiner.collision_mask = combiner.collision_mask | (1 << 20)
-	
-	combiner.add_to_group("summonedObjects")
-	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
-	emit_signal("objectSummoned")
-	print("Mesh built at: ", combiner.global_position)
+	print("Mesh built at: ", mesh_instance.global_position)
 
 # Vertex highlighting
 func update_highlighted_vertex():
