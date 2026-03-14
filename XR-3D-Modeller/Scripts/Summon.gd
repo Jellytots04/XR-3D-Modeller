@@ -538,8 +538,74 @@ func build_mesh():
 	mesh_instance.mesh = arr_mesh
 	mesh_instance.material_override = mat
 	
-	print("Mesh built at: ", mesh_instance.global_position)
+	await get_tree().process_frame
+	
+	#if is_instance_valid(mesh_instance):
+		#convert_to_csg(mesh_instance)
+		#print("Converting the new mesh to a CSG")
 
+	# print("Mesh built at: ", mesh_instance.global_position)
+
+# Unused function due to CSGMesh3D not working with Dynamic ArrayMesh at Runtime 
+func convert_to_csg(mesh_instance):
+	if not is_instance_valid(mesh_instance):
+		return
+	
+	var csg_mesh = csg.instantiate()
+	var combiner = CSGCombiner3D.new()
+	
+	get_tree().current_scene.add_child(combiner)
+	combiner.global_position = mesh_instance.global_position
+	combiner.add_child(csg_mesh)
+	csg_mesh.position = Vector3.ZERO
+	
+	await get_tree().process_frame
+	
+	var source_mesh = mesh_instance.mesh
+	var surface_arrays = source_mesh.surface_get_arrays(0)
+
+	if not surface_arrays[Mesh.ARRAY_TEX_UV]:
+		var uvs = PackedVector2Array()
+		for i in surface_arrays[Mesh.ARRAY_VERTEX].size():
+			uvs.append(Vector2(0, 0))
+		surface_arrays[Mesh.ARRAY_TEX_UV] = uvs
+
+	var new_mesh = ArrayMesh.new()
+	new_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, surface_arrays)
+
+	csg_mesh.call_deferred("set_mesh", new_mesh)
+	
+	await get_tree().process_frame
+
+	print("mesh assigned to csg: ", csg_mesh.mesh)
+	print("surface count: ", csg_mesh.mesh.get_surface_count())
+	print("aabb: ", csg_mesh.mesh.get_aabb())
+	print("vertex count: ", csg_mesh.mesh.surface_get_array_len(0))
+	var format = csg_mesh.mesh.surface_get_format(0)
+	print("has vertex: ", format & Mesh.ARRAY_FORMAT_VERTEX)
+	print("has normal: ", format & Mesh.ARRAY_FORMAT_NORMAL)
+	print("has UV: ", format & Mesh.ARRAY_FORMAT_TEX_UV)
+	print("csg_mesh visible: ", csg_mesh.visible)
+	print("combiner visible: ", combiner.visible)
+	print("csg_mesh position: ", csg_mesh.position)
+	print("combiner global position: ", combiner.global_position)
+	
+	await get_tree().process_frame
+	
+	csg_mesh.use_collision = true
+	csg_mesh.collision_layer = 2
+	combiner.use_collision = true
+	combiner.collision_layer = true
+	combiner.collision_layer = combiner.collision_layer | (1 << 20)
+	combiner.collision_mask = combiner.collision_mask | (1 << 20)
+	
+	combiner.add_to_group("summonedObjects")
+	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+	emit_signal("objectSummoned")
+	
+	mesh_instance.queue_free()
+	print("Coverted Mesh Instance to CSG at : ", combiner.global_position)
+	
 # Vertex highlighting
 func update_highlighted_vertex():
 	if vertexRaycast.is_colliding():
