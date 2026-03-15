@@ -860,6 +860,7 @@ func set_page_index(idx):
 	if idx == 0:
 		is_active = true
 	else:
+		clear_select(selectIndex)
 		is_active = false
 
 func change_csg_operation(idx):

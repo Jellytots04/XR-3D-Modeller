@@ -252,13 +252,13 @@ func reattach(obj, combiner):
 
 	# Fail safe incase the 
 	if target_combiner == null:
-		print("The target attaching too is not a combiner nor is not tied to a combiner")
+		# print("The target attaching too is not a combiner nor is not tied to a combiner")
 		return
 
 	if obj is CSGMesh3D:
 		var old_combiner = obj.get_parent() as CSGCombiner3D
 		if old_combiner == target_combiner:
-			print("This is already the combiner of this object")
+			# print("This is already the combiner of this object")
 			return
 		
 		var obj_transform = obj.global_transform
@@ -267,10 +267,25 @@ func reattach(obj, combiner):
 		obj.global_transform = obj_transform
 		await no_children_left(old_combiner) # Function for later
 
+	elif obj is CSGCombiner3D:
+		if obj == target_combiner:
+			print("This is me!!")
+			return
+		
+		for child in obj.get_children():
+			var obj_transform = child.global_transform
+			obj.remove_child(child)
+			target_combiner.add_child(child)
+			child.global_transform = obj_transform
+		
+		await no_children_left(obj)
+	
+	emit_signal("objectEdited")
+
 func no_children_left(combiner):
 	if combiner.get_child_count() == 0:
 		combiner.queue_free()
-		print("MY CHILDREN ARE GONE")
+		# print("MY CHILDREN ARE GONE")
 
 
 # Highlighting Functions
@@ -502,6 +517,7 @@ func set_page_index(idx):
 	if idx == 2:
 		is_active = true
 	else:
+		clear_select(selectIndex) # Clear any previously selected after changing index
 		is_active = false
 
 func set_edit_index(idx):

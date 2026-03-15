@@ -385,6 +385,7 @@ func set_page_index(idx):
 	if idx == 1:
 		is_active = true
 	else:
+		clear_select(selectIndex) # Clear any selected objects in the scene
 		is_active = false
 
 func update_list():
