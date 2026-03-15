@@ -187,13 +187,24 @@ func update_highlighted_object():
 				var hit_point = raycast_3d.get_collision_point()
 				var selected_obj = null # Object holder variable
 
+				var closest_obj = null
+				var closest_dist = INF
+
 				for child in combiner.get_children():
 					if child is CSGMesh3D:
 						var aabb = child.get_aabb()
-						var global_aabb = child.global_transform * aabb
-						if global_aabb.has_point(hit_point):
-							selected_obj = child
-							break
+						var local_hit = child.global_transform.affine_inverse() * hit_point
+						if aabb.has_point(local_hit):
+							var world_center = child.global_transform * aabb.get_center()
+							var dist = world_center.distance_to(hit_point)
+							var world_size = (child.global_transform.basis * aabb.size).length()
+							var normalised_dist = dist / world_size if world_size > 0.0 else dist
+							if normalised_dist < closest_dist:
+								closest_dist = normalised_dist
+								closest_obj = child
+
+				if closest_obj != null:
+					selected_obj = closest_obj
 
 				if selected_obj != null:
 					if selectIndex == 2 and highlighted_object and highlighted_object != currentSelectedObject: # Checking for single select
