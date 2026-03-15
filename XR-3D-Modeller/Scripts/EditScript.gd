@@ -241,8 +241,37 @@ func moveObject(delta):
 
 	emit_signal("objectEdited")
 
-func reattach(object_to_attach, combiner):
-	print("Reattach this object : ", object_to_attach, " : to the new object : ", combiner)
+# Reattach logic
+func reattach(obj, combiner):
+	print("Reattach this object : ", obj, " : to the new object : ", combiner)
+	var target_combiner
+	if combiner is CSGCombiner3D:
+		target_combiner = combiner
+	elif combiner is CSGMesh3D:
+		target_combiner = combiner.get_parent() as CSGCombiner3D
+
+	# Fail safe incase the 
+	if target_combiner == null:
+		print("The target attaching too is not a combiner nor is not tied to a combiner")
+		return
+
+	if obj is CSGMesh3D:
+		var old_combiner = obj.get_parent() as CSGCombiner3D
+		if old_combiner == target_combiner:
+			print("This is already the combiner of this object")
+			return
+		
+		var obj_transform = obj.global_transform
+		old_combiner.remove_child(obj)
+		target_combiner.add_child(obj)
+		obj.global_transform = obj_transform
+		await no_children_left(old_combiner) # Function for later
+
+func no_children_left(combiner):
+	if combiner.get_child_count() == 0:
+		combiner.queue_free()
+		print("MY CHILDREN ARE GONE")
+
 
 # Highlighting Functions
 func update_highlighted_object():
