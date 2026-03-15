@@ -39,6 +39,7 @@ var multiSelectHolder = []
 # Rotation variables
 var startingBasis
 var objectStartingBasis
+var objectStartingBasisMulti = {}
 
 # Highlighting variables
 var highlighting_cancelled = false
@@ -112,13 +113,23 @@ func _process(delta: float) -> void:
 			currentlyStretching = false
 
 		if controller.is_button_pressed("grip_click") and editIndex == 2: # Rotating objects around their own center
-			print("Welcome the rotaters to the party")
+			# print("Welcome the rotaters to the party")
 			if selectIndex == 0 or selectIndex == 2:
 				if currentSelectedObject:
 					if not currentlyRotating:
 						startRotate()
 						currentlyRotating = true
-			
+					_rotateObject()
+					
+			elif selectIndex == 1 and not multiSelectHolder.is_empty():
+				if not currentlyRotating:
+					startRotate()
+					currentlyRotating = true
+				_rotateObject()
+		else:
+			if currentlyRotating:
+				objectStartingBasisMulti.clear()
+			currentlyRotating = false
 
 		update_highlighted_object()
 
@@ -303,11 +314,27 @@ func no_children_left(combiner):
 
 # Rotation functions
 func startRotate():
-	print("Begin the rotations!")
+	# print("Begin the rotations!")
 	startingBasis = controller.global_transform.basis
 	if selectIndex == 0 or selectIndex == 2:
-		print("Take the object at hand's BASIS!!")
+		# print("Take the object at hand's BASIS!!")
 		objectStartingBasis = currentSelectedObject.global_transform.basis
+	
+	elif selectIndex == 1:
+		for obj in multiSelectHolder:
+			objectStartingBasisMulti[obj] = obj.global_transform.basis
+
+func _rotateObject():
+	var rotation = controller.global_transform.basis * startingBasis.inverse()
+	
+	if selectIndex == 0 or selectIndex == 2:
+		currentSelectedObject.global_transform.basis = rotation * objectStartingBasis
+	
+	elif selectIndex == 1:
+		for obj in multiSelectHolder:
+			obj.global_transform.basis = rotation * objectStartingBasisMulti[obj]
+
+	emit_signal("objectEdited")
 
 # Highlighting Functions
 func update_highlighted_object():
