@@ -41,6 +41,10 @@ var startingBasis
 var objectStartingBasis
 var objectStartingBasisMulti = {}
 
+# Plane Currently Scaling
+var currentlyScaling
+
+
 # Highlighting variables
 var highlighting_cancelled = false
 var highlighting = false
@@ -131,6 +135,15 @@ func _process(delta: float) -> void:
 				objectStartingBasisMulti.clear()
 			currentlyRotating = false
 
+		if controller.is_button_pressed("grip_click") and editIndex == 3:
+			if selectIndex == 2 and currentSelectedObject:
+				if not currentlyScaling:
+					plane_orb_scaling()
+
+		else:
+			if currentlyScaling:
+				currentlyScaling = false
+
 		update_highlighted_object()
 
 		# If the user clicks / presses right trigger on an highlighted object it will become the selected object
@@ -191,6 +204,8 @@ func _process(delta: float) -> void:
 						# print("Object is selected")
 						currentSelectedObject = highlighted_object
 						await _apply_highlight(currentSelectedObject, selected_color)
+						if editIndex == 3:
+							spawnPlaneOrbs(currentSelectedObject)
 
 		elif not controller.is_button_pressed("trigger_click"):
 			triggerPressed = false
@@ -336,6 +351,13 @@ func _rotateObject():
 
 	emit_signal("objectEdited")
 
+# Plane Scaling functions
+func plane_orb_scaling():
+	print("Summoning the Orbs")
+
+func spawnPlaneOrbs(obj):
+	print("Spawning the orbs on this object : ", obj)
+
 # Highlighting Functions
 func update_highlighted_object():
 	# print("Ray update")
@@ -359,8 +381,8 @@ func update_highlighted_object():
 				for child in combiner.get_children():
 					if child is CSGMesh3D:
 						var aabb = child.get_aabb()
-						var global_aabb = child.global_transform * aabb
-						if global_aabb.has_point(hit_point):
+						var local_hit = child.global_transform.affine_inverse() * hit_point
+						if aabb.has_point(local_hit):
 							selected_obj = child
 							break
 

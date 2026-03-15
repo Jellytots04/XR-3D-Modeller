@@ -15,7 +15,6 @@ signal verticeSummoned
 @onready var timer = $Timer
 @onready var raycast_3d = $RayCast3D # Fix path later when the ToolNodebox is implemented
 @onready var vertexRaycast = $BuildRayCast
-# @export var bland
 
 # Flags
 var triggerPressed = false
