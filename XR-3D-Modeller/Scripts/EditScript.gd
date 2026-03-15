@@ -82,12 +82,16 @@ func _process(delta: float) -> void:
 					currentlyMoving = true
 				moveObject(delta)
 		else:
+			if currentlyMoving and highlighted_object:
+				if selectIndex == 1:
+					for obj in multiSelectHolder:
+						reattach(obj, highlighted_object)
+				else:
+					reattach(currentSelectedObject, highlighted_object)
 			currentlyMoving = false
 
-		
-
 		if controller.is_button_pressed("grip_click") and secondary_controller.is_button_pressed("grip_click") and editIndex == 1: # Stretch the object when gripping controllers and pulling outwards or inwards, second / first index value
-			if selectIndex == 0 or selectIndex == 1:
+			if selectIndex == 0 or selectIndex == 2:
 				if currentSelectedObject:
 					if not currentlyStretching:
 						startStretch(controller.global_position, secondary_controller.global_position)
@@ -236,6 +240,9 @@ func moveObject(delta):
 				moveOffsetMulti[obj] += offset_direction * joystick.y * moveSpeed * delta
 
 	emit_signal("objectEdited")
+
+func reattach(object_to_attach, combiner):
+	print("Reattach this object : ", object_to_attach, " : to the new object : ", combiner)
 
 # Highlighting Functions
 func update_highlighted_object():
