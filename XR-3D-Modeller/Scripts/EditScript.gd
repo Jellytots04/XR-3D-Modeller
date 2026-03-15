@@ -12,6 +12,7 @@ var triggerPressed = false # Flag to signal if the trigger has been clicked
 var is_active = false
 var currentlyMoving = false
 var currentlyStretching = false
+var currentlyRotating = false
 
 # Moving variables
 var moveOffset
@@ -34,6 +35,10 @@ var ui_controller # holds the Controller node to allow edits to be made
 var currentSelectedObject # for when the user clicks a specific object
 var selectIndex = 0 # Default selcet all (Combiner select)
 var multiSelectHolder = []
+
+# Rotation variables
+var startingBasis
+var objectStartingBasis
 
 # Highlighting variables
 var highlighting_cancelled = false
@@ -105,6 +110,15 @@ func _process(delta: float) -> void:
 					stretchObject(controller.global_position, secondary_controller.global_position)
 		else:
 			currentlyStretching = false
+
+		if controller.is_button_pressed("grip_click") and editIndex == 2: # Rotating objects around their own center
+			print("Welcome the rotaters to the party")
+			if selectIndex == 0 or selectIndex == 2:
+				if currentSelectedObject:
+					if not currentlyRotating:
+						startRotate()
+						currentlyRotating = true
+			
 
 		update_highlighted_object()
 
@@ -241,7 +255,7 @@ func moveObject(delta):
 
 	emit_signal("objectEdited")
 
-# Reattach logic
+# Reattach functions
 func reattach(obj, combiner):
 	print("Reattach this object : ", obj, " : to the new object : ", combiner)
 	var target_combiner
@@ -287,6 +301,13 @@ func no_children_left(combiner):
 		combiner.queue_free()
 		# print("MY CHILDREN ARE GONE")
 
+# Rotation functions
+func startRotate():
+	print("Begin the rotations!")
+	startingBasis = controller.global_transform.basis
+	if selectIndex == 0 or selectIndex == 2:
+		print("Take the object at hand's BASIS!!")
+		objectStartingBasis = currentSelectedObject.global_transform.basis
 
 # Highlighting Functions
 func update_highlighted_object():
