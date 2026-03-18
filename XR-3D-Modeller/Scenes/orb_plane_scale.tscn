@@ -10,7 +10,7 @@ rings = 8
 
 [node name="CSGMesh3D" type="CSGMesh3D" unique_id=647124383]
 use_collision = true
-collision_layer = 1048577
-collision_mask = 1048577
+collision_layer = 1048584
+collision_mask = 1048584
 mesh = SubResource("SphereMesh_g5ssg")
 material = SubResource("StandardMaterial3D_y85f3")

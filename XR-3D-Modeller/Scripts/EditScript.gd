@@ -6,6 +6,7 @@ signal selectedScale(value) # signal should send the current scale value for the
 @onready var secondary_controller = get_parent().get_parent().get_parent().get_node("LeftHand") # Left Controller
 @onready var controller = get_parent().get_parent() # Right Controller / Main Controller hence controller as the name
 @onready var raycast_3d = controller.get_node("RayCast3D")
+@onready var scaleCast = controller.get_node("BuildRayCast")
 
 var orb_scene = preload("res://Scenes/orb_plane_scale.tscn")
 
@@ -362,6 +363,7 @@ func _rotateObject():
 # Plane Scaling functions
 func startScale():
 	print("Beginning of the scaling")
+	
 
 func plane_orb_scaling():
 	print("Use this orb to SCALE!!!")
@@ -398,8 +400,9 @@ func clearOrbs(): # Remove the orbs from the world
 func update_highlighted_orb():
 	var closest_orb = null
 	
-	if raycast_3d.is_colliding():
-		var obj = raycast_3d.get_collider()
+	if scaleCast.is_colliding():
+		print("Orb has been hit")
+		var obj = scaleCast.get_collider()
 		for orb in planeScalingOrbs:
 			if not is_instance_valid(orb):
 				continue
@@ -415,7 +418,7 @@ func update_highlighted_orb():
 	
 	highlighted_orb = closest_orb
 	if highlighted_orb != null:
-		_apply_highlight(highlighted_object, highlight_color)
+		_apply_highlight(highlighted_orb, highlight_color)
 
 # Highlighting Functions
 func update_highlighted_object():
