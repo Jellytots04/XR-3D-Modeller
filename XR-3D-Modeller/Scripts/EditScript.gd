@@ -48,6 +48,12 @@ var objectStartingBasisMulti = {}
 var currentlyScaling
 var planeScalingOrbs = []
 var highlighted_orb = null
+var activeOrb = null
+var scaleAxis
+var scaleStartingDistance
+var scaleStartingScale
+var scaleStartingPosition
+var scaleWorldAxis
 
 # Highlighting variables
 var highlighting_cancelled = false
@@ -141,16 +147,24 @@ func _process(delta: float) -> void:
 
 		if editIndex == 3:
 			if selectIndex == 2 and currentSelectedObject:
-				update_highlighted_orb()
+				if not currentlyScaling:
+					update_highlighted_orb()
 				if controller.is_button_pressed("grip_click") and highlighted_orb:
 					if not currentlyScaling:
 						startScale()
 						currentlyScaling = true
 					plane_orb_scaling()
 
-		else:
-			if currentlyScaling:
-				currentlyScaling = false
+				else:
+					if currentlyScaling:
+						_remove_highlight(activeOrb)
+						currentlyScaling = false
+						activeOrb = null
+						scaleAxis = Vector3.ZERO
+						scaleWorldAxis = Vector3.ZERO
+						scaleStartingDistance = 0.0
+						scaleStartingScale = Vector3.ZERO
+						scaleStartingPosition = Vector3.ZERO
 
 		update_highlighted_object()
 
@@ -223,6 +237,11 @@ func _process(delta: float) -> void:
 # Main and secondary are both controllers
 func startStretch(main, secondary):
 	stretchDistance = main.distance_to(secondary)
+	
+	if stretchDistance < 0.05:
+		currentlyStretching = false
+		return
+	
 	if selectIndex == 0 or selectIndex == 2:
 		startingScale = currentSelectedObject.scale
 	
@@ -242,17 +261,19 @@ func stretchObject(main, secondary):
 	if selectIndex == 0 or selectIndex == 2:
 		var newScale = startingScale * ratio
 		
-		newScale = (newScale * 10).round() / 10
-		
-		newScale = newScale.clamp(Vector3.ONE * 0.1, Vector3.ONE * 2.0)
+		newScale.x = clamp(newScale.x, 0.1, 10.0)
+		newScale.y = clamp(newScale.y, 0.1, 10.0)
+		newScale.z = clamp(newScale.z, 0.1, 10.0)
 		currentSelectedObject.scale = newScale
-		ui_controller._change_scale_value(currentSelectedObject.scale)
+		var avgScale = (newScale.x + newScale.y + newScale.z) / 3.0
+		ui_controller._change_scale_value(Vector3(avgScale, avgScale, avgScale))
 
 	if selectIndex == 1 and !multiSelectHolder.is_empty():
 		for obj in multiSelectHolder:
 			var newScale = startingScaleMulti[obj] * ratio
-			newScale = (newScale * 10).round() / 10
-			newScale = newScale.clamp(Vector3.ONE * 0.1, Vector3.ONE * 2.0)
+			newScale.x = clamp(newScale.x, 0.1, 10.0)
+			newScale.y = clamp(newScale.y, 0.1, 10.0)
+			newScale.z = clamp(newScale.z, 0.1, 10.0)
 			obj.scale = newScale
 		
 	emit_signal("objectEdited")
@@ -363,10 +384,42 @@ func _rotateObject():
 # Plane Scaling functions
 func startScale():
 	print("Beginning of the scaling")
+	print("current Scale : ", currentSelectedObject.scale)
+	print("current Position : ", currentSelectedObject.global_position)
+	activeOrb = highlighted_orb
+	scaleAxis = activeOrb.get_meta("scale_axis")
+	scaleStartingScale = currentSelectedObject.scale
+	scaleStartingPosition = currentSelectedObject.global_position
 	
+	scaleWorldAxis = (currentSelectedObject.global_transform.basis.orthonormalized() * scaleAxis).normalized()
+	scaleStartingDistance = controller.global_position.dot(scaleWorldAxis)
 
 func plane_orb_scaling():
 	print("Use this orb to SCALE!!!")
+	if not is_instance_valid(currentSelectedObject) or not is_instance_valid(activeOrb):
+		return
+		
+	var currentDistance = controller.global_position.dot(scaleWorldAxis)
+	var delta = currentDistance - scaleStartingDistance
+	
+	var newScale = scaleStartingScale
+	if scaleAxis == Vector3.RIGHT:
+		newScale.x = clamp(scaleStartingScale.x + delta * 10.0, 0.1, 10.0)
+	elif scaleAxis == Vector3.UP:
+		newScale.y = clamp(scaleStartingScale.y + delta * 10.0, 0.1, 10.0)
+	elif scaleAxis == Vector3.FORWARD:
+		newScale.z = clamp(scaleStartingScale.z + delta * 10.0, 0.1, 10.0)
+		
+	var scaleChange = newScale - scaleStartingScale
+	var axis_component = scaleChange.x if scaleAxis == Vector3.RIGHT \
+		else scaleChange.y if scaleAxis == Vector3.UP \
+		else scaleChange.z
+	currentSelectedObject.global_position = scaleStartingPosition + scaleWorldAxis * (axis_component * 0.5)
+
+	currentSelectedObject.scale = newScale
+	updateOrbPositions(currentSelectedObject)
+	
+	emit_signal("objectEdited")
 
 func spawnPlaneOrbs(obj): # Spawn the orbs
 	clearOrbs()
@@ -645,15 +698,26 @@ func clear_select(idx):
 	selectIndex = idx
 
 func scale_selected_object(value):
-	# print("New scale size should be: ", value)
 	if selectIndex == 0 or selectIndex == 2:
 		if currentSelectedObject:
-			currentSelectedObject.scale = value * Vector3.ONE
-	
-	if selectIndex == 1:#
+			var current = currentSelectedObject.scale
+			var ratio = value / ((current.x + current.y + current.z) / 3.0)
+			var newScale = current * ratio
+			newScale.x = clamp(newScale.x, 0.01, 10.0)
+			newScale.y = clamp(newScale.y, 0.01, 10.0)
+			newScale.z = clamp(newScale.z, 0.01, 10.0)
+			currentSelectedObject.scale = newScale
+
+	if selectIndex == 1:
 		if !multiSelectHolder.is_empty():
 			for obj in multiSelectHolder:
-				obj.scale = value * Vector3.ONE
+				var current = obj.scale
+				var ratio = value / ((current.x + current.y + current.z) / 3.0)
+				var newScale = current * ratio
+				newScale.x = clamp(newScale.x, 0.01, 10.0)
+				newScale.y = clamp(newScale.y, 0.01, 10.0)
+				newScale.z = clamp(newScale.z, 0.01, 10.0)
+				obj.scale = newScale
 
 func set_page_index(idx):
 	# print("Hello from remove call index")
