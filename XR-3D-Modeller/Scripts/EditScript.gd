@@ -200,13 +200,14 @@ func _process(delta: float) -> void:
 						var deselect_object = currentSelectedObject
 						currentSelectedObject = null
 						highlighted_object = null
+						clearOrbs()
 						await _remove_highlight(deselect_object)
 
 					elif not currentSelectedObject:
 						# print("Object is selected")
 						currentSelectedObject = highlighted_object
 						await _apply_highlight(currentSelectedObject, selected_color)
-						if editIndex == 3:
+						if editIndex == 3: # Plane Scaling
 							spawnPlaneOrbs(currentSelectedObject)
 
 		elif not controller.is_button_pressed("trigger_click"):
@@ -357,7 +358,8 @@ func _rotateObject():
 func plane_orb_scaling():
 	print("Summoning the Orbs")
 
-func spawnPlaneOrbs(obj):
+func spawnPlaneOrbs(obj): # Spawn the orbs
+	clearOrbs()
 	print("Spawning the orbs on this object : ", obj)
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD] # Directions
 	for axis in axes:
@@ -366,9 +368,9 @@ func spawnPlaneOrbs(obj):
 		orb.set_meta("scale_axis", axis)
 		planeScalingOrbs.append(orb)
 		print("Orb now exists : ", orb)
-	update_orb_positions(obj)
+	updateOrbPositions(obj)
 
-func update_orb_positions(obj):
+func updateOrbPositions(obj): # Update their positions once spawned
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD] # Directions
 	for i in range(planeScalingOrbs.size()):
 		var orb = planeScalingOrbs[i]
@@ -377,7 +379,13 @@ func update_orb_positions(obj):
 		var world_offset = obj.global_transform.basis * axes[i]
 		orb.global_position = obj.global_position + world_offset
 		print("Orb has been moved to here : ", orb.global_position)
-	
+
+func clearOrbs(): # Remove the orbs from the world
+	for orb in planeScalingOrbs:
+		if is_instance_valid(orb):
+			orb.queue_free()
+	print("Removing the orbs")
+	planeScalingOrbs.clear()
 
 # Highlighting Functions
 func update_highlighted_object():
