@@ -366,6 +366,17 @@ func spawnPlaneOrbs(obj):
 		orb.set_meta("scale_axis", axis)
 		planeScalingOrbs.append(orb)
 		print("Orb now exists : ", orb)
+	update_orb_positions(obj)
+
+func update_orb_positions(obj):
+	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD] # Directions
+	for i in range(planeScalingOrbs.size()):
+		var orb = planeScalingOrbs[i]
+		if not is_instance_valid(orb):
+			continue
+		var world_offset = obj.global_transform.basis * axes[i]
+		orb.global_position = obj.global_position + world_offset
+		print("Orb has been moved to here : ", orb.global_position)
 	
 
 # Highlighting Functions
