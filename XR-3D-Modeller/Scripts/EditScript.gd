@@ -46,6 +46,7 @@ var objectStartingBasisMulti = {}
 # Plane Currently Scaling
 var currentlyScaling
 var planeScalingOrbs = []
+var highlighted_orb = null
 
 # Highlighting variables
 var highlighting_cancelled = false
@@ -137,9 +138,13 @@ func _process(delta: float) -> void:
 				objectStartingBasisMulti.clear()
 			currentlyRotating = false
 
-		if controller.is_button_pressed("grip_click") and editIndex == 3:
+		if editIndex == 3:
 			if selectIndex == 2 and currentSelectedObject:
-				if not currentlyScaling:
+				update_highlighted_orb()
+				if controller.is_button_pressed("grip_click") and highlighted_orb:
+					if not currentlyScaling:
+						startScale()
+						currentlyScaling = true
 					plane_orb_scaling()
 
 		else:
@@ -355,8 +360,11 @@ func _rotateObject():
 	emit_signal("objectEdited")
 
 # Plane Scaling functions
+func startScale():
+	print("Beginning of the scaling")
+
 func plane_orb_scaling():
-	print("Summoning the Orbs")
+	print("Use this orb to SCALE!!!")
 
 func spawnPlaneOrbs(obj): # Spawn the orbs
 	clearOrbs()
@@ -386,6 +394,28 @@ func clearOrbs(): # Remove the orbs from the world
 			orb.queue_free()
 	print("Removing the orbs")
 	planeScalingOrbs.clear()
+
+func update_highlighted_orb():
+	var closest_orb = null
+	
+	if raycast_3d.is_colliding():
+		var obj = raycast_3d.get_collider()
+		for orb in planeScalingOrbs:
+			if not is_instance_valid(orb):
+				continue
+			if obj == orb or orb.is_ancestor_of(obj):
+				closest_orb = orb
+				break
+	
+	if closest_orb == highlighted_orb:
+		return
+	
+	if highlighted_orb != null and is_instance_valid(highlighted_orb):
+		_remove_highlight(highlighted_orb)
+	
+	highlighted_orb = closest_orb
+	if highlighted_orb != null:
+		_apply_highlight(highlighted_object, highlight_color)
 
 # Highlighting Functions
 func update_highlighted_object():
