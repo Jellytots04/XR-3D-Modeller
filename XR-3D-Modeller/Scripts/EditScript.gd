@@ -7,6 +7,8 @@ signal selectedScale(value) # signal should send the current scale value for the
 @onready var controller = get_parent().get_parent() # Right Controller / Main Controller hence controller as the name
 @onready var raycast_3d = controller.get_node("RayCast3D")
 
+var orb_scene = preload("res://Scenes/orb_plane_scale.tscn")
+
 # Flags
 var triggerPressed = false # Flag to signal if the trigger has been clicked
 var is_active = false
@@ -43,7 +45,7 @@ var objectStartingBasisMulti = {}
 
 # Plane Currently Scaling
 var currentlyScaling
-
+var planeScalingOrbs = []
 
 # Highlighting variables
 var highlighting_cancelled = false
@@ -357,6 +359,14 @@ func plane_orb_scaling():
 
 func spawnPlaneOrbs(obj):
 	print("Spawning the orbs on this object : ", obj)
+	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD] # Directions
+	for axis in axes:
+		var orb = orb_scene.instantiate()
+		get_tree().root.add_child(orb)
+		orb.set_meta("scale_axis", axis)
+		planeScalingOrbs.append(orb)
+		print("Orb now exists : ", orb)
+	
 
 # Highlighting Functions
 func update_highlighted_object():

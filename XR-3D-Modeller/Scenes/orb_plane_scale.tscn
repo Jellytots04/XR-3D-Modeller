@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://hei0ru1ukfr7"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_g5ssg"]
+radius = 0.1
+height = 0.2
+radial_segments = 8
+rings = 8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_y85f3"]
+
+[node name="CSGMesh3D" type="CSGMesh3D" unique_id=647124383]
+mesh = SubResource("SphereMesh_g5ssg")
+material = SubResource("StandardMaterial3D_y85f3")
