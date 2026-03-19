@@ -688,6 +688,7 @@ func clear_select(idx):
 	if selectIndex == 0 or selectIndex == 2:
 		var cleared_object = currentSelectedObject
 		currentSelectedObject = null
+		clearOrbs()
 		_remove_highlight(cleared_object)
 	
 	if selectIndex == 1:
@@ -730,6 +731,7 @@ func set_page_index(idx):
 func set_edit_index(idx):
 	print("Edit Called")
 	editIndex = idx
+	clearOrbs()
 
 func update_list():
 	print("Hello from Edit script new object update signal")
