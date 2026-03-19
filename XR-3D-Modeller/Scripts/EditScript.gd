@@ -497,8 +497,14 @@ func updateArrowPositions(obj):
 		var arrow= planeMoveArrows[i]
 		if not is_instance_valid(arrow):
 			continue
-		var world_offset = obj.global_transform.basis * axes[i]
+		var world_offset = axes[i]
 		arrow.global_position = obj.global_position + world_offset
+		
+		var up = world_offset
+		var forward = Vector3.FORWARD if abs(world_offset.dot(Vector3.FORWARD)) < 0.99 else Vector3.UP
+		var right = up.cross(forward).normalized()
+		forward = right.cross(up).normalized()
+		arrow.global_transform.basis = Basis(right, up, -forward)
 
 # Highlighting Functions
 func update_highlighted_object():
