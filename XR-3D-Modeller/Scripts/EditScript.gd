@@ -186,6 +186,7 @@ func _process(delta: float) -> void:
 						var deselct_object = currentSelectedObject
 						currentSelectedObject = null
 						highlighted_object = null
+						clearArrows()
 						await _remove_highlight(deselct_object)
 
 					elif not currentSelectedObject:
@@ -205,6 +206,8 @@ func _process(delta: float) -> void:
 						var deselect_object = highlighted_object
 						highlighted_object = null
 						multiSelectHolder.erase(deselect_object)
+						if multiSelectHolder.is_empty():
+							clearArrows()
 						await _remove_highlight(deselect_object)
 
 					elif highlighted_object not in multiSelectHolder:
@@ -223,6 +226,7 @@ func _process(delta: float) -> void:
 						var deselect_object = currentSelectedObject
 						currentSelectedObject = null
 						highlighted_object = null
+						clearArrows()
 						clearOrbs()
 						await _remove_highlight(deselect_object)
 
@@ -482,6 +486,7 @@ func update_highlighted_orb():
 
 # Plane moving functions
 func spawnArrows(obj):
+	clearArrows()
 	print("Summoning the arrows at : ", obj)
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD]
 	for axis in axes:
@@ -499,12 +504,19 @@ func updateArrowPositions(obj):
 			continue
 		var world_offset = axes[i]
 		arrow.global_position = obj.global_position + world_offset
-		
+
 		var up = world_offset
 		var forward = Vector3.FORWARD if abs(world_offset.dot(Vector3.FORWARD)) < 0.99 else Vector3.UP
 		var right = up.cross(forward).normalized()
 		forward = right.cross(up).normalized()
 		arrow.global_transform.basis = Basis(right, up, -forward)
+
+func clearArrows():
+	for arrow in planeMoveArrows:
+		if is_instance_valid(arrow):
+			arrow.queue_free()
+	print("Removing the arrows")
+	planeMoveArrows.clear()
 
 # Highlighting Functions
 func update_highlighted_object():
