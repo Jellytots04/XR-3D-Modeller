@@ -9,6 +9,7 @@ signal selectedScale(value) # signal should send the current scale value for the
 @onready var scaleCast = controller.get_node("BuildRayCast")
 
 var orb_scene = preload("res://Scenes/orb_plane_scale.tscn")
+var arrow_scene = preload("res://Scenes/arrow.tscn")
 
 # Flags
 var triggerPressed = false # Flag to signal if the trigger has been clicked
@@ -54,6 +55,10 @@ var scaleStartingDistance
 var scaleStartingScale
 var scaleStartingPosition
 var scaleWorldAxis
+
+# Plane Moving variables
+var currentlyPlaneMoving
+var planeMoveArrows = []
 
 # Highlighting variables
 var highlighting_cancelled = false
@@ -188,6 +193,8 @@ func _process(delta: float) -> void:
 						currentSelectedObject = highlighted_object
 						highlighted_object = null
 						await _apply_highlight(currentSelectedObject, selected_color)
+						if editIndex == 0:
+							spawnArrows(currentSelectedObject)
 
 				# Multiple selecting (Can select an infinite amount of objects)
 				elif selectIndex == 1: # Multi Select
@@ -201,15 +208,11 @@ func _process(delta: float) -> void:
 						await _remove_highlight(deselect_object)
 
 					elif highlighted_object not in multiSelectHolder:
-						# print("Adding : ", highlighted_object, " : To the multiSelectHolder")
-						# print("Hello new selected object", highlighted_object)
-						# print(currentSelectedObject, highlighted_object)
-						# _remove_highlight(currentSelectedObject) # Remove any previous highlighting
 						_apply_highlight(highlighted_object, selected_color)
 						multiSelectHolder.append(highlighted_object)
-						# print(currentSelectedObject.scale)
-						# Select case for ensuring the object is selected
 						currentSelectedObject = null
+						if editIndex == 0:
+							spawnArrows(multiSelectHolder[0])
 
 				# Single object selecting (Select a single object at a time)
 				elif selectIndex == 2: # Single Select
@@ -227,6 +230,10 @@ func _process(delta: float) -> void:
 						# print("Object is selected")
 						currentSelectedObject = highlighted_object
 						await _apply_highlight(currentSelectedObject, selected_color)
+						
+						if editIndex == 0: # Plane Moving
+							spawnArrows(currentSelectedObject)
+
 						if editIndex == 3: # Plane Scaling
 							spawnPlaneOrbs(currentSelectedObject)
 
@@ -472,6 +479,26 @@ func update_highlighted_orb():
 	highlighted_orb = closest_orb
 	if highlighted_orb != null:
 		_apply_highlight(highlighted_orb, highlight_color)
+
+# Plane moving functions
+func spawnArrows(obj):
+	print("Summoning the arrows at : ", obj)
+	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD]
+	for axis in axes:
+		var arrow = arrow_scene.instantiate()
+		get_tree().root.add_child(arrow)
+		arrow.set_meta("move_axis", axis)
+		planeMoveArrows.append(arrow)
+	updateArrowPositions(obj)
+
+func updateArrowPositions(obj):
+	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD]
+	for i in range(planeMoveArrows.size()):
+		var arrow= planeMoveArrows[i]
+		if not is_instance_valid(arrow):
+			continue
+		var world_offset = obj.global_transform.basis * axes[i]
+		arrow.global_position = obj.global_position + world_offset
 
 # Highlighting Functions
 func update_highlighted_object():

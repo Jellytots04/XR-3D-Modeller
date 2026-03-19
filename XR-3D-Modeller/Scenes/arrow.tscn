@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://c7ypf4l5dchi8"]
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_kks1g"]
+top_radius = 0.0
+bottom_radius = 0.125
+height = 0.5
+radial_segments = 8
+
+[node name="CSGMesh3D" type="CSGMesh3D" unique_id=754601721]
+mesh = SubResource("CylinderMesh_kks1g")
