@@ -59,6 +59,7 @@ var scaleWorldAxis
 # Plane Moving variables
 var currentlyPlaneMoving
 var planeMoveArrows = []
+var highlighted_arrow = null
 
 # Highlighting variables
 var highlighting_cancelled = false
@@ -170,6 +171,10 @@ func _process(delta: float) -> void:
 						scaleStartingDistance = 0.0
 						scaleStartingScale = Vector3.ZERO
 						scaleStartingPosition = Vector3.ZERO
+
+		if editIndex == 0:
+			if not currentlyPlaneMoving and not currentlyMoving:
+				update_highlighted_arrow()
 
 		update_highlighted_object()
 
@@ -517,6 +522,29 @@ func clearArrows():
 			arrow.queue_free()
 	print("Removing the arrows")
 	planeMoveArrows.clear()
+
+func update_highlighted_arrow():
+	var closest_arrow = null
+	
+	if scaleCast.is_colliding(): # Can use the scaleCast raycast as it won't oppearate at the same time as each other
+		var obj = scaleCast.get_collider()
+		for arrow in planeMoveArrows:
+			if not is_instance_valid(arrow):
+				continue
+			if obj == arrow or arrow.is_ancestor_of(obj):
+				closest_arrow = arrow
+				break
+		
+	if closest_arrow == highlighted_arrow:
+		return
+		
+	if highlighted_arrow != null and is_instance_valid(highlighted_arrow):
+		_remove_highlight(highlighted_arrow)
+	
+	highlighted_arrow = closest_arrow
+	
+	if highlighted_arrow != null:
+		_apply_highlight(highlighted_arrow, highlight_color)
 
 # Highlighting Functions
 func update_highlighted_object():
