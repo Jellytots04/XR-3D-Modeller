@@ -60,6 +60,12 @@ var scaleWorldAxis
 var currentlyPlaneMoving
 var planeMoveArrows = []
 var highlighted_arrow = null
+var activeArrow = null
+var moveArrowAxis
+var moveWorldAxis
+var moveStartingPosition
+var moveStartingPositionMulti = {}
+var moveStartingDistance
 
 # Highlighting variables
 var highlighting_cancelled = false
@@ -93,28 +99,53 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	# Allows this script to be ran
 	if is_active:
-		if controller.is_button_pressed("grip_click") and editIndex == 0: # Moving object only with raycast, default index
-			if selectIndex == 0 or selectIndex == 2:
-				if currentSelectedObject:
-					if not currentlyMoving:
-						startMove()
-						currentlyMoving = true
-					# print("Grip is active")
-					moveObject(delta)
-
-			elif selectIndex == 1 and !multiSelectHolder.is_empty():
-				if not currentlyMoving:
-					startMove()
-					currentlyMoving = true
-				moveObject(delta)
-		else:
-			if currentlyMoving and highlighted_object:
-				if selectIndex == 1:
-					for obj in multiSelectHolder:
-						reattach(obj, highlighted_object)
-				else:
-					reattach(currentSelectedObject, highlighted_object)
-			currentlyMoving = false
+		if editIndex == 0:
+			if not currentlyPlaneMoving and not currentlyMoving:
+				update_highlighted_arrow()
+				
+			if controller.is_button_pressed("grip_click"):
+				if highlighted_arrow and not currentlyMoving:
+					if not currentlyPlaneMoving:
+						startPlaneMove()
+						currentlyPlaneMoving = true
+					planeMoveObject()
+				
+				elif not currentlyPlaneMoving:
+					if selectIndex == 0 or selectIndex == 2:
+						if currentSelectedObject:
+							if not currentlyMoving:
+								startMove()
+								currentlyMoving = true
+							moveObject(delta)
+					
+					elif selectIndex == 1 and not multiSelectHolder.is_empty():
+						if not currentlyMoving:
+							startMove()
+							currentlyMoving = true
+						moveObject(delta)
+			else:
+				if currentlyPlaneMoving:
+					_remove_highlight(activeArrow)
+					currentlyPlaneMoving = false
+					activeArrow = null
+					moveArrowAxis = Vector3.ZERO
+					moveWorldAxis = Vector3.ZERO
+					moveStartingDistance = 0.0
+					moveStartingPosition = Vector3.ZERO
+					moveStartingPositionMulti.clear()
+					var obj = planeMoveTarget()
+					if obj:
+						spawnArrows(obj)
+				
+				if currentlyMoving and highlighted_object:
+					if selectIndex == 1:
+						for obj in multiSelectHolder:
+							reattach(obj, highlighted_object)
+					else:
+						reattach(currentSelectedObject, highlighted_object)
+						
+				currentlyMoving = false
+				
 
 		if controller.is_button_pressed("grip_click") and secondary_controller.is_button_pressed("grip_click") and editIndex == 1: # Stretch the object when gripping controllers and pulling outwards or inwards, second / first index value
 			if selectIndex == 0 or selectIndex == 2:
@@ -171,11 +202,7 @@ func _process(delta: float) -> void:
 						scaleStartingDistance = 0.0
 						scaleStartingScale = Vector3.ZERO
 						scaleStartingPosition = Vector3.ZERO
-
-		if editIndex == 0:
-			if not currentlyPlaneMoving and not currentlyMoving:
-				update_highlighted_arrow()
-
+				
 		update_highlighted_object()
 
 		# If the user clicks / presses right trigger on an highlighted object it will become the selected object
@@ -545,6 +572,45 @@ func update_highlighted_arrow():
 	
 	if highlighted_arrow != null:
 		_apply_highlight(highlighted_arrow, highlight_color)
+
+func planeMoveTarget():
+	if selectIndex == 0 or selectIndex == 2:
+		return currentSelectedObject
+	elif selectIndex == 1 and not multiSelectHolder.is_empty():
+		return multiSelectHolder[0]
+	return null
+
+func startPlaneMove():
+	activeArrow = highlighted_arrow
+	moveArrowAxis = activeArrow.get_meta("move_axis")
+	
+	var target = planeMoveTarget()
+	moveStartingPosition = target.global_position
+	moveWorldAxis = moveArrowAxis
+	moveStartingDistance = controller.global_position.dot(moveWorldAxis)
+	
+	if selectIndex == 1:
+		moveStartingPositionMulti.clear()
+		for obj in multiSelectHolder:
+			moveStartingPositionMulti[obj] = obj.global_position
+
+func planeMoveObject():
+	var target = planeMoveTarget()
+	if target == null or not is_instance_valid(activeArrow):
+		return
+	
+	var currentDistance = controller.global_position.dot(moveWorldAxis)
+	var delta = (currentDistance - moveStartingDistance) * 10.0
+	
+	if selectIndex == 0 or selectIndex == 2:
+		target.global_position = moveStartingPosition + moveWorldAxis * delta
+		
+	elif selectIndex == 1 and not multiSelectHolder.is_empty():
+		for obj in multiSelectHolder:
+			if is_instance_valid(obj):
+				obj.global_position = moveStartingPositionMulti[obj] + moveWorldAxis * delta
+	
+	emit_signal("objectEdited")
 
 # Highlighting Functions
 func update_highlighted_object():
