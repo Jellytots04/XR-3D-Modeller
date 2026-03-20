@@ -144,8 +144,10 @@ func _process(delta: float) -> void:
 					else:
 						reattach(currentSelectedObject, highlighted_object)
 						
+				var target = planeMoveTarget()
+				if target:
+					spawnArrows(target)
 				currentlyMoving = false
-				
 
 		if controller.is_button_pressed("grip_click") and secondary_controller.is_button_pressed("grip_click") and editIndex == 1: # Stretch the object when gripping controllers and pulling outwards or inwards, second / first index value
 			if selectIndex == 0 or selectIndex == 2:
