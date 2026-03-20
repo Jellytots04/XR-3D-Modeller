@@ -4,16 +4,11 @@
 [ext_resource type="Texture2D" uid="uid://b4fy5f1eolrqs" path="res://ControllerUI/Icons/PrismIcon.aseprite" id="2_iuyxb"]
 [ext_resource type="Texture2D" uid="uid://ddss0uunw1bww" path="res://ControllerUI/Icons/SphereIcon.aseprite" id="3_wus27"]
 [ext_resource type="Texture2D" uid="uid://ta5e6sy0j6wr" path="res://ControllerUI/Icons/VerticeIcon.aseprite" id="4_kkiu2"]
-[ext_resource type="Texture2D" uid="uid://3nh4a4e6xj5b" path="res://ControllerUI/Icons/CutIcon.aseprite" id="5_rhe20"]
 [ext_resource type="Texture2D" uid="uid://bpju5ct00vr8c" path="res://ControllerUI/Icons/Union.aseprite" id="5_wjypm"]
 [ext_resource type="Texture2D" uid="uid://cq88w3yft0u8o" path="res://ControllerUI/Icons/Intersection.aseprite" id="6_g8fi6"]
-[ext_resource type="Texture2D" uid="uid://341vcjtm7k0f" path="res://ControllerUI/Icons/SnapIcon.aseprite" id="6_tpmfw"]
-[ext_resource type="Texture2D" uid="uid://lc5yadkpxhld" path="res://ControllerUI/Icons/GridIcon.aseprite" id="7_b4tso"]
 [ext_resource type="Texture2D" uid="uid://foa1v7b87nci" path="res://ControllerUI/Icons/Subtraction.aseprite" id="7_keb40"]
 [ext_resource type="Texture2D" uid="uid://csyna0axkoeoh" path="res://ControllerUI/Icons/MoveIcon.aseprite" id="8_exnw3"]
 [ext_resource type="Texture2D" uid="uid://bhbhf16um162j" path="res://ControllerUI/Icons/RotateIcon.aseprite" id="9_u26fo"]
-[ext_resource type="Texture2D" uid="uid://luxrb0qnej8d" path="res://ControllerUI/Icons/ScaleIcon.aseprite" id="10_7oq3b"]
-[ext_resource type="Texture2D" uid="uid://bhaptdgitud0u" path="res://ControllerUI/Icons/MeasureIcon.aseprite" id="11_wjypm"]
 [ext_resource type="Texture2D" uid="uid://cgwq5m46jr53v" path="res://ControllerUI/Icons/TrashIcon.aseprite" id="12_wjypm"]
 [ext_resource type="Texture2D" uid="uid://dal57lyb0m5ul" path="res://ControllerUI/Icons/WholeSelect.aseprite" id="13_5tk4o"]
 [ext_resource type="Texture2D" uid="uid://bvcowhfr02f6l" path="res://ControllerUI/Icons/MultiSelect.aseprite" id="14_qydld"]
@@ -45,18 +40,22 @@ alignment = 1
 
 [node name="CubePrimitive" type="Button" parent="Build/VerticalArrangement/BuildOptions" unique_id=917099619]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("1_5nlk7")
 
 [node name="PrismPrimitive" type="Button" parent="Build/VerticalArrangement/BuildOptions" unique_id=1094140146]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("2_iuyxb")
 
 [node name="SpherePrimitive" type="Button" parent="Build/VerticalArrangement/BuildOptions" unique_id=1671810411]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("3_wus27")
 
 [node name="VerticeSet" type="Button" parent="Build/VerticalArrangement/BuildOptions" unique_id=597560421]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("4_kkiu2")
 
 [node name="VertexBuild" type="HBoxContainer" parent="Build/VerticalArrangement" unique_id=1613122196]
@@ -66,11 +65,13 @@ layout_mode = 2
 [node name="Load" type="Button" parent="Build/VerticalArrangement/VertexBuild" unique_id=1316880549]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
 text = "Load"
 
 [node name="Clear" type="Button" parent="Build/VerticalArrangement/VertexBuild" unique_id=439873645]
 layout_mode = 2
 size_flags_horizontal = 3
+toggle_mode = true
 text = "Clear"
 
 [node name="AlwaysEditable" type="HBoxContainer" parent="Build/VerticalArrangement" unique_id=616117351]
@@ -79,14 +80,17 @@ alignment = 1
 
 [node name="Union" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=671920034]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("5_wjypm")
 
 [node name="Intersection" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=1545857729]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("6_g8fi6")
 
 [node name="Cut" type="Button" parent="Build/VerticalArrangement/AlwaysEditable" unique_id=2100843289]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("7_keb40")
 
 [node name="SelectOptions" type="HBoxContainer" parent="Build/VerticalArrangement" unique_id=1933781202]
@@ -95,14 +99,17 @@ alignment = 1
 
 [node name="GroupSelect" type="Button" parent="Build/VerticalArrangement/SelectOptions" unique_id=113945856]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("13_5tk4o")
 
 [node name="MultiSelect" type="Button" parent="Build/VerticalArrangement/SelectOptions" unique_id=966085947]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("14_qydld")
 
 [node name="SingleSelect" type="Button" parent="Build/VerticalArrangement/SelectOptions" unique_id=651447939]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("15_a121i")
 
 [node name="ScaleOptions" type="HBoxContainer" parent="Build/VerticalArrangement" unique_id=398199526]
@@ -137,14 +144,17 @@ alignment = 1
 
 [node name="Remove" type="Button" parent="Remove/VerticalArrangement/RemoveOptions" unique_id=651718910]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("12_wjypm")
 
 [node name="Unparent" type="Button" parent="Remove/VerticalArrangement/RemoveOptions" unique_id=636162341]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("12_wjypm")
 
 [node name="UndefinedBehaviour" type="Button" parent="Remove/VerticalArrangement/RemoveOptions" unique_id=135189834]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("3_wus27")
 
 [node name="SelectOptions" type="HBoxContainer" parent="Remove/VerticalArrangement" unique_id=1214415797]
@@ -153,14 +163,17 @@ alignment = 1
 
 [node name="GroupSelect" type="Button" parent="Remove/VerticalArrangement/SelectOptions" unique_id=1587975995]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("13_5tk4o")
 
 [node name="MultiSelect" type="Button" parent="Remove/VerticalArrangement/SelectOptions" unique_id=1841897820]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("14_qydld")
 
 [node name="SingleSelect" type="Button" parent="Remove/VerticalArrangement/SelectOptions" unique_id=416765426]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("15_a121i")
 
 [node name="Edit" type="MarginContainer" parent="." unique_id=1374180317]
@@ -181,18 +194,22 @@ alignment = 1
 
 [node name="MultiScaleTool" type="Button" parent="Edit/VBoxContainer/EditOptions" unique_id=27429057]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("8_exnw3")
 
 [node name="Stretch" type="Button" parent="Edit/VBoxContainer/EditOptions" unique_id=786202542]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("15_keb40")
 
 [node name="Rotate" type="Button" parent="Edit/VBoxContainer/EditOptions" unique_id=310547788]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("9_u26fo")
 
 [node name="Button" type="Button" parent="Edit/VBoxContainer/EditOptions" unique_id=48872114]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("16_5tk4o")
 
 [node name="AlwaysEditable" type="HBoxContainer" parent="Edit/VBoxContainer" unique_id=455576601]
@@ -201,14 +218,17 @@ alignment = 1
 
 [node name="Union" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=1120634320]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("5_wjypm")
 
 [node name="Intersection" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=338366233]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("6_g8fi6")
 
 [node name="Cut" type="Button" parent="Edit/VBoxContainer/AlwaysEditable" unique_id=913932949]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("7_keb40")
 
 [node name="SelectOptions" type="HBoxContainer" parent="Edit/VBoxContainer" unique_id=939294884]
@@ -217,14 +237,17 @@ alignment = 1
 
 [node name="GroupSelect" type="Button" parent="Edit/VBoxContainer/SelectOptions" unique_id=513395112]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("13_5tk4o")
 
 [node name="MultiSelect" type="Button" parent="Edit/VBoxContainer/SelectOptions" unique_id=500660377]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("14_qydld")
 
 [node name="SingleSelect" type="Button" parent="Edit/VBoxContainer/SelectOptions" unique_id=1845030662]
 layout_mode = 2
+toggle_mode = true
 icon = ExtResource("15_a121i")
 
 [node name="ScaleBox" type="HBoxContainer" parent="Edit/VBoxContainer" unique_id=2096075756]
@@ -249,48 +272,55 @@ theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 5
 metadata/_tab_index = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="World" unique_id=1613292362]
+[node name="MainContainer" type="VBoxContainer" parent="World" unique_id=520599037]
 layout_mode = 2
 
-[node name="PhysicsOptions" type="HBoxContainer" parent="World/VBoxContainer" unique_id=583536725]
+[node name="ShowingContainer" type="VBoxContainer" parent="World/MainContainer" unique_id=1613292362]
 layout_mode = 2
 
-[node name="Name" type="Label" parent="World/VBoxContainer/PhysicsOptions" unique_id=934970076]
-custom_minimum_size = Vector2(90, 0)
-layout_mode = 2
-text = "PlaceHolder : "
-
-[node name="Value" type="Label" parent="World/VBoxContainer/PhysicsOptions" unique_id=2011008012]
-layout_mode = 2
-text = "Place Holder Value"
-
-[node name="AlwaysEditable" type="HBoxContainer" parent="World/VBoxContainer" unique_id=506175146]
+[node name="Showing" type="VBoxContainer" parent="World/MainContainer/ShowingContainer" unique_id=1156333908]
 layout_mode = 2
 
-[node name="Cut" type="Button" parent="World/VBoxContainer/AlwaysEditable" unique_id=1750883910]
+[node name="Print" type="Label" parent="World/MainContainer/ShowingContainer/Showing" unique_id=623176389]
 layout_mode = 2
-icon = ExtResource("5_rhe20")
+text = "Visibility"
+horizontal_alignment = 1
 
-[node name="Snap" type="Button" parent="World/VBoxContainer/AlwaysEditable" unique_id=958950889]
+[node name="Operations" type="HBoxContainer" parent="World/MainContainer/ShowingContainer/Showing" unique_id=583536725]
 layout_mode = 2
-icon = ExtResource("6_tpmfw")
+alignment = 1
 
-[node name="Grid" type="Button" parent="World/VBoxContainer/AlwaysEditable" unique_id=82157507]
+[node name="Intersection" type="Button" parent="World/MainContainer/ShowingContainer/Showing/Operations" unique_id=1220492378]
 layout_mode = 2
-icon = ExtResource("7_b4tso")
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Intersection"
 
-[node name="Move" type="Button" parent="World/VBoxContainer/AlwaysEditable" unique_id=471330793]
+[node name="Subtraction" type="Button" parent="World/MainContainer/ShowingContainer/Showing/Operations" unique_id=423491633]
 layout_mode = 2
-icon = ExtResource("8_exnw3")
+size_flags_horizontal = 3
+toggle_mode = true
+text = "Subtraction
+"
 
-[node name="Rotate" type="Button" parent="World/VBoxContainer/AlwaysEditable" unique_id=1149789345]
+[node name="MovementContainer" type="VBoxContainer" parent="World/MainContainer" unique_id=527764006]
 layout_mode = 2
-icon = ExtResource("9_u26fo")
 
-[node name="Scale" type="Button" parent="World/VBoxContainer/AlwaysEditable" unique_id=1084855574]
+[node name="Movement" type="HBoxContainer" parent="World/MainContainer/MovementContainer" unique_id=506175146]
 layout_mode = 2
-icon = ExtResource("10_7oq3b")
+alignment = 1
 
-[node name="Measurements" type="Button" parent="World/VBoxContainer/AlwaysEditable" unique_id=586145131]
+[node name="Meters" type="Label" parent="World/MainContainer/MovementContainer/Movement" unique_id=1722854783]
 layout_mode = 2
-icon = ExtResource("11_wjypm")
+text = "Meters : "
+
+[node name="HSlider" type="HSlider" parent="World/MainContainer/MovementContainer/Movement" unique_id=166221253]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+max_value = 3.0
+step = 0.1
+
+[node name="Toggle" type="Button" parent="World/MainContainer/MovementContainer" unique_id=1261752984]
+layout_mode = 2
+text = "Toggle"

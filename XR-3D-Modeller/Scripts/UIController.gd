@@ -16,7 +16,21 @@ signal clear_vertices()
 @export var build_clear: Button
 @export var build_vertex: HBoxContainer
 
+# Build Button groups
+var build_options_group = ButtonGroup.new()
+var build_csg_group = ButtonGroup.new()
+var build_select_group = ButtonGroup.new()
+
+# Remove Button groups
+var remove_options_group = ButtonGroup.new()
+var remove_select_group = ButtonGroup.new()
+
+# Edit Button groups
+var edit_options_group = ButtonGroup.new()
+var edit_select_group = ButtonGroup.new()
+
 func _ready():
+	_group_fix()
 	add_to_group("ui_controller")
 	var viewport_scene = $PickableObject/Viewport2Din3D/Viewport.get_child(0)
 	if viewport_scene:
@@ -49,8 +63,9 @@ func _ready():
 		if build_options:
 			for idx in range(build_options.get_child_count()):
 				var button = build_options.get_child(idx)
+				button.button_group = build_options_group
 				button.connect("pressed", Callable(self, "_build_option").bind(idx))
-				print(idx)
+				# print(idx)
 		else:
 			print("BuildOptions node not found!")
 
@@ -64,6 +79,7 @@ func _ready():
 		if build_always:
 			for idx in range(build_always.get_child_count()):
 				var button = build_always.get_child(idx)
+				button.button_group = build_csg_group
 				button.connect("pressed", Callable(self, "_csg_operation").bind(idx))
 		else:
 			print("csg operations are not found")
@@ -71,6 +87,7 @@ func _ready():
 		if build_select:
 			for idx in range(build_select.get_child_count()):
 				var button = build_select.get_child(idx)
+				button.button_group = build_select_group
 				button.connect("pressed", Callable(self, "_select_option").bind(idx))
 
 		if build_load:
@@ -82,6 +99,7 @@ func _ready():
 		if remove_options:
 			for idx in range(remove_options.get_child_count()):
 				var button = remove_options.get_child(idx)
+				button.button_group = remove_options_group
 				button.connect("pressed", Callable(self, "_remove_option").bind(idx))
 
 		else:
@@ -90,6 +108,7 @@ func _ready():
 		if remove_select:
 			for idx in range(remove_select.get_child_count()):
 				var button = remove_select.get_child(idx)
+				button.button_group = remove_select_group
 				button.connect("pressed", Callable(self, "_select_option").bind(idx))
 		else:
 			print("Remove select is not available")
@@ -97,6 +116,7 @@ func _ready():
 		if edit_options:
 			for idx in range(edit_options.get_child_count()):
 				var button = edit_options.get_child(idx)
+				button.button_group = edit_options_group
 				button.connect("pressed", Callable(self, "_edit_option").bind(idx))
 				# print(idx)
 		else:
@@ -109,10 +129,20 @@ func _ready():
 		if edit_select:
 			for idx in range(edit_select.get_child_count()):
 				var button = edit_select.get_child(idx)
+				button.button_group = edit_select_group
 				button.connect("pressed", Callable(self, "_select_option").bind(idx))
 
 	else:
 		print("Viewport root scene not loaded!")
+
+func _group_fix():
+	build_options_group.allow_unpress = false
+	build_csg_group.allow_unpress = false
+	build_select_group.allow_unpress = false
+	remove_options_group.allow_unpress = false
+	remove_select_group.allow_unpress = false
+	edit_options_group.allow_unpress = false
+	edit_select_group.allow_unpress = false
 
 func _change_scale_value(value):
 	edit_scaleSize.get_parent().visible = true

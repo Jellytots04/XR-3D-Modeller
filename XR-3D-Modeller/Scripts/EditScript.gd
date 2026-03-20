@@ -137,17 +137,16 @@ func _process(delta: float) -> void:
 					if obj:
 						spawnArrows(obj)
 				
-				if currentlyMoving and highlighted_object:
-					if selectIndex == 1:
-						for obj in multiSelectHolder:
-							reattach(obj, highlighted_object)
-					else:
-						reattach(currentSelectedObject, highlighted_object)
-						
-				var target = planeMoveTarget()
-				if target:
-					spawnArrows(target)
-				currentlyMoving = false
+				if currentlyMoving:
+					if highlighted_object:
+						if selectIndex == 1:
+							for obj in multiSelectHolder:
+								reattach(obj, highlighted_object)
+						else:
+							reattach(currentSelectedObject, highlighted_object)
+					
+					spawnArrows(planeMoveTarget())
+					currentlyMoving = false
 
 		if controller.is_button_pressed("grip_click") and secondary_controller.is_button_pressed("grip_click") and editIndex == 1: # Stretch the object when gripping controllers and pulling outwards or inwards, second / first index value
 			if selectIndex == 0 or selectIndex == 2:
@@ -830,9 +829,12 @@ func clear_select(idx):
 		var cleared_object = currentSelectedObject
 		currentSelectedObject = null
 		clearOrbs()
+		clearArrows()
 		_remove_highlight(cleared_object)
 	
 	if selectIndex == 1:
+		clearOrbs()
+		clearArrows()
 		for child in multiSelectHolder:
 			await _remove_highlight(child)
 		multiSelectHolder.clear()
@@ -863,15 +865,16 @@ func scale_selected_object(value):
 
 func set_page_index(idx):
 	# print("Hello from remove call index")
+	clear_select(selectIndex)
 	if idx == 2:
 		is_active = true
 	else:
-		clear_select(selectIndex) # Clear any previously selected after changing index
 		is_active = false
 
 func set_edit_index(idx):
 	print("Edit Called")
 	editIndex = idx
+	clearArrows()
 	clearOrbs()
 
 func update_list():
