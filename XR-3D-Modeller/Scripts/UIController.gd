@@ -15,6 +15,7 @@ signal clear_vertices()
 @export var build_load: Button
 @export var build_clear: Button
 @export var build_vertex: HBoxContainer
+var snap_controller: Control
 
 # Build Button groups
 var build_options_group = ButtonGroup.new()
@@ -52,12 +53,30 @@ func _ready():
 		var edit_tab = viewport_scene.get_node("Edit/VBoxContainer")
 		var edit_options = edit_tab.get_node("EditOptions")
 		var edit_select = edit_tab.get_node("SelectOptions")
+		var world_tab = viewport_scene.get_node("World/MainContainer")
+		var intersection_button = world_tab.get_node("ShowingContainer/Showing/Operations/Intersection")
+		var subtraction_button = world_tab.get_node("ShowingContainer/Showing/Operations/Subtraction")
+		var movement_slider = world_tab.get_node("MovementContainer/Movement/HSlider")
+		var movement_toggle = world_tab.get_node("MovementContainer/Toggle")
+		var movement_spinbox = world_tab.get_node("MovementContainer/Movement/SpinBox")
+		
+		movement_toggle.button_pressed = WorldOptions.snapEnabled
+		movement_slider.value = WorldOptions.snapSizeMM
+		movement_spinbox.value = WorldOptions.snapSizeMM
+		
+		movement_toggle.toggled.connect(_snap_toggled)
+		movement_slider.value_changed.connect(_snap_slider_chaned.bind(movement_spinbox))
+		movement_spinbox.value_changed.connect(_snap_spinBox_changed.bind(movement_slider))
+		intersection_button.toggled.connect(_intersection_toggled)
+		subtraction_button.toggled.connect(_subtraction_toggled)
 		
 		edit_scaleSize = edit_tab.get_node("ScaleBox/Scale") # HSlider node
 
 		build_vertex = build_tab.get_node("VertexBuild") # HBoxContainer node
 		build_load = build_vertex.get_node("Load") # Button Node
 		build_clear = build_vertex.get_node("Clear") # Button Node
+		
+		
 		
 		# print(build_options)
 		if build_options:
@@ -181,3 +200,22 @@ func _load_mesh():
 
 func _clear_vertices():
 	emit_signal("clear_vertices")
+
+func _snap_toggled(pressed):
+	WorldOptions.snapEnabled = pressed
+	
+func _snap_slider_chaned(value, spinBox):
+	WorldOptions.snapSizeMM = value
+	spinBox.set_value_no_signal(value)
+
+func _snap_spinBox_changed(value, slider):
+	WorldOptions.snapSizeMM = value
+	slider.set_value_no_signal(value)
+	
+func _intersection_toggled(pressed):
+	WorldOptions.showIntersection = pressed
+	WorldOptions.intersectionsVisibilityChanged.emit(pressed)
+	
+func _subtraction_toggled(pressed):
+	WorldOptions.showSubtraction = pressed
+	WorldOptions.subtractionVisibilityChanged.emit(pressed)

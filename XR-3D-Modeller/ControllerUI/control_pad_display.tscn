@@ -318,8 +318,13 @@ text = "Meters : "
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
-max_value = 3.0
-step = 0.1
+min_value = 1.0
+value = 1.0
+
+[node name="SpinBox" type="SpinBox" parent="World/MainContainer/MovementContainer/Movement" unique_id=1524715613]
+layout_mode = 2
+min_value = 1.0
+value = 1.0
 
 [node name="Toggle" type="Button" parent="World/MainContainer/MovementContainer" unique_id=1261752984]
 layout_mode = 2

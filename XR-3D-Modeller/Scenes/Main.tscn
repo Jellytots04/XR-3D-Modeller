@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://dt52fi5t6blik"]
 
+[ext_resource type="Script" uid="uid://ca3uscwq7atyo" path="res://Scripts/WorldFunction.gd" id="1_jw32o"]
 [ext_resource type="PackedScene" uid="uid://clc5dre31iskm" path="res://addons/godot-xr-tools/xr/start_xr.tscn" id="1_v1gob"]
 [ext_resource type="PackedScene" uid="uid://hfu7l13886ko" path="res://ControllerUI/UIController.tscn" id="2_jw32o"]
 [ext_resource type="PackedScene" uid="uid://dry3gd8dudal" path="res://Scenes/CharacterOrigin.tscn" id="3_50glp"]
@@ -31,6 +32,7 @@ size = Vector3(4.082, 1.142, 2)
 size = Vector3(1, 1, 2)
 
 [node name="Main" type="Node3D" unique_id=1928351994]
+script = ExtResource("1_jw32o")
 
 [node name="StartXR" parent="." unique_id=885171572 instance=ExtResource("1_v1gob")]
 
