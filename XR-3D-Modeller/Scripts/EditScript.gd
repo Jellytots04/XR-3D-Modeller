@@ -337,7 +337,7 @@ func moveObject(delta):
 	var rotation = self.global_transform.basis * moveBasis.inverse()
 	var offset_direction = -controller.global_transform.basis.z
 	var joystick = controller.get_vector2("primary")
-	if selectIndex == 0 or selectIndex == 2:
+	if selectIndex == 0:
 		# Moves the objects position based on the rotation and distance the controller has moved
 		currentSelectedObject.global_position = self.global_position + rotation * moveOffset
 		if abs(joystick.y) > 0.1:
@@ -345,6 +345,18 @@ func moveObject(delta):
 			#print("offset direction : ", offset_direction)
 			moveOffset += offset_direction * joystick.y * moveSpeed * delta
 			#print("Moving objects location : ",currentSelectedObject.global_position)
+
+	elif selectIndex == 2:
+		# Moves the objects position based on the rotation and distance the controller has moved
+		currentSelectedObject.global_position = self.global_position + rotation * moveOffset
+		if abs(joystick.y) > 0.1:
+			#print("Object is being pulled towards me : ", joystick.y)
+			#print("offset direction : ", offset_direction)
+			moveOffset += offset_direction * joystick.y * moveSpeed * delta
+			#print("Moving objects location : ",currentSelectedObject.global_position)
+		var original = get_ghost_original(currentSelectedObject)
+		if original:
+			original.global_position = currentSelectedObject.global_position
 
 	elif selectIndex == 1 and !multiSelectHolder.is_empty():
 		for obj in multiSelectHolder:
@@ -416,9 +428,15 @@ func startRotate():
 func _rotateObject():
 	var rotation = controller.global_transform.basis * startingBasis.inverse()
 	
-	if selectIndex == 0 or selectIndex == 2:
+	if selectIndex == 0:
 		currentSelectedObject.global_transform.basis = rotation * objectStartingBasis
-	
+
+	elif selectIndex == 2:
+		currentSelectedObject.global_transform.basis = rotation * objectStartingBasis
+		var original = get_ghost_original(currentSelectedObject)
+		if original:
+			original.global_transform.basis = currentSelectedObject.global_transform.basis
+
 	elif selectIndex == 1:
 		for obj in multiSelectHolder:
 			obj.global_transform.basis = rotation * objectStartingBasisMulti[obj]
@@ -462,6 +480,11 @@ func plane_orb_scaling():
 
 	currentSelectedObject.scale = newScale
 	updateOrbPositions(currentSelectedObject)
+	
+	var original = get_ghost_original(currentSelectedObject)
+	if original:
+		original.global_position = currentSelectedObject.global_position
+		original.scale = currentSelectedObject.scale
 	
 	emit_signal("objectEdited")
 
@@ -603,9 +626,15 @@ func planeMoveObject():
 	var currentDistance = controller.global_position.dot(moveWorldAxis)
 	var delta = (currentDistance - moveStartingDistance) * 10.0
 	
-	if selectIndex == 0 or selectIndex == 2:
+	if selectIndex == 0:
 		target.global_position = moveStartingPosition + moveWorldAxis * delta
 		
+	elif selectIndex == 2:
+		target.global_position = moveStartingPosition + moveWorldAxis * delta
+		var original = get_ghost_original(target)
+		if original:
+			original.global_position = target.global_position
+	
 	elif selectIndex == 1 and not multiSelectHolder.is_empty():
 		for obj in multiSelectHolder:
 			if is_instance_valid(obj):
@@ -618,6 +647,16 @@ func update_highlighted_object():
 	# print("Ray update")
 	if raycast_3d.is_colliding():
 		var combiner = raycast_3d.get_collider()
+		
+		if combiner.is_in_group("intersection_ghosts") or combiner.is_in_group("subtraction_ghosts"):
+			if combiner != highlighted_object:
+				if highlighted_object and highlighted_object != currentSelectedObject:
+					_remove_highlight(highlighted_object)
+				highlighted_object = combiner
+				if highlighted_object != currentSelectedObject:
+					_apply_highlight(highlighted_object, highlight_color)
+			return
+		
 		if selectIndex == 0:
 			if combiner in summonedObjects:
 				if combiner != highlighted_object:
@@ -822,6 +861,14 @@ func _remove_highlight_recursive(obj):
 			await get_tree().process_frame
 			if not is_instance_valid(obj):
 				return
+
+# Intersection / Subtraction helper functions
+func get_ghost_original(obj):
+	var main = get_tree().get_nodes_in_group("main_node")[0]
+	if obj.is_in_group("intersection_ghosts") or obj.is_in_group("subtraction_ghosts"):
+		if obj in main.ghosted_mesh:
+			return main.ghosted_mesh[obj]["original"]
+	return null
 
 # Called when a new select index is chosen
 func clear_select(idx):

@@ -260,6 +260,10 @@ func _process(_delta):
 
 # Summoning Functions
 func combine_objects(index, combiner, spawnPoint, objectNormal):
+	if combiner.is_in_group("intersection_ghosts") or combiner.is_in_group("subtraction_ghosts"):
+		print("Cannot combine to ghosts")
+		return
+
 	if index < summonableObjects.size():
 		# Instantiate the object in the scene
 		var new_obj = summonableObjects[index].instantiate()
@@ -644,6 +648,13 @@ func update_highlighted_object():
 	# print("Ray update")
 	if raycast_3d.is_colliding():
 		var combiner = raycast_3d.get_collider()
+		
+		if combiner.is_in_group("intersection_ghosts") or combiner.is_in_group("subtraction_ghosts"):
+			if highlighted_object and highlighted_object != currentSelectedObject:
+				_remove_highlight(highlighted_object)
+			highlighted_object = null
+			return
+		
 		if selectIndex == 0:
 			if combiner in summonedObjects:
 				if combiner != highlighted_object:
