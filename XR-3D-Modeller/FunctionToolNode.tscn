@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" uid="uid://dtgup1a1u4h4u" path="res://Scripts/RemoveScript.gd" id="1_0f1qj"]
 [ext_resource type="Script" uid="uid://cskwuu8bgu4f" path="res://Scripts/EditScript.gd" id="2_kv11s"]
-[ext_resource type="Script" uid="uid://ca3uscwq7atyo" path="res://Scripts/WorldFunction.gd" id="3_sjd1p"]
 
 [node name="FunctionToolNode" type="Node3D" unique_id=677989362]
 
@@ -11,6 +10,3 @@ script = ExtResource("1_0f1qj")
 
 [node name="EditFunction" type="Node3D" parent="." unique_id=75271281]
 script = ExtResource("2_kv11s")
-
-[node name="WorldFunction" type="Node3D" parent="." unique_id=1444950800]
-script = ExtResource("3_sjd1p")

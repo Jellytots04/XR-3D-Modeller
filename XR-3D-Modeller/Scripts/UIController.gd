@@ -30,6 +30,10 @@ var remove_select_group = ButtonGroup.new()
 var edit_options_group = ButtonGroup.new()
 var edit_select_group = ButtonGroup.new()
 
+# Intersection and Subtraciton buttons
+var intersection_button: Button
+var subtraction_button: Button
+
 func _ready():
 	_group_fix()
 	add_to_group("ui_controller")
@@ -54,8 +58,8 @@ func _ready():
 		var edit_options = edit_tab.get_node("EditOptions")
 		var edit_select = edit_tab.get_node("SelectOptions")
 		var world_tab = viewport_scene.get_node("World/MainContainer")
-		var intersection_button = world_tab.get_node("ShowingContainer/Showing/Operations/Intersection")
-		var subtraction_button = world_tab.get_node("ShowingContainer/Showing/Operations/Subtraction")
+		intersection_button = world_tab.get_node("ShowingContainer/Showing/Operations/Intersection")
+		subtraction_button = world_tab.get_node("ShowingContainer/Showing/Operations/Subtraction")
 		var movement_slider = world_tab.get_node("MovementContainer/Movement/HSlider")
 		var movement_toggle = world_tab.get_node("MovementContainer/Toggle")
 		var movement_spinbox = world_tab.get_node("MovementContainer/Movement/SpinBox")
@@ -67,16 +71,14 @@ func _ready():
 		movement_toggle.toggled.connect(_snap_toggled)
 		movement_slider.value_changed.connect(_snap_slider_chaned.bind(movement_spinbox))
 		movement_spinbox.value_changed.connect(_snap_spinBox_changed.bind(movement_slider))
-		intersection_button.toggled.connect(_intersection_toggled)
-		subtraction_button.toggled.connect(_subtraction_toggled)
+		intersection_button.pressed.connect(_intersection_toggled)
+		subtraction_button.pressed.connect(_subtraction_toggled)
 		
 		edit_scaleSize = edit_tab.get_node("ScaleBox/Scale") # HSlider node
 
 		build_vertex = build_tab.get_node("VertexBuild") # HBoxContainer node
 		build_load = build_vertex.get_node("Load") # Button Node
 		build_clear = build_vertex.get_node("Clear") # Button Node
-		
-		
 		
 		# print(build_options)
 		if build_options:
@@ -212,10 +214,11 @@ func _snap_spinBox_changed(value, slider):
 	WorldOptions.snapSizeMM = value
 	slider.set_value_no_signal(value)
 	
-func _intersection_toggled(pressed):
-	WorldOptions.showIntersection = pressed
-	WorldOptions.intersectionsVisibilityChanged.emit(pressed)
+func _intersection_toggled():
+	print("Called")
+	WorldOptions.showIntersection = not WorldOptions.showIntersection
+	WorldOptions.intersectionsVisibilityChanged.emit(WorldOptions.showIntersection)
 	
-func _subtraction_toggled(pressed):
-	WorldOptions.showSubtraction = pressed
-	WorldOptions.subtractionVisibilityChanged.emit(pressed)
+func _subtraction_toggled():
+	WorldOptions.showSubtraction = not WorldOptions.showSubtraction
+	WorldOptions.subtractionVisibilityChanged.emit(WorldOptions.showSubtraction)

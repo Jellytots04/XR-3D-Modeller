@@ -273,7 +273,6 @@ func combine_objects(index, combiner, spawnPoint, objectNormal):
 		new_obj.operation = csgIndex
 		get_tree().current_scene.add_child(new_obj)
 		new_obj.look_at(spawnPoint, objectNormal)
-		new_obj.add_to_group("summonedObjects")
 		new_obj.reparent(combiner)
 		new_obj.use_collision = true
 		new_obj.collision_layer = 2

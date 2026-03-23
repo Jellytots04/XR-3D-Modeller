@@ -3,8 +3,12 @@ extends Node3D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	WorldOptions.intersectionsVisibilityChanged.connect(intersections_visibility_changed)
-	WorldOptions.subtractionVisibilityChanged.connect(subtraction_visibility_changed)
+	print("Ready called worldfunction : ", get_path())
+	add_to_group("main_node")
+	if not WorldOptions.intersectionsVisibilityChanged.is_connected(intersections_visibility_changed):
+		WorldOptions.intersectionsVisibilityChanged.connect(intersections_visibility_changed)
+	if not WorldOptions.subtractionVisibilityChanged.is_connected(subtraction_visibility_changed):
+		WorldOptions.subtractionVisibilityChanged.connect(subtraction_visibility_changed)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -13,15 +17,21 @@ func _process(delta: float) -> void:
 var ghosted_mesh = {}
 
 func intersections_visibility_changed(show):
+	print("Show : ", show)
 	if show:
 		for combiner in get_tree().get_nodes_in_group("summonedObjects"):
+			print("Checking combiner : ", combiner.name)
+			if not combiner is CSGCombiner3D:
+				continue
 			for child in combiner.get_children():
+				print("Child : ", child.name, " : operation : ", child.operation if child is CSGMesh3D else "N/A")
 				if child is CSGMesh3D and child.operation == CSGShape3D.OPERATION_INTERSECTION:
 					spawn_ghosted_obj(child)
 	else:
 		clear_ghosted("intersection_ghosts")
 
 func subtraction_visibility_changed(show):
+	print(show)
 	if show:
 		for combiner in get_tree().get_nodes_in_group("summonedObjects"):
 			for child in combiner.get_children():
@@ -31,9 +41,22 @@ func subtraction_visibility_changed(show):
 		clear_ghosted("subtraction_ghosts")
 
 func spawn_ghosted_obj(obj):
+	for ghost in ghosted_mesh.keys():
+		if ghosted_mesh[ghost]["original"] == obj:
+			return
+	
 	var ghost = obj.duplicate()
+	
+	ghost.remove_from_group("summonedObjects")
+	ghost.remove_from_group("intersection_ghosts")
+	ghost.remove_from_group("subtraction_ghosts")
+	
 	ghost.operation = CSGShape3D.OPERATION_UNION
 	ghost.global_transform = obj.global_transform
+	
+	ghost.collision_layer = 4
+	ghost.collision_mask = 0
+	ghost.scale *= 1.002
 	
 	var mat = StandardMaterial3D.new()
 	if obj.operation == CSGShape3D.OPERATION_INTERSECTION:
@@ -49,6 +72,7 @@ func spawn_ghosted_obj(obj):
 	ghost.material = mat
 	
 	get_tree().root.add_child(ghost)
+	ghost.remove_from_group("summonedObjects")
 	
 	ghosted_mesh[ghost] = {
 		"original": obj,
@@ -60,13 +84,16 @@ func clear_ghosted(group):
 		if is_instance_valid(ghost):
 			ghosted_mesh.erase(ghost)
 			ghost.queue_free()
-			
+
 func delete_ghosted(ghost):
 	if ghost in ghosted_mesh:
 		var data = ghosted_mesh[ghost]
 		var original = data["original"]
 		var combiner = data["original_combiner"]
-		
+		print("Deleting ghost: ", ghost)
+		print("Deleting original: ", original)
+		print("Deleting combiner: ", combiner)
+
 		if is_instance_valid(original):
 			original.queue_free()
 
@@ -75,3 +102,13 @@ func delete_ghosted(ghost):
 		
 		ghosted_mesh.erase(ghost)
 		ghost.queue_free()
+		
+		await get_tree().process_frame
+
+func clear_ghost_for_original(original):
+	for ghost in ghosted_mesh.keys():
+		if ghosted_mesh[ghost]["original"] == original:
+			if is_instance_valid(ghost):
+				ghost.queue_free()
+			ghosted_mesh.erase(ghost)
+			return

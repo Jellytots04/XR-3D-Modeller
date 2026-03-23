@@ -293,13 +293,11 @@ alignment = 1
 [node name="Intersection" type="Button" parent="World/MainContainer/ShowingContainer/Showing/Operations" unique_id=1220492378]
 layout_mode = 2
 size_flags_horizontal = 3
-toggle_mode = true
 text = "Intersection"
 
 [node name="Subtraction" type="Button" parent="World/MainContainer/ShowingContainer/Showing/Operations" unique_id=423491633]
 layout_mode = 2
 size_flags_horizontal = 3
-toggle_mode = true
 text = "Subtraction
 "
 

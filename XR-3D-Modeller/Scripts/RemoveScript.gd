@@ -60,6 +60,7 @@ func _process(delta: float) -> void:
 		# If the user clicks / presses right trigger on an highlighted object it will become the selected object
 		if controller.is_button_pressed("trigger_click") and !triggerPressed: # This is group select aka entire object because highlighted_object will be the CSGCombiner
 			if highlighted_object:
+				
 				# Group selecting (Entire CSGCombiner included)
 				if selectIndex == 0:
 					triggerPressed = true
@@ -120,6 +121,13 @@ func _process(delta: float) -> void:
 			triggerPressed = false
 
 func remove_object():
+	if currentSelectedObject and (currentSelectedObject.is_in_group("intersection_ghosts") or currentSelectedObject.is_in_group("subtraction_ghosts")):
+		var main = get_tree().get_nodes_in_group("main_node")[0]
+		main.delete_ghosted(currentSelectedObject)
+		currentSelectedObject = null
+		highlighted_object = null
+		return
+	
 	if selectIndex == 0:
 		if currentSelectedObject and is_instance_valid(currentSelectedObject):
 			var removed_obj = currentSelectedObject
@@ -172,6 +180,18 @@ func update_highlighted_object():
 	# print("Ray update")
 	if raycast_3d.is_colliding():
 		var combiner = raycast_3d.get_collider()
+
+		if combiner.is_in_group("intersection_ghosts") or combiner.is_in_group("subtraction_ghosts"):
+			if selectIndex != 2:
+				return
+			if combiner != highlighted_object:
+				if highlighted_object and highlighted_object != currentSelectedObject:
+					_remove_highlight(highlighted_object)
+				highlighted_object = combiner
+				if highlighted_object != currentSelectedObject:
+					_apply_highlight(highlighted_object, highlight_color)
+			return
+
 		if selectIndex == 0:
 			if combiner in summonedObjects:
 				if combiner != highlighted_object:
@@ -249,6 +269,14 @@ func _apply_highlight_recursive(obj, color):
 		return
 	
 	if not is_instance_valid(obj):
+		return
+	
+	if obj.is_in_group("intersection_ghosts") or obj.is_in_group("subtraction_ghosts"):
+		if not obj in true_materials:
+			true_materials[obj] = obj.material
+		var mat = obj.material.duplicate()
+		mat.albedo_color = color
+		obj.material = mat
 		return
 	
 	var mesh_inst = null
@@ -332,6 +360,12 @@ func _remove_highlight_recursive(obj):
 	
 	if not is_instance_valid(obj):
 			return
+
+	if obj.is_in_group("intersection_ghosts") or obj.is_in_group("subtraction_ghosts"):
+		if obj in true_materials:
+			obj.material = true_materials[obj]
+			true_materials.erase(obj)
+		return
 
 	var mesh_inst = null
 	
