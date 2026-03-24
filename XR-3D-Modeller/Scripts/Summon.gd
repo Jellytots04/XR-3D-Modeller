@@ -143,17 +143,18 @@ func _process(_delta):
 				ghostingOn = true
 			if summonIndex == 3:
 				var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
-				ghostInstance.global_transform.origin = spawn_pos
+				ghostInstance.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
 			else:
 				if raycast_3d.is_colliding():
 					var obj = raycast_3d.get_collider()
 					if obj in summonedObjects:
-						var snap_pos = raycast_3d.get_collision_point() + raycast_3d.get_collision_normal() * 0.01
+						var snapped = WorldOptions.snap_vec(raycast_3d.get_collision_point())
+						var snap_pos = snapped + raycast_3d.get_collision_normal() * 0.01
 						ghostInstance.global_position = snap_pos
-						ghostInstance.look_at(raycast_3d.get_collision_point(), raycast_3d.get_collision_normal())
+						ghostInstance.look_at(snapped, raycast_3d.get_collision_normal())
 				else:
 					var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
-					ghostInstance.global_transform.origin = spawn_pos
+					ghostInstance.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
 
 		else:
 			if ghostingOn:
@@ -267,16 +268,17 @@ func combine_objects(index, combiner, spawnPoint, objectNormal):
 	if index < summonableObjects.size():
 		# Instantiate the object in the scene
 		var new_obj = summonableObjects[index].instantiate()
+		var snapped = WorldOptions.snap_vec(spawnPoint)
 		# Grabs the position of the hand and will add to it to spawn the hand in
 		# Will replace this with a marker tag later on
-		new_obj.global_transform.origin = (spawnPoint + objectNormal * 0.01)
+		new_obj.global_transform.origin = snapped + objectNormal * 0.01
 		# objectsInScene.append(new_obj)
 		# print("Added", new_obj)
 		# Add the new object to the scene
 		new_obj.scale = objectSize * Vector3.ONE
 		new_obj.operation = csgIndex
 		get_tree().current_scene.add_child(new_obj)
-		new_obj.look_at(spawnPoint, objectNormal)
+		new_obj.look_at(snapped, objectNormal)
 		new_obj.reparent(combiner)
 		new_obj.use_collision = true
 		new_obj.collision_layer = 2
@@ -297,8 +299,7 @@ func summon_object(index):
 		# Grabs the position of the hand and will add to it to spawn the hand in
 		# Will replace this with a marker tag later on
 		var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
-		
-		combiner.global_transform.origin = spawn_pos
+		print("Snap on : ", WorldOptions.snapEnabled, " : spawn position : ", spawn_pos)
 		#new_obj.global_transform.origin = spawn_pos
 		#new_obj.add_to_group("summonedObjects")
 		# objectsInScene.append(new_obj)
@@ -306,6 +307,7 @@ func summon_object(index):
 		# Add the new object to the scene
 		new_obj.scale = objectSize * Vector3.ONE
 		get_tree().current_scene.add_child(combiner)
+		combiner.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
 		combiner.add_child(new_obj)
 		new_obj.position = Vector3.ZERO
 		combiner.use_collision = true
@@ -328,7 +330,7 @@ func summon_object(index):
 func summon_vertex():
 	print("Summoning the vertex")
 	var vertex = summonableObjects[3].instantiate()
-	var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
+	var spawn_pos = WorldOptions.snap_vec(global_transform.origin + -global_transform.basis.z * spawn_distance)
 	vertex.global_position = spawn_pos
 	get_tree().current_scene.add_child(vertex)
 	
