@@ -325,12 +325,12 @@ func stretchObject(main, secondary):
 # Moving functions
 func startMove():
 	if selectIndex == 0 or selectIndex == 2:
-		moveOffset = currentSelectedObject.global_position - self.global_position # distance between object and controller
+		moveOffset = WorldOptions.snap_vec(currentSelectedObject.global_position) - self.global_position # distance between object and controller
 		moveBasis = self.global_transform.basis # starting basis for the object to rotate around
 		# print(moveOffset)
 	elif selectIndex == 1 and !multiSelectHolder.is_empty():
 		for obj in multiSelectHolder:
-			moveOffsetMulti[obj] = obj.global_position - self.global_position
+			moveOffsetMulti[obj] = WorldOptions.snap_vec(obj.global_position) - self.global_position
 		moveBasis = self.global_transform.basis
 
 func moveObject(delta):
@@ -339,7 +339,7 @@ func moveObject(delta):
 	var joystick = controller.get_vector2("primary")
 	if selectIndex == 0:
 		# Moves the objects position based on the rotation and distance the controller has moved
-		currentSelectedObject.global_position = self.global_position + rotation * moveOffset
+		currentSelectedObject.global_position = WorldOptions.snap_vec(self.global_position + rotation * moveOffset)
 		if abs(joystick.y) > 0.1:
 			#print("Object is being pulled towards me : ", joystick.y)
 			#print("offset direction : ", offset_direction)
@@ -348,7 +348,7 @@ func moveObject(delta):
 
 	elif selectIndex == 2:
 		# Moves the objects position based on the rotation and distance the controller has moved
-		currentSelectedObject.global_position = self.global_position + rotation * moveOffset
+		currentSelectedObject.global_position = WorldOptions.snap_vec(self.global_position + rotation * moveOffset)
 		if abs(joystick.y) > 0.1:
 			#print("Object is being pulled towards me : ", joystick.y)
 			#print("offset direction : ", offset_direction)
@@ -360,7 +360,7 @@ func moveObject(delta):
 
 	elif selectIndex == 1 and !multiSelectHolder.is_empty():
 		for obj in multiSelectHolder:
-			obj.global_position = self.global_position + rotation * moveOffsetMulti[obj]
+			obj.global_position = WorldOptions.snap_vec(self.global_position + rotation * moveOffsetMulti[obj])
 
 			if abs(joystick.y) > 0.1:
 				moveOffsetMulti[obj] += offset_direction * joystick.y * moveSpeed * delta
@@ -451,7 +451,7 @@ func startScale():
 	activeOrb = highlighted_orb
 	scaleAxis = activeOrb.get_meta("scale_axis")
 	scaleStartingScale = currentSelectedObject.scale
-	scaleStartingPosition = currentSelectedObject.global_position
+	scaleStartingPosition = WorldOptions.snap_vec(currentSelectedObject.global_position)
 	
 	scaleWorldAxis = (currentSelectedObject.global_transform.basis.orthonormalized() * scaleAxis).normalized()
 	scaleStartingDistance = controller.global_position.dot(scaleWorldAxis)
@@ -460,23 +460,24 @@ func plane_orb_scaling():
 	print("Use this orb to SCALE!!!")
 	if not is_instance_valid(currentSelectedObject) or not is_instance_valid(activeOrb):
 		return
-		
+
 	var currentDistance = controller.global_position.dot(scaleWorldAxis)
 	var delta = currentDistance - scaleStartingDistance
+	var snapped_delta = WorldOptions.snap(delta* 10.0) / 10.0
 	
 	var newScale = scaleStartingScale
 	if scaleAxis == Vector3.RIGHT:
-		newScale.x = clamp(scaleStartingScale.x + delta * 10.0, 0.1, 10.0)
+		newScale.x = clamp(scaleStartingScale.x + snapped_delta * 10.0, 0.1, 10.0)
 	elif scaleAxis == Vector3.UP:
-		newScale.y = clamp(scaleStartingScale.y + delta * 10.0, 0.1, 10.0)
+		newScale.y = clamp(scaleStartingScale.y + snapped_delta * 10.0, 0.1, 10.0)
 	elif scaleAxis == Vector3.FORWARD:
-		newScale.z = clamp(scaleStartingScale.z + delta * 10.0, 0.1, 10.0)
+		newScale.z = clamp(scaleStartingScale.z + snapped_delta * 10.0, 0.1, 10.0)
 		
 	var scaleChange = newScale - scaleStartingScale
 	var axis_component = scaleChange.x if scaleAxis == Vector3.RIGHT \
 		else scaleChange.y if scaleAxis == Vector3.UP \
 		else scaleChange.z
-	currentSelectedObject.global_position = scaleStartingPosition + scaleWorldAxis * (axis_component * 0.5)
+	currentSelectedObject.global_position = WorldOptions.snap_vec(scaleStartingPosition + scaleWorldAxis * (axis_component * 0.5))
 
 	currentSelectedObject.scale = newScale
 	updateOrbPositions(currentSelectedObject)
@@ -489,6 +490,8 @@ func plane_orb_scaling():
 	emit_signal("objectEdited")
 
 func spawnPlaneOrbs(obj): # Spawn the orbs
+	if obj == null:
+		return
 	clearOrbs()
 	print("Spawning the orbs on this object : ", obj)
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD] # Directions
@@ -542,6 +545,8 @@ func update_highlighted_orb():
 
 # Plane moving functions
 func spawnArrows(obj):
+	if obj == null:
+		return
 	clearArrows()
 	print("Summoning the arrows at : ", obj)
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD]
@@ -609,14 +614,14 @@ func startPlaneMove():
 	moveArrowAxis = activeArrow.get_meta("move_axis")
 	
 	var target = planeMoveTarget()
-	moveStartingPosition = target.global_position
+	moveStartingPosition = WorldOptions.snap_vec(target.global_position)
 	moveWorldAxis = moveArrowAxis
 	moveStartingDistance = controller.global_position.dot(moveWorldAxis)
 	
 	if selectIndex == 1:
 		moveStartingPositionMulti.clear()
 		for obj in multiSelectHolder:
-			moveStartingPositionMulti[obj] = obj.global_position
+			moveStartingPositionMulti[obj] = WorldOptions.snap_vec(obj.global_position)
 
 func planeMoveObject():
 	var target = planeMoveTarget()
@@ -627,10 +632,10 @@ func planeMoveObject():
 	var delta = (currentDistance - moveStartingDistance) * 10.0
 	
 	if selectIndex == 0:
-		target.global_position = moveStartingPosition + moveWorldAxis * delta
+		target.global_position = WorldOptions.snap_vec(moveStartingPosition + moveWorldAxis * delta)
 		
 	elif selectIndex == 2:
-		target.global_position = moveStartingPosition + moveWorldAxis * delta
+		target.global_position = WorldOptions.snap_vec(moveStartingPosition + moveWorldAxis * delta)
 		var original = get_ghost_original(target)
 		if original:
 			original.global_position = target.global_position
@@ -638,7 +643,7 @@ func planeMoveObject():
 	elif selectIndex == 1 and not multiSelectHolder.is_empty():
 		for obj in multiSelectHolder:
 			if is_instance_valid(obj):
-				obj.global_position = moveStartingPositionMulti[obj] + moveWorldAxis * delta
+				obj.global_position = WorldOptions.snap_vec(moveStartingPositionMulti[obj] + moveWorldAxis * delta)
 	
 	emit_signal("objectEdited")
 
@@ -736,6 +741,16 @@ func _apply_highlight_recursive(obj, color):
 	if not is_instance_valid(obj):
 		return
 	
+	if obj.is_in_group("intersection_ghosts") or obj.is_in_group("subtraction_ghosts"):
+		if not obj in true_materials:
+			true_materials[obj] = obj.material
+		if obj.material == null:
+			return
+		var mat = obj.material.duplicate()
+		mat.albedo_color = color
+		obj.material = mat
+		return
+	
 	var mesh_inst = null
 	
 	if obj is CSGCombiner3D:
@@ -817,7 +832,13 @@ func _remove_highlight_recursive(obj):
 	
 	if not is_instance_valid(obj):
 			return
-
+	
+	if obj.is_in_group("intersection_ghosts") or obj.is_in_group("subtraction_ghosts"):
+		if obj in true_materials:
+			obj.material = true_materials[obj]
+			true_materials.erase(obj)
+		return
+	
 	var mesh_inst = null
 	
 	if obj is CSGCombiner3D:
@@ -878,7 +899,7 @@ func clear_select(idx):
 		clearOrbs()
 		clearArrows()
 		_remove_highlight(cleared_object)
-	
+
 	if selectIndex == 1:
 		clearOrbs()
 		clearArrows()
@@ -920,9 +941,11 @@ func set_page_index(idx):
 
 func set_edit_index(idx):
 	print("Edit Called")
-	editIndex = idx
 	clearArrows()
 	clearOrbs()
+	editIndex = idx
+	spawnArrows(planeMoveTarget())
+	spawnPlaneOrbs(currentSelectedObject)
 
 func update_list():
 	print("Hello from Edit script new object update signal")

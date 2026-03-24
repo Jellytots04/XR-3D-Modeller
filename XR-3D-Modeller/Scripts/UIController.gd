@@ -68,7 +68,7 @@ func _ready():
 		movement_slider.value = WorldOptions.snapSizeMM
 		movement_spinbox.value = WorldOptions.snapSizeMM
 		
-		movement_toggle.toggled.connect(_snap_toggled)
+		movement_toggle.pressed.connect(_snap_toggled)
 		movement_slider.value_changed.connect(_snap_slider_chaned.bind(movement_spinbox))
 		movement_spinbox.value_changed.connect(_snap_spinBox_changed.bind(movement_slider))
 		intersection_button.pressed.connect(_intersection_toggled)
@@ -203,8 +203,8 @@ func _load_mesh():
 func _clear_vertices():
 	emit_signal("clear_vertices")
 
-func _snap_toggled(pressed):
-	WorldOptions.snapEnabled = pressed
+func _snap_toggled():
+	WorldOptions.snapEnabled = not WorldOptions.snapEnabled
 	
 func _snap_slider_chaned(value, spinBox):
 	WorldOptions.snapSizeMM = value

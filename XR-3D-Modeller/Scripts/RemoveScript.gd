@@ -165,7 +165,8 @@ func remove_object():
 			var combiner = removed_obj.get_parent()
 			currentSelectedObject = null
 			highlighted_object = null
-			
+			var main = get_tree().get_nodes_in_group("main_node")[0]
+			main.clear_ghost_for_original(removed_obj)
 			removed_obj.queue_free()
 			
 			await get_tree().process_frame 
