@@ -136,26 +136,62 @@ func _process(_delta):
 	# Will activate when the user presses the A button on the controller
 	if is_active:
 		if is_button_pressed("ax_button") and can_summon: # Meta Quest A button
-			if not ghostingOn:
-				ghostInstance = ghostedObjects[summonIndex].instantiate()
-				ghostInstance.scale = objectSize * Vector3.ONE # sets all of the values to objectSize
-				get_tree().current_scene.add_child(ghostInstance)
-				ghostingOn = true
-			if summonIndex == 3:
-				var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
-				ghostInstance.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
-			else:
-				if raycast_3d.is_colliding():
-					var obj = raycast_3d.get_collider()
-					if obj in summonedObjects:
-						var snapped = WorldOptions.snap_vec(raycast_3d.get_collision_point())
-						var snap_pos = snapped + raycast_3d.get_collision_normal() * 0.01
-						ghostInstance.global_position = snap_pos
-						ghostInstance.look_at(snapped, raycast_3d.get_collision_normal())
-				else:
+			if summonIndex == 4:
+				if currentSelectedObject and is_instance_valid(currentSelectedObject):
+					if not ghostingOn:
+						ghostInstance = currentSelectedObject.duplicate()
+						if ghostInstance is CSGCombiner3D:
+							ghostInstance.use_collision = false
+							for child in ghostInstance.get_children():
+								if child is CSGMesh3D:
+									child.use_collision = false
+									child.collision_layer = 0
+									child.collision_mask = 0
+						elif ghostInstance is CSGMesh3D:
+							ghostInstance.use_collision = false
+							ghostInstance.collision_layer = 0
+							ghostInstance.collision_mask = 0
+						var mat = StandardMaterial3D.new()
+						mat.albedo_color = Color(1, 1, 1, 80.0/255.0)
+						mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+						mat.blend_mode = BaseMaterial3D.BLEND_MODE_MIX
+						mat.cull_mode = BaseMaterial3D.CULL_BACK
+						mat.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_OPAQUE_ONLY
+						mat.no_depth_test = true
+						if ghostInstance is CSGCombiner3D:
+							for child in ghostInstance.get_children():
+								if child is CSGMesh3D:
+									child.material = mat.duplicate()
+						elif ghostInstance is CSGMesh3D:
+							ghostInstance.material = mat
+						ghostInstance.scale = currentSelectedObject.scale
+						get_tree().current_scene.add_child(ghostInstance)
+						ghostingOn = true
 					var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
 					ghostInstance.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
-
+			else:
+				if not ghostingOn:
+					ghostInstance = ghostedObjects[summonIndex].instantiate()
+					if summonIndex == 3:
+						ghostInstance.scale = Vector3.ONE
+					else:
+						ghostInstance.scale = objectSize * Vector3.ONE # sets all of the values to objectSize
+					get_tree().current_scene.add_child(ghostInstance)
+					ghostingOn = true
+				if summonIndex == 3:
+					var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
+					ghostInstance.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
+				else:
+					if raycast_3d.is_colliding():
+						var obj = raycast_3d.get_collider()
+						if obj in summonedObjects:
+							var snapped_point = WorldOptions.snap_vec(raycast_3d.get_collision_point())
+							var snap_pos = snapped_point + raycast_3d.get_collision_normal() * 0.01
+							ghostInstance.global_position = snap_pos
+							ghostInstance.look_at(snapped_point, raycast_3d.get_collision_normal())
+					else:
+						var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
+						ghostInstance.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
 		else:
 			if ghostingOn:
 				ghostInstance.queue_free()
@@ -163,13 +199,14 @@ func _process(_delta):
 				ghostingOn = false
 				timer.start()
 				can_summon = false
-				if summonIndex == 3:
+				if summonIndex == 4:
+					place_copy()
+				elif summonIndex == 3:
 					summon_vertex()
 				else:
 					if raycast_3d.is_colliding():
 						var obj = raycast_3d.get_collider()
 						if obj in summonedObjects:
-							# print("Combined")
 							combine_objects(summonIndex, obj, raycast_3d.get_collision_point(), raycast_3d.get_collision_normal())
 					else:
 						summon_object(summonIndex)
@@ -268,17 +305,17 @@ func combine_objects(index, combiner, spawnPoint, objectNormal):
 	if index < summonableObjects.size():
 		# Instantiate the object in the scene
 		var new_obj = summonableObjects[index].instantiate()
-		var snapped = WorldOptions.snap_vec(spawnPoint)
+		var snapped_point = WorldOptions.snap_vec(spawnPoint)
 		# Grabs the position of the hand and will add to it to spawn the hand in
 		# Will replace this with a marker tag later on
-		new_obj.global_transform.origin = snapped + objectNormal * 0.01
+		new_obj.global_transform.origin = snapped_point + objectNormal * 0.01
 		# objectsInScene.append(new_obj)
 		# print("Added", new_obj)
 		# Add the new object to the scene
 		new_obj.scale = objectSize * Vector3.ONE
 		new_obj.operation = csgIndex
 		get_tree().current_scene.add_child(new_obj)
-		new_obj.look_at(snapped, objectNormal)
+		new_obj.look_at(snapped_point, objectNormal)
 		new_obj.reparent(combiner)
 		new_obj.use_collision = true
 		new_obj.collision_layer = 2
@@ -566,6 +603,94 @@ func clear_vertices():
 	connect_vertices.clear()
 	currentlyConnecting = null
 	highlighted_vertex = null
+ 
+func place_copy():
+	if not currentSelectedObject or not is_instance_valid(currentSelectedObject):
+		return
+
+	if raycast_3d.is_colliding():
+		var obj = raycast_3d.get_collider()
+		if obj in summonedObjects:
+			if selectIndex == 0:
+				if not currentSelectedObject is CSGCombiner3D:
+					return
+				for i in range(currentSelectedObject.get_child_count()):
+					var original_child = currentSelectedObject.get_child(i)
+					if original_child is CSGMesh3D:
+						var new_obj = original_child.duplicate()
+						var snapped = WorldOptions.snap_vec(raycast_3d.get_collision_point())
+						new_obj.global_transform.origin = snapped + raycast_3d.get_collision_normal() * 0.01
+						if original_child in true_materials:
+							new_obj.material = true_materials[original_child]
+						else:
+							new_obj.material = null
+						new_obj.use_collision = true
+						new_obj.collision_layer = 2
+						get_tree().current_scene.add_child(new_obj)
+						new_obj.reparent(obj)
+			elif selectIndex == 2:
+				if not currentSelectedObject is CSGMesh3D:
+					return
+				var new_obj = currentSelectedObject.duplicate()
+				var snapped = WorldOptions.snap_vec(raycast_3d.get_collision_point())
+				new_obj.global_transform.origin = snapped + raycast_3d.get_collision_normal() * 0.01
+				if currentSelectedObject in true_materials:
+					new_obj.material = true_materials[currentSelectedObject]
+				else:
+					new_obj.material = null
+				new_obj.use_collision = true
+				new_obj.collision_layer = 2
+				get_tree().current_scene.add_child(new_obj)
+				new_obj.reparent(obj)
+			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+			emit_signal("objectSummoned")
+			return
+
+	var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
+	if selectIndex == 0:
+		if not currentSelectedObject is CSGCombiner3D:
+			return
+		var new_combiner = currentSelectedObject.duplicate()
+		get_tree().current_scene.add_child(new_combiner)
+		new_combiner.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
+		var original_children = currentSelectedObject.get_children()
+		var new_children = new_combiner.get_children()
+		for i in range(min(original_children.size(), new_children.size())):
+			if new_children[i] is CSGMesh3D:
+				if original_children[i] in true_materials:
+					new_children[i].material = true_materials[original_children[i]]
+				else:
+					new_children[i].material = null
+				new_children[i].use_collision = true
+				new_children[i].collision_layer = 2
+		new_combiner.use_collision = true
+		new_combiner.collision_layer = new_combiner.collision_layer | (1 << 20)
+		new_combiner.collision_mask = new_combiner.collision_mask | (1 << 20)
+		new_combiner.add_to_group("summonedObjects")
+		summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+		emit_signal("objectSummoned")
+
+	elif selectIndex == 2:
+		if not currentSelectedObject is CSGMesh3D:
+			return
+		var new_combiner = CSGCombiner3D.new()
+		var new_obj = currentSelectedObject.duplicate()
+		get_tree().current_scene.add_child(new_combiner)
+		new_combiner.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
+		new_combiner.add_child(new_obj)
+		new_obj.position = Vector3.ZERO
+		if currentSelectedObject in true_materials:
+			new_obj.material = true_materials[currentSelectedObject]
+		else:
+			new_obj.material = null
+		new_obj.use_collision = true
+		new_obj.collision_layer = 2
+		new_combiner.use_collision = true
+		new_combiner.collision_layer = new_combiner.collision_layer | (1 << 20)
+		new_combiner.collision_mask = new_combiner.collision_mask | (1 << 20)
+		new_combiner.add_to_group("summonedObjects")
+		summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+		emit_signal("objectSummoned")
 
 # Unused function due to CSGMesh3D not working with Dynamic ArrayMesh at Runtime 
 func convert_to_csg(mesh_instance):
@@ -626,7 +751,7 @@ func convert_to_csg(mesh_instance):
 	
 	mesh_instance.queue_free()
 	print("Coverted Mesh Instance to CSG at : ", combiner.global_position)
-	
+
 # Vertex highlighting
 func update_highlighted_vertex():
 	if vertexRaycast.is_colliding():

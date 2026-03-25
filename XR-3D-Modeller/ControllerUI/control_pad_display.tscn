@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://b4fy5f1eolrqs" path="res://ControllerUI/Icons/PrismIcon.aseprite" id="2_iuyxb"]
 [ext_resource type="Texture2D" uid="uid://ddss0uunw1bww" path="res://ControllerUI/Icons/SphereIcon.aseprite" id="3_wus27"]
 [ext_resource type="Texture2D" uid="uid://ta5e6sy0j6wr" path="res://ControllerUI/Icons/VerticeIcon.aseprite" id="4_kkiu2"]
+[ext_resource type="Texture2D" uid="uid://d2510acmdcvmr" path="res://ControllerUI/Icons/CopyIcon.aseprite" id="5_7oq3b"]
 [ext_resource type="Texture2D" uid="uid://bpju5ct00vr8c" path="res://ControllerUI/Icons/Union.aseprite" id="5_wjypm"]
 [ext_resource type="Texture2D" uid="uid://cq88w3yft0u8o" path="res://ControllerUI/Icons/Intersection.aseprite" id="6_g8fi6"]
 [ext_resource type="Texture2D" uid="uid://foa1v7b87nci" path="res://ControllerUI/Icons/Subtraction.aseprite" id="7_keb40"]
@@ -20,10 +21,9 @@
 offset_right = 400.0
 offset_bottom = 200.0
 tab_alignment = 1
-current_tab = 3
+current_tab = 0
 
 [node name="Build" type="MarginContainer" parent="." unique_id=1469485864]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -57,6 +57,11 @@ icon = ExtResource("3_wus27")
 layout_mode = 2
 toggle_mode = true
 icon = ExtResource("4_kkiu2")
+
+[node name="CopyObject" type="Button" parent="Build/VerticalArrangement/BuildOptions" unique_id=1348894504]
+layout_mode = 2
+toggle_mode = true
+icon = ExtResource("5_7oq3b")
 
 [node name="VertexBuild" type="HBoxContainer" parent="Build/VerticalArrangement" unique_id=1613122196]
 visible = false
@@ -265,6 +270,7 @@ max_value = 10.0
 step = 0.01
 
 [node name="World" type="MarginContainer" parent="." unique_id=1933191177]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5

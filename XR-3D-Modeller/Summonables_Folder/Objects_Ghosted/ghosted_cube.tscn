@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://bi1d6mk6lldbr"]
+[gd_scene format=3 uid="uid://bi1d6mk6lldbr"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_kr7l6"]
 
@@ -6,6 +6,6 @@
 transparency = 1
 albedo_color = Color(1, 1, 1, 0.3137255)
 
-[node name="MeshInstance3D" type="MeshInstance3D"]
+[node name="MeshInstance3D" type="MeshInstance3D" unique_id=813170873]
 mesh = SubResource("BoxMesh_kr7l6")
 surface_material_override/0 = SubResource("StandardMaterial3D_fj85e")
