@@ -4,6 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://clc5dre31iskm" path="res://addons/godot-xr-tools/xr/start_xr.tscn" id="1_v1gob"]
 [ext_resource type="PackedScene" uid="uid://hfu7l13886ko" path="res://ControllerUI/UIController.tscn" id="2_jw32o"]
 [ext_resource type="PackedScene" uid="uid://dry3gd8dudal" path="res://Scenes/CharacterOrigin.tscn" id="3_50glp"]
+[ext_resource type="Shader" uid="uid://dn2u332rahb5a" path="res://Scenes/Main.gdshader" id="5_pbw6q"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_uu6xs"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -16,15 +17,25 @@ sky_material = SubResource("ProceduralSkyMaterial_uu6xs")
 background_mode = 1
 background_color = Color(0.78431374, 0.78431374, 0.78431374, 1)
 sky = SubResource("Sky_r0du0")
+ambient_light_source = 2
+ambient_light_color = Color(0.9019608, 0.9019608, 0.92156863, 1)
+ambient_light_energy = 1.1
 tonemap_mode = 2
 glow_enabled = true
-fog_light_color = Color(1.0653495, 1.0653495, 1.0653495, 1)
 volumetric_fog_enabled = true
 volumetric_fog_density = 0.02
 volumetric_fog_albedo = Color(0.9411765, 0.9411765, 1, 1)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_fos0i"]
 size = Vector2(150, 150)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v1gob"]
+render_priority = 0
+shader = ExtResource("5_pbw6q")
+shader_parameter/base_color = Color(0.902, 0.902, 0.922, 1)
+shader_parameter/major_line_color = Color(0.4, 0.4, 0.45, 1)
+shader_parameter/major_grid_size = 5.00000023424012
+shader_parameter/major_line_width = 0.020000000950000003
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_3dxm6"]
 
@@ -44,10 +55,10 @@ environment = SubResource("Environment_cm0pq")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1980508955]
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
-shadow_enabled = true
+sky_mode = 1
 
 [node name="UIController" parent="." unique_id=1948511124 instance=ExtResource("2_jw32o")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 1.396664, -1.7051923)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 1.396664, -3.872705)
 
 [node name="XROrigin3D" parent="." unique_id=1720379132 instance=ExtResource("3_50glp")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3983745, -0.39955565)
@@ -57,6 +68,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3983745, -0.39955565)
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Floor" unique_id=652164340]
 transform = Transform3D(9.69, 0, 0, 0, 9.69, 0, 0, 0, 9.69, 0, 0, 0)
 mesh = SubResource("PlaneMesh_fos0i")
+surface_material_override/0 = SubResource("ShaderMaterial_v1gob")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=1664733718]
 shape = SubResource("WorldBoundaryShape3D_3dxm6")
@@ -65,9 +77,9 @@ shape = SubResource("WorldBoundaryShape3D_3dxm6")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.41366613, -2.0139468)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Box" unique_id=68060578]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0018920898, 0.07122803, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.002, 0.071, -1.985)
 shape = SubResource("BoxShape3D_r0du0")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Box" unique_id=1798274417]
-transform = Transform3D(4.075, 0, 0, 0, 1.3, 0, 0, 0, 1, 0, 0, 0)
+transform = Transform3D(4.075, 0, 0, 0, 1.3, 0, 0, 0, 1, 0, 0, -1.984735)
 mesh = SubResource("BoxMesh_lgr22")
