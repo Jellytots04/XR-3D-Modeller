@@ -29,6 +29,10 @@ XRToolsUserSettings="*uid://cpsxttlvwdacf"
 XRToolsRumbleManager="*uid://dw3etnjbvmpt6"
 WorldOptions="*uid://bgwsc065if22t"
 
+[display]
+
+window/size/transparent=true
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/godot-xr-tools/plugin.cfg", "res://addons/nklbdev.aseprite_importers/plugin.cfg")
