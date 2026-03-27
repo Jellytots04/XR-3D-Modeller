@@ -10,6 +10,7 @@ signal selectedScale(value) # signal should send the current scale value for the
 
 var orb_scene = preload("res://Scenes/orb_plane_scale.tscn")
 var arrow_scene = preload("res://Scenes/arrow.tscn")
+var torus_scene = preload("res://Scenes/torus_rotation_plane.tscn")
 
 # Flags
 var triggerPressed = false # Flag to signal if the trigger has been clicked
@@ -66,6 +67,16 @@ var moveWorldAxis
 var moveStartingPosition
 var moveStartingPositionMulti = {}
 var moveStartingDistance
+
+# Plane Rotation variables
+var planeRotationTorus = []
+var highlighted_torus = null
+var activeTorus = null
+var rotationWorldAxis = Vector3.ZERO
+var currentlyPlaneRotating
+var rotaitonStartingBasis
+var rotationObjectStartingBasis
+var rotationObjectStartingBasisMulti = {}
 
 # Highlighting variables
 var highlighting_cancelled = false
@@ -164,24 +175,44 @@ func _process(delta: float) -> void:
 		else:
 			currentlyStretching = false
 
-		if controller.is_button_pressed("grip_click") and editIndex == 2: # Rotating objects around their own center
-			# print("Welcome the rotaters to the party")
-			if selectIndex == 0 or selectIndex == 2:
-				if currentSelectedObject:
-					if not currentlyRotating:
-						startRotate()
-						currentlyRotating = true
-					_rotateObject()
-					
-			elif selectIndex == 1 and not multiSelectHolder.is_empty():
-				if not currentlyRotating:
-					startRotate()
-					currentlyRotating = true
-				_rotateObject()
-		else:
-			if currentlyRotating:
-				objectStartingBasisMulti.clear()
-			currentlyRotating = false
+		if editIndex == 2:
+			if not currentlyRotating and not currentlyPlaneRotating:
+				update_highlighted_torus()
+
+			if controller.is_button_pressed("grip_click"):
+				if selectIndex == 0 or selectIndex == 2:
+					if currentSelectedObject:
+						if highlighted_torus and not currentlyRotating:
+							if not currentlyPlaneRotating:
+								startPlaneRotate()
+								currentlyPlaneRotating = true
+							planeRotateObject()
+						elif not currentlyPlaneRotating:
+							if not currentlyRotating:
+								startRotate()
+								currentlyRotating = true
+							_rotateObject()
+				elif selectIndex == 1 and not multiSelectHolder.is_empty():
+					if highlighted_torus and not currentlyRotating:
+						if not currentlyPlaneRotating:
+							startPlaneRotate()
+							currentlyPlaneRotating = true
+						planeRotateObject()
+					elif not currentlyPlaneRotating:
+						if not currentlyRotating:
+							startRotate()
+							currentlyRotating = true
+						_rotateObject()
+			else:
+				if currentlyPlaneRotating:
+					_remove_highlight(activeTorus)
+					currentlyPlaneRotating = false
+					activeTorus = null
+					rotationWorldAxis = Vector3.ZERO
+					rotationObjectStartingBasisMulti.clear()
+				if currentlyRotating:
+					objectStartingBasisMulti.clear()
+				currentlyRotating = false
 
 		if editIndex == 3:
 			if selectIndex == 2 and currentSelectedObject:
@@ -220,6 +251,7 @@ func _process(delta: float) -> void:
 						currentSelectedObject = null
 						highlighted_object = null
 						clearArrows()
+						clearRotationTorus()
 						await _remove_highlight(deselct_object)
 
 					elif not currentSelectedObject:
@@ -229,6 +261,8 @@ func _process(delta: float) -> void:
 						await _apply_highlight(currentSelectedObject, selected_color)
 						if editIndex == 0:
 							spawnArrows(currentSelectedObject)
+						if editIndex == 2:
+							spawnRotationToruses()
 
 				# Multiple selecting (Can select an infinite amount of objects)
 				elif selectIndex == 1: # Multi Select
@@ -241,6 +275,7 @@ func _process(delta: float) -> void:
 						multiSelectHolder.erase(deselect_object)
 						if multiSelectHolder.is_empty():
 							clearArrows()
+							clearRotationTorus()
 						await _remove_highlight(deselect_object)
 
 					elif highlighted_object not in multiSelectHolder:
@@ -249,6 +284,9 @@ func _process(delta: float) -> void:
 						currentSelectedObject = null
 						if editIndex == 0:
 							spawnArrows(multiSelectHolder[0])
+							
+						if editIndex == 2:
+							spawnRotationToruses()
 
 				# Single object selecting (Select a single object at a time)
 				elif selectIndex == 2: # Single Select
@@ -261,6 +299,7 @@ func _process(delta: float) -> void:
 						highlighted_object = null
 						clearArrows()
 						clearOrbs()
+						clearRotationTorus()
 						await _remove_highlight(deselect_object)
 
 					elif not currentSelectedObject:
@@ -273,6 +312,9 @@ func _process(delta: float) -> void:
 
 						if editIndex == 3: # Plane Scaling
 							spawnPlaneOrbs(currentSelectedObject)
+							
+						if editIndex == 2: # Plane Rotation
+							spawnRotationToruses()
 
 		elif not controller.is_button_pressed("trigger_click"):
 			triggerPressed = false
@@ -427,19 +469,27 @@ func startRotate():
 
 func _rotateObject():
 	var rotation = controller.global_transform.basis * startingBasis.inverse()
+	var euler = rotation.get_euler()
+	var snapped_euler = Vector3(
+		WorldOptions.snap_angle(euler.x),
+		WorldOptions.snap_angle(euler.y),
+		WorldOptions.snap_angle(euler.z)
+	)
+	
+	var snapped_rotation = Basis.from_euler(snapped_euler)
 	
 	if selectIndex == 0:
-		currentSelectedObject.global_transform.basis = rotation * objectStartingBasis
+		currentSelectedObject.global_transform.basis = snapped_rotation * startingBasis.inverse()
 
 	elif selectIndex == 2:
-		currentSelectedObject.global_transform.basis = rotation * objectStartingBasis
+		currentSelectedObject.global_transform.basis = snapped_rotation * startingBasis.inverse()
 		var original = get_ghost_original(currentSelectedObject)
 		if original:
 			original.global_transform.basis = currentSelectedObject.global_transform.basis
 
 	elif selectIndex == 1:
 		for obj in multiSelectHolder:
-			obj.global_transform.basis = rotation * objectStartingBasisMulti[obj]
+			obj.global_transform.basis = snapped_rotation * objectStartingBasisMulti[obj]
 
 	emit_signal("objectEdited")
 
@@ -883,6 +933,89 @@ func _remove_highlight_recursive(obj):
 			if not is_instance_valid(obj):
 				return
 
+func spawnRotationToruses():
+	clearRotationTorus()
+	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD]
+	for axis in axes:
+		var torus = torus_scene.instantiate()
+		get_tree().root.add_child(torus)
+		torus.set_meta("rotation_axis", axis)
+		planeRotationTorus.append(torus)
+	updateTorusPosition()
+
+func updateTorusPosition():
+	var spawn_pos = controller.global_transform.origin + -controller.global_transform.basis.z * 0.5
+	for i in range(planeRotationTorus.size()):
+		var torus = planeRotationTorus[i]
+		if not is_instance_valid(torus):
+			continue
+		torus.global_position = spawn_pos
+		match i:
+			0:
+				torus.global_transform.basis = Basis.from_euler(Vector3(0, 0, PI/2))
+			1:
+				torus.global_transform.basis = Basis.from_euler(Vector3(0, 0, 0))
+			2:
+				torus.global_transform.basis = Basis.from_euler(Vector3(PI/2, 0, 0))
+		torus.scale = Vector3.ONE * 0.15
+
+func clearRotationTorus():
+	for torus in planeRotationTorus:
+		if is_instance_valid(torus):
+			torus.queue_free()
+	planeRotationTorus.clear()
+	highlighted_torus = null
+	activeTorus = null
+	
+func update_highlighted_torus():
+	var closest_torus = null
+	if scaleCast.is_colliding():
+		var obj = scaleCast.get_collider()
+		for torus in planeRotationTorus:
+			if not is_instance_valid(torus):
+				continue
+			if obj == torus or torus.is_ancestor_of(obj):
+				closest_torus = torus
+				break
+	if closest_torus == highlighted_torus:
+		return
+	if highlighted_torus != null and is_instance_valid(highlighted_torus):
+		_remove_highlight(highlighted_torus)
+	highlighted_torus = closest_torus
+	if highlighted_torus != null:
+		_apply_highlight(highlighted_torus, highlight_color)
+	
+func startPlaneRotate():
+	activeTorus = highlighted_torus
+	var axis = activeTorus.get_meta("rotation_axis")
+	rotationWorldAxis = axis
+	rotaitonStartingBasis = controller.global_transform.basis
+	if selectIndex == 0 or selectIndex == 2:
+		rotationObjectStartingBasis = currentSelectedObject.global_transform.basis
+	elif selectIndex == 1:
+		rotationObjectStartingBasisMulti.clear()
+		for obj in multiSelectHolder:
+			rotationObjectStartingBasisMulti[obj] = obj.global_transform.basis
+			
+func planeRotateObject():
+	if not is_instance_valid(activeTorus):
+		return
+	var rotation_delta = controller.global_transform.basis * rotaitonStartingBasis.inverse()
+	var angle = rotation_delta.get_euler().dot(rotationWorldAxis)
+	var snapped_angle = WorldOptions.snap_angle(angle)
+	var snap_rotation = Basis(rotationWorldAxis, snapped_angle)
+	
+	if selectIndex == 0 or selectIndex == 2:
+		currentSelectedObject.global_transform.basis = snap_rotation * rotationObjectStartingBasis
+		var original = get_ghost_original(currentSelectedObject)
+		if original:
+			original.global_transform.basis = currentSelectedObject.global_transform.basis
+	elif selectIndex == 1:
+		for obj in multiSelectHolder:
+			obj.global_transform.basis = snap_rotation * rotationObjectStartingBasisMulti[obj]
+	
+	emit_signal("objectEdited")
+
 # Intersection / Subtraction helper functions
 func get_ghost_original(obj):
 	var main = get_tree().get_nodes_in_group("main_node")[0]
@@ -898,11 +1031,13 @@ func clear_select(idx):
 		currentSelectedObject = null
 		clearOrbs()
 		clearArrows()
+		clearRotationTorus()
 		_remove_highlight(cleared_object)
 
 	if selectIndex == 1:
 		clearOrbs()
 		clearArrows()
+		clearRotationTorus()
 		for child in multiSelectHolder:
 			await _remove_highlight(child)
 		multiSelectHolder.clear()
@@ -943,9 +1078,12 @@ func set_edit_index(idx):
 	print("Edit Called")
 	clearArrows()
 	clearOrbs()
+	clearRotationTorus()
 	editIndex = idx
 	spawnArrows(planeMoveTarget())
 	spawnPlaneOrbs(currentSelectedObject)
+	if idx == 2 and currentSelectedObject:
+		spawnRotationToruses()
 
 func update_list():
 	print("Hello from Edit script new object update signal")

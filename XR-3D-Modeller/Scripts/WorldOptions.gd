@@ -19,5 +19,11 @@ func snap(value):
 	var s = snapSizeM
 	return round(value / s) * s
 
+func snap_angle(radian):
+	if not snapEnabled:
+		return radian
+	var step = deg_to_rad(snapSizeMM)
+	return round(radian / step) * step
+
 func snap_vec(v):
 	return Vector3(snap(v.x), snap(v.y), snap(v.z))
