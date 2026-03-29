@@ -21,9 +21,10 @@
 offset_right = 400.0
 offset_bottom = 200.0
 tab_alignment = 1
-current_tab = 0
+current_tab = 3
 
 [node name="Build" type="MarginContainer" parent="." unique_id=1469485864]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -122,11 +123,13 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Build/VerticalArrangement/ScaleOptions" unique_id=1825635082]
 layout_mode = 2
+theme_override_font_sizes/font_size = 14
 text = "Size "
 
 [node name="Size" type="HSlider" parent="Build/VerticalArrangement/ScaleOptions" unique_id=573685055]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 4
 max_value = 10.0
 step = 0.01
 value = 1.0
@@ -261,16 +264,17 @@ layout_mode = 2
 
 [node name="Label" type="Label" parent="Edit/VBoxContainer/ScaleBox" unique_id=954528708]
 layout_mode = 2
+theme_override_font_sizes/font_size = 14
 text = "Scale : "
 
 [node name="Scale" type="HSlider" parent="Edit/VBoxContainer/ScaleBox" unique_id=1092660556]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 4
 max_value = 10.0
 step = 0.01
 
 [node name="World" type="MarginContainer" parent="." unique_id=1933191177]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -289,6 +293,7 @@ layout_mode = 2
 
 [node name="Print" type="Label" parent="World/MainContainer/ShowingContainer/Showing" unique_id=623176389]
 layout_mode = 2
+theme_override_font_sizes/font_size = 16
 text = "Visibility"
 horizontal_alignment = 1
 
@@ -299,11 +304,13 @@ alignment = 1
 [node name="Intersection" type="Button" parent="World/MainContainer/ShowingContainer/Showing/Operations" unique_id=1220492378]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
 text = "Intersection"
 
 [node name="Subtraction" type="Button" parent="World/MainContainer/ShowingContainer/Showing/Operations" unique_id=423491633]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 14
 text = "Subtraction
 "
 
@@ -316,6 +323,7 @@ alignment = 1
 
 [node name="Meters" type="Label" parent="World/MainContainer/MovementContainer/Movement" unique_id=1722854783]
 layout_mode = 2
+theme_override_font_sizes/font_size = 14
 text = "Meters : "
 
 [node name="HSlider" type="HSlider" parent="World/MainContainer/MovementContainer/Movement" unique_id=166221253]
@@ -332,4 +340,10 @@ value = 1.0
 
 [node name="Toggle" type="Button" parent="World/MainContainer/MovementContainer" unique_id=1261752984]
 layout_mode = 2
-text = "Toggle"
+theme_override_font_sizes/font_size = 14
+text = "Snap Movements"
+
+[node name="VisualButton" type="Button" parent="World/MainContainer" unique_id=526866906]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Passthrough"
