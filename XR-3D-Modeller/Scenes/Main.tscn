@@ -39,17 +39,10 @@ shader_parameter/major_line_width = 0.02000000095
 
 [sub_resource type="WorldBoundaryShape3D" id="WorldBoundaryShape3D_3dxm6"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_r0du0"]
-size = Vector3(4.082, 1.142, 2)
-
-[sub_resource type="BoxMesh" id="BoxMesh_lgr22"]
-size = Vector3(1, 1, 2)
-
 [node name="Main" type="Node3D" unique_id=1928351994]
 script = ExtResource("1_jw32o")
 
 [node name="StartXR" parent="." unique_id=885171572 instance=ExtResource("1_v1gob")]
-enable_passthrough = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1088836000]
 environment = SubResource("Environment_cm0pq")
@@ -73,15 +66,3 @@ surface_material_override/0 = SubResource("ShaderMaterial_v1gob")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=1664733718]
 shape = SubResource("WorldBoundaryShape3D_3dxm6")
-
-[node name="Box" type="StaticBody3D" parent="." unique_id=175681433]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.41366613, -2.0139468)
-visible = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Box" unique_id=68060578]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.002, 0.071, -1.985)
-shape = SubResource("BoxShape3D_r0du0")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Box" unique_id=1798274417]
-transform = Transform3D(4.075, 0, 0, 0, 1.3, 0, 0, 0, 1, 0, 0, -1.984735)
-mesh = SubResource("BoxMesh_lgr22")

@@ -16,6 +16,23 @@ func _process(delta: float) -> void:
 
 var ghosted_mesh = {}
 
+var passthrough_on = false
+
+func toggle_passthrough():
+	passthrough_on = not passthrough_on
+	var start_xr = get_node("StartXR")
+	start_xr.enable_passthrough = passthrough_on
+	
+	var env = get_node("WorldEnvironment").environment
+	var floor = get_node("Floor/MeshInstance3D2")
+	floor.visible = not passthrough_on
+	if passthrough_on:
+		env.background_color = Color(0,0,0,0)
+		env.volumetric_fog_enabled = false
+	else:
+		env.background_color = Color(0.902, 0.902, 0.922, 1.0)
+		env.volumetric_fog_enabled = true
+
 func intersections_visibility_changed(show):
 	print("Show : ", show)
 	if show:

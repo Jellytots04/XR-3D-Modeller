@@ -63,6 +63,7 @@ func _ready():
 		var movement_slider = world_tab.get_node("MovementContainer/Movement/HSlider")
 		var movement_toggle = world_tab.get_node("MovementContainer/Toggle")
 		var movement_spinbox = world_tab.get_node("MovementContainer/Movement/SpinBox")
+		var visual_button = world_tab.get_node("VisualButton")
 		
 		movement_toggle.button_pressed = WorldOptions.snapEnabled
 		movement_slider.value = WorldOptions.snapSizeMM
@@ -152,6 +153,9 @@ func _ready():
 				var button = edit_select.get_child(idx)
 				button.button_group = edit_select_group
 				button.connect("pressed", Callable(self, "_select_option").bind(idx))
+				
+		if visual_button:
+			visual_button.connect("pressed", Callable(self, "_passthrough_toggled"))
 
 	else:
 		print("Viewport root scene not loaded!")
@@ -222,3 +226,7 @@ func _intersection_toggled():
 func _subtraction_toggled():
 	WorldOptions.showSubtraction = not WorldOptions.showSubtraction
 	WorldOptions.subtractionVisibilityChanged.emit(WorldOptions.showSubtraction)
+
+func _passthrough_toggled():
+	var main = get_tree().get_first_node_in_group("main_node")
+	main.toggle_passthrough()
