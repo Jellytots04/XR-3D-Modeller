@@ -1080,10 +1080,14 @@ func set_edit_index(idx):
 	clearOrbs()
 	clearRotationTorus()
 	editIndex = idx
-	spawnArrows(planeMoveTarget())
-	spawnPlaneOrbs(currentSelectedObject)
-	if idx == 2 and currentSelectedObject:
-		spawnRotationToruses()
+	if idx == 0:
+		spawnArrows(planeMoveTarget())
+	elif idx == 2:
+		if currentSelectedObject:
+			spawnRotationToruses()
+	elif idx == 3:
+		if selectIndex == 2:
+			spawnPlaneOrbs(currentSelectedObject)
 
 func update_list():
 	print("Hello from Edit script new object update signal")
