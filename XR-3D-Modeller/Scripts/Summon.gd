@@ -45,6 +45,9 @@ var currentlyConnecting = null
 var ghostEdge = null
 var csg
 
+# Copy variables
+var copySelectedObject
+
 # Vertex highlighting variables
 var highlighted_vertex = null
 
@@ -137,9 +140,9 @@ func _process(_delta):
 	if is_active:
 		if is_button_pressed("ax_button") and can_summon: # Meta Quest A button
 			if summonIndex == 4:
-				if currentSelectedObject and is_instance_valid(currentSelectedObject):
+				if copySelectedObject and is_instance_valid(copySelectedObject):
 					if not ghostingOn:
-						ghostInstance = currentSelectedObject.duplicate()
+						ghostInstance = copySelectedObject.duplicate()
 						if ghostInstance is CSGCombiner3D:
 							ghostInstance.use_collision = false
 							for child in ghostInstance.get_children():
@@ -164,11 +167,20 @@ func _process(_delta):
 									child.material = mat.duplicate()
 						elif ghostInstance is CSGMesh3D:
 							ghostInstance.material = mat
-						ghostInstance.scale = currentSelectedObject.scale
+						ghostInstance.scale = copySelectedObject.scale
 						get_tree().current_scene.add_child(ghostInstance)
 						ghostingOn = true
-					var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
-					ghostInstance.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
+					if raycast_3d.is_colliding():
+						var obj = raycast_3d.get_collider()
+						if obj in summonedObjects and obj != copySelectedObject:
+							var snap_point = WorldOptions.snap_vec(raycast_3d.get_collision_point())
+							ghostInstance.global_position = snap_point + raycast_3d.get_collision_normal() * 0.01
+						else:
+							var spawn_position = global_transform.origin + -global_transform.basis.z * spawn_distance
+							ghostInstance.global_transform.origin = WorldOptions.snap_vec(spawn_position)
+					else:
+						var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
+						ghostInstance.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
 			else:
 				if not ghostingOn:
 					ghostInstance = ghostedObjects[summonIndex].instantiate()
@@ -201,12 +213,15 @@ func _process(_delta):
 				can_summon = false
 				if summonIndex == 4:
 					place_copy()
+					print("indexed 4 copying time")
 				elif summonIndex == 3:
 					summon_vertex()
 				else:
 					if raycast_3d.is_colliding():
+						print("release collider is called")
 						var obj = raycast_3d.get_collider()
 						if obj in summonedObjects:
+							print("placing summonIndex 4 : ", summonIndex)
 							combine_objects(summonIndex, obj, raycast_3d.get_collision_point(), raycast_3d.get_collision_normal())
 					else:
 						summon_object(summonIndex)
@@ -225,6 +240,7 @@ func _process(_delta):
 					if currentSelectedObject == highlighted_object:
 						# print("Goodbye previous selected object", currentSelectedObject)
 						var deselct_object = currentSelectedObject
+						copySelectedObject = null
 						currentSelectedObject = null
 						highlighted_object = null
 						await _remove_highlight(deselct_object)
@@ -232,6 +248,7 @@ func _process(_delta):
 					elif not currentSelectedObject:
 						# print("Hello new selected object", highlighted_object)
 						currentSelectedObject = highlighted_object
+						copySelectedObject = currentSelectedObject
 						highlighted_object = null
 						await _apply_highlight(currentSelectedObject, selected_color)
 
@@ -264,6 +281,7 @@ func _process(_delta):
 					if currentSelectedObject == highlighted_object:
 						# print("Object is no longer selected")
 						var deselect_object = currentSelectedObject
+						copySelectedObject = null
 						currentSelectedObject = null
 						highlighted_object = null
 						await _remove_highlight(deselect_object)
@@ -271,6 +289,7 @@ func _process(_delta):
 					elif not currentSelectedObject:
 						# print("Object is selected")
 						currentSelectedObject = highlighted_object
+						copySelectedObject = currentSelectedObject
 						await _apply_highlight(currentSelectedObject, selected_color)
 
 		elif not is_button_pressed("trigger_click"):
@@ -605,21 +624,27 @@ func clear_vertices():
 	highlighted_vertex = null
  
 func place_copy():
-	if not currentSelectedObject or not is_instance_valid(currentSelectedObject):
+	if not copySelectedObject or not is_instance_valid(copySelectedObject):
 		return
-
+	print("place_copy called")
+	print("copySelectedObject: ", copySelectedObject)
+	print("selectIndex: ", selectIndex)
 	if raycast_3d.is_colliding():
 		var obj = raycast_3d.get_collider()
-		if obj in summonedObjects:
+		print("raycast hit: ", obj.name)
+		print("obj in summonedObjects: ", obj in summonedObjects)
+		print("obj != copySelectedObject: ", obj != copySelectedObject)
+		if obj in summonedObjects and obj != copySelectedObject:
+			print("Enter combine path : ", selectIndex == 0, " : ", selectIndex == 2)
 			if selectIndex == 0:
-				if not currentSelectedObject is CSGCombiner3D:
+				print("enter selectIndex 0")
+				if not copySelectedObject is CSGCombiner3D:
 					return
-				for i in range(currentSelectedObject.get_child_count()):
-					var original_child = currentSelectedObject.get_child(i)
+				for i in range(copySelectedObject.get_child_count()):
+					var original_child = copySelectedObject.get_child(i)
 					if original_child is CSGMesh3D:
 						var new_obj = original_child.duplicate()
 						var snapped = WorldOptions.snap_vec(raycast_3d.get_collision_point())
-						new_obj.global_transform.origin = snapped + raycast_3d.get_collision_normal() * 0.01
 						if original_child in true_materials:
 							new_obj.material = true_materials[original_child]
 						else:
@@ -628,32 +653,36 @@ func place_copy():
 						new_obj.collision_layer = 2
 						get_tree().current_scene.add_child(new_obj)
 						new_obj.reparent(obj)
+						new_obj.global_transform.origin = snapped + raycast_3d.get_collision_normal() * 0.01
 			elif selectIndex == 2:
-				if not currentSelectedObject is CSGMesh3D:
+				print("enter selectIndex 2")
+				if not copySelectedObject is CSGMesh3D:
 					return
-				var new_obj = currentSelectedObject.duplicate()
+				var new_obj = copySelectedObject.duplicate()
+				print("new_obj mesh: ", new_obj.mesh)
+				print("new_obj operation: ", new_obj.operation)
 				var snapped = WorldOptions.snap_vec(raycast_3d.get_collision_point())
-				new_obj.global_transform.origin = snapped + raycast_3d.get_collision_normal() * 0.01
-				if currentSelectedObject in true_materials:
-					new_obj.material = true_materials[currentSelectedObject]
+				if copySelectedObject in true_materials:
+					new_obj.material = true_materials[copySelectedObject]
 				else:
 					new_obj.material = null
 				new_obj.use_collision = true
 				new_obj.collision_layer = 2
 				get_tree().current_scene.add_child(new_obj)
 				new_obj.reparent(obj)
+				new_obj.global_transform.origin = snapped + raycast_3d.get_collision_normal() * 0.01
 			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
 			emit_signal("objectSummoned")
 			return
 
 	var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
 	if selectIndex == 0:
-		if not currentSelectedObject is CSGCombiner3D:
+		if not copySelectedObject is CSGCombiner3D:
 			return
-		var new_combiner = currentSelectedObject.duplicate()
+		var new_combiner = copySelectedObject.duplicate()
 		get_tree().current_scene.add_child(new_combiner)
 		new_combiner.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
-		var original_children = currentSelectedObject.get_children()
+		var original_children = copySelectedObject.get_children()
 		var new_children = new_combiner.get_children()
 		for i in range(min(original_children.size(), new_children.size())):
 			if new_children[i] is CSGMesh3D:
@@ -671,16 +700,19 @@ func place_copy():
 		emit_signal("objectSummoned")
 
 	elif selectIndex == 2:
-		if not currentSelectedObject is CSGMesh3D:
+		print("Elif 2 selectIndex copy")
+		if not copySelectedObject is CSGMesh3D:
 			return
 		var new_combiner = CSGCombiner3D.new()
-		var new_obj = currentSelectedObject.duplicate()
+		var new_obj = copySelectedObject.duplicate()
+		print("new_obj mesh: ", new_obj.mesh)
+		print("new_obj operation: ", new_obj.operation)
 		get_tree().current_scene.add_child(new_combiner)
 		new_combiner.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
 		new_combiner.add_child(new_obj)
 		new_obj.position = Vector3.ZERO
-		if currentSelectedObject in true_materials:
-			new_obj.material = true_materials[currentSelectedObject]
+		if copySelectedObject in true_materials:
+			new_obj.material = true_materials[copySelectedObject]
 		else:
 			new_obj.material = null
 		new_obj.use_collision = true
@@ -773,6 +805,9 @@ func update_highlighted_vertex():
 # Highlighting Functions
 func update_highlighted_object():
 	# print("Ray update")
+	if summonIndex == 4 and ghostingOn:
+		# print("Returned for ghosting")
+		return
 	if raycast_3d.is_colliding():
 		var combiner = raycast_3d.get_collider()
 		
