@@ -14,16 +14,19 @@ ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
 sky_material = SubResource("ProceduralSkyMaterial_uu6xs")
 
 [sub_resource type="Environment" id="Environment_cm0pq"]
-background_color = Color(0, 0, 0, 0)
+background_mode = 1
+background_color = Color(0.50980395, 0.6666667, 0.6666667, 1)
 sky = SubResource("Sky_r0du0")
 ambient_light_source = 2
 ambient_light_color = Color(0.9019608, 0.9019608, 0.92156863, 1)
 ambient_light_energy = 1.1
 tonemap_mode = 2
-glow_enabled = true
-volumetric_fog_enabled = true
+fog_enabled = true
+fog_mode = 1
+fog_light_color = Color(0.50980395, 0.6666667, 0.6666667, 1)
+fog_density = 1.0
 volumetric_fog_density = 0.02
-volumetric_fog_albedo = Color(0.9411765, 0.9411765, 1, 1)
+volumetric_fog_albedo = Color(0.50980395, 0.6666667, 0.6666667, 1)
 volumetric_fog_emission = Color(0.78352344, 0.7835234, 0.7835234, 1)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_fos0i"]

@@ -9,6 +9,10 @@ func _ready() -> void:
 		WorldOptions.intersectionsVisibilityChanged.connect(intersections_visibility_changed)
 	if not WorldOptions.subtractionVisibilityChanged.is_connected(subtraction_visibility_changed):
 		WorldOptions.subtractionVisibilityChanged.connect(subtraction_visibility_changed)
+	var env = get_node("WorldEnvironment").environment
+	env.background_color = Color(0.902, 0.902, 0.922, 1.0)
+	env.volumetric_fog_enabled = true
+	get_node("Floor/MeshInstance3D2").visible = true
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -24,14 +28,13 @@ func toggle_passthrough():
 	start_xr.enable_passthrough = passthrough_on
 	
 	var env = get_node("WorldEnvironment").environment
-	var floor = get_node("Floor/MeshInstance3D2")
-	floor.visible = not passthrough_on
+	var floor_node = get_node("Floor/MeshInstance3D2")
+	floor_node.visible = not passthrough_on
+	env.volumetric_fog_enabled = not passthrough_on
 	if passthrough_on:
-		env.background_color = Color(0,0,0,0)
-		env.volumetric_fog_enabled = false
+		env.background_color = Color(0, 0, 0, 0)
 	else:
-		env.background_color = Color(0.902, 0.902, 0.922, 1.0)
-		env.volumetric_fog_enabled = true
+		env.background_color = Color(0.506, 0.667, 0.667, 1.0) 
 
 func intersections_visibility_changed(show):
 	print("Show : ", show)
