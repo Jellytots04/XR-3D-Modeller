@@ -24,12 +24,53 @@ func _set_owner_recursive(node, ownerNode):
 
 func load_scene(file_name):
 	var path = SAVE_PATH + file_name + ".scn"
-	if ResourceLoader.exists(path):
-		PhysicsServer3D.set_active(false)
-		await get_tree().process_frame
-		get_tree().call_deferred("change_scene_to_file", path)
-	else:
-		print("Save file not found : ", path)
+	print("Loading scene from : ", path)
+	if not ResourceLoader.exists(path):
+		print("Save file not found: ", path)
+		return
+	
+	for obj in get_tree().get_nodes_in_group("summonedObjects"):
+		if is_instance_valid(obj):
+			obj.queue_free()
+	
+	for obj in get_tree().get_nodes_in_group("summonedObjects"):
+		if is_instance_valid(obj):
+			obj.queue_free()
+	
+	var main = get_tree().get_first_node_in_group("main_node")
+	main.clear_ghosted("intersection_ghosts")
+	main.clear_ghosted("subtraction_ghosts")
+	
+	await get_tree().process_frame
+	
+	var packed = load(path)
+	var instance = packed.instantiate()
+	
+	print("Instance: ", instance)
+	print("Instance children: ", instance.get_children())
+	await get_tree().process_frame
+	
+	var objects_summon = []
+	for obj in instance.get_children():
+		print("Child: ", obj.name, " groups: ", obj.get_groups())
+		if obj is CSGCombiner3D:
+			objects_summon.append(obj)
+			for sub in obj.get_children():
+				print(" Sub ", sub.name, " groups : ", sub.get_groups())
+	
+	for obj in objects_summon:
+		instance.remove_child(obj)
+		get_tree().current_scene.add_child(obj)
+		obj.owner = get_tree().current_scene
+		obj.add_to_group("summonedObjects")
+	
+	await get_tree().process_frame
+	
+	instance.free()
+	
+	WorldOptions.current_file_name = file_name
+	WorldOptions.is_saved = true
+	print("Loaded : ", file_name)
 
 func get_save_files():
 	var files = []
