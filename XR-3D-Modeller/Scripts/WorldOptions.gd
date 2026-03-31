@@ -11,6 +11,9 @@ var showSubtraction: bool = false
 signal intersectionsVisibilityChanged(visible:bool)
 signal subtractionVisibilityChanged(visible: bool)
 
+var is_saved: bool = false
+var current_file_name: String = ""
+
 func snap(value):
 	if not snapEnabled:
 		print("Snap is not true!")
