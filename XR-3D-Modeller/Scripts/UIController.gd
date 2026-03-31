@@ -297,12 +297,28 @@ func _load_saved_list():
 		return
 	
 	for file in files:
+		
+		var container = Control.new()
+		container.custom_minimum_size = Vector2(45, 45)
+		container.size = Vector2(45, 45)
+		container.clip_contents = true
+		
 		var btn = Button.new()
 		btn.text = file
-		btn.custom_minimum_size = Vector2(45,45)
+		btn.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 		btn.connect("pressed", Callable(self, "_select_load_file").bind(file, btn))
 		loaded_scenes_container.add_child(btn)
-		print("Added button for : ", file)
+		#print("Added button for : ", file)
+		
+		var del_btn = Button.new()
+		del_btn.text = "X"
+		del_btn.size = Vector2(15, 15)
+		del_btn.position = Vector2(0,0)
+		del_btn.connect("pressed", Callable(self, "_delete_save_file").bind(file))
+		
+		container.add_child(btn)
+		container.add_child(del_btn)
+		loaded_scenes_container.add_child(container)
 
 func _select_load_file(file_name, btn):
 	for child in loaded_scenes_container.get_children():
@@ -318,3 +334,7 @@ func _load_file():
 		return
 	print("Loading : ", selected_load_file)
 	SaveManager.load_scene(selected_load_file)
+
+func _delete_save_file(file_name):
+	SaveManager.delete_save(file_name)
+	_load_saved_list()

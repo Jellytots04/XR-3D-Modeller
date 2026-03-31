@@ -52,12 +52,10 @@ func load_scene(file_name):
 	
 	var objects_summon = []
 	for obj in instance.get_children():
-		print("Child: ", obj.name, " groups: ", obj.get_groups())
+		# print("Child: ", obj.name, " groups: ", obj.get_groups())
 		if obj is CSGCombiner3D:
 			objects_summon.append(obj)
-			for sub in obj.get_children():
-				print(" Sub ", sub.name, " groups : ", sub.get_groups())
-	
+
 	for obj in objects_summon:
 		instance.remove_child(obj)
 		get_tree().current_scene.add_child(obj)
@@ -85,3 +83,11 @@ func get_save_files():
 	else:
 		print("No saves folder found")
 	return files
+
+func delete_save(file_name):
+	var path = SAVE_PATH + file_name + ".scn"
+	if FileAccess.file_exists(path):
+		DirAccess.remove_absolute(path)
+		print("Deleted : ", file_name)
+	else:
+		print("File not found : ", file_name)
