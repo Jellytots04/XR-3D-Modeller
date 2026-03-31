@@ -389,11 +389,18 @@ theme_override_font_sizes/font_size = 14
 text = "Quick save
 "
 
-[node name="MovementContainer" type="VBoxContainer" parent="File/MainContainer" unique_id=1823468937]
+[node name="File_Name" type="LineEdit" parent="File/MainContainer/SavingContainer/Showing" unique_id=998216866]
+visible = false
 layout_mode = 2
 
-[node name="Load" type="Label" parent="File/MainContainer/MovementContainer" unique_id=1642767047]
+[node name="LoadContainer" type="VBoxContainer" parent="File/MainContainer" unique_id=1823468937]
+layout_mode = 2
+
+[node name="Load" type="Label" parent="File/MainContainer/LoadContainer" unique_id=1642767047]
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Load"
 horizontal_alignment = 1
+
+[node name="LineEdit" type="LineEdit" parent="File/MainContainer/LoadContainer" unique_id=60181099]
+layout_mode = 2

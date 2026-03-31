@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://b0nal575khs58" path="res://Scripts/UIController.gd" id="1_l6ach"]
 [ext_resource type="PackedScene" uid="uid://clujaf3u776a3" path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.tscn" id="2_cjv01"]
 [ext_resource type="PackedScene" uid="uid://c8l60rnugru40" path="res://addons/godot-xr-tools/objects/pickable.tscn" id="2_vuevf"]
+[ext_resource type="PackedScene" uid="uid://dgdb1texynduw" path="res://addons/godot-xr-tools/objects/virtual_keyboard.tscn" id="4_yfx2l"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_cjv01"]
 size = Vector3(0.355, 0.215, 0.02)
@@ -37,3 +38,8 @@ surface_material_override/0 = SubResource("StandardMaterial3D_cjv01")
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="PickableObject" unique_id=872225264]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.013232499)
 shape = SubResource("ConvexPolygonShape3D_cjv01")
+
+[node name="VirtualKeyboard" parent="PickableObject" unique_id=1728948130 instance=ExtResource("4_yfx2l")]
+transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0.22281009, 0)
+visible = false
+scene_properties_keys = PackedStringArray("virtual_keyboard_2d.gd")

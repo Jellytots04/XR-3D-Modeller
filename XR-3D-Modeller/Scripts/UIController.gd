@@ -34,6 +34,10 @@ var edit_select_group = ButtonGroup.new()
 var intersection_button: Button
 var subtraction_button: Button
 
+# Virtual Keyboard functions
+var save_name_input: LineEdit
+var keyboard: Node
+
 func _ready():
 	_group_fix()
 	add_to_group("ui_controller")
@@ -64,6 +68,12 @@ func _ready():
 		var movement_toggle = world_tab.get_node("MovementContainer/Toggle")
 		var movement_spinbox = world_tab.get_node("MovementContainer/Movement/SpinBox")
 		var visual_button = world_tab.get_node("VisualButton")
+		var file_tab = viewport_scene.get_node("File/MainContainer")
+		var save_as_button = file_tab.get_node("SavingContainer/Showing/Operations/SaveAs")
+		var quick_save_button = file_tab.get_node("SavingContainer/Showing/Operations/QuickSave")
+		save_name_input = file_tab.get_node("SavingContainer/Showing/File_Name")
+		
+		keyboard = get_node("PickableObject/VirtualKeyboard")
 		
 		movement_toggle.button_pressed = WorldOptions.snapEnabled
 		movement_slider.value = WorldOptions.snapSizeMM
@@ -80,6 +90,8 @@ func _ready():
 		build_vertex = build_tab.get_node("VertexBuild") # HBoxContainer node
 		build_load = build_vertex.get_node("Load") # Button Node
 		build_clear = build_vertex.get_node("Clear") # Button Node
+		
+		save_as_button.connect("pressed", Callable(self, "_save_as_pressed"))
 		
 		# print(build_options)
 		if build_options:
@@ -230,3 +242,17 @@ func _subtraction_toggled():
 func _passthrough_toggled():
 	var main = get_tree().get_first_node_in_group("main_node")
 	main.toggle_passthrough()
+
+func _save_as_pressed():
+	save_name_input.visible = true
+	save_name_input.grab_focus()
+	keyboard.visible = true
+
+func _save_as_confirmed():
+	var file_name = save_name_input.text
+	if file_name.length() > 0 and file_name.length <= 60:
+		print("file saved as (not actually yet) : ", file_name)
+		keyboard.visible = false
+		save_name_input.visible = false
+	else:
+		print("Invalid file name!")
