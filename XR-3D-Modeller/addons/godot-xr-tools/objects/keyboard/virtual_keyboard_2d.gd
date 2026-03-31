@@ -78,9 +78,12 @@ func _on_toggle_alt_pressed() -> void:
 # Update switching the visible case keys
 func _update_visible() -> void:
 	# Ensure the control buttons are set correctly
-	$Background/Standard/ToggleShift.highlighted = _shift_down
-	$Background/Standard/ToggleCaps.highlighted = _caps_down
-	$Background/Standard/ToggleAlt.highlighted = _alt_down
+	if $Background/Standard/ToggleShift:
+		$Background/Standard/ToggleShift.highlighted = _shift_down
+	if $Background/Standard/ToggleCaps:
+		$Background/Standard/ToggleCaps.highlighted = _caps_down
+	if $Background/Standard/ToggleAlt:
+		$Background/Standard/ToggleAlt.highlighted = _alt_down
 
 	# Evaluate the new mode
 	var new_mode: int
@@ -97,6 +100,9 @@ func _update_visible() -> void:
 
 	# Update the visible mode
 	_mode = new_mode
-	$Background/LowerCase.visible = _mode == KeyboardMode.LOWER_CASE
-	$Background/UpperCase.visible = _mode == KeyboardMode.UPPER_CASE
-	$Background/Alternate.visible = _mode == KeyboardMode.ALTERNATE
+	if $Background/LowerCase:
+		$Background/LowerCase.visible = _mode == KeyboardMode.LOWER_CASE
+	if $Background/UpperCase:
+		$Background/UpperCase.visible = _mode == KeyboardMode.UPPER_CASE
+	if $Background/Alternate:
+		$Background/Alternate.visible = _mode == KeyboardMode.ALTERNATE

@@ -368,7 +368,7 @@ layout_mode = 2
 
 [node name="Save" type="Label" parent="File/MainContainer/SavingContainer/Showing" unique_id=40150405]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 14
 text = "Save"
 horizontal_alignment = 1
 
@@ -393,14 +393,28 @@ text = "Quick save
 visible = false
 layout_mode = 2
 
+[node name="Confirm" type="Button" parent="File/MainContainer/SavingContainer/Showing" unique_id=806473997]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Confirm"
+
 [node name="LoadContainer" type="VBoxContainer" parent="File/MainContainer" unique_id=1823468937]
 layout_mode = 2
 
 [node name="Load" type="Label" parent="File/MainContainer/LoadContainer" unique_id=1642767047]
 layout_mode = 2
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 14
 text = "Load"
 horizontal_alignment = 1
 
-[node name="LineEdit" type="LineEdit" parent="File/MainContainer/LoadContainer" unique_id=60181099]
+[node name="SceneScroller" type="ScrollContainer" parent="File/MainContainer/LoadContainer" unique_id=507758835]
 layout_mode = 2
+
+[node name="LoadedScenes" type="HBoxContainer" parent="File/MainContainer/LoadContainer/SceneScroller" unique_id=1101253021]
+layout_mode = 2
+
+[node name="LoadButton" type="Button" parent="File/MainContainer/LoadContainer" unique_id=1089006588]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Load"

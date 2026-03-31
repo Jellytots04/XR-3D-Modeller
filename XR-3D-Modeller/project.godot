@@ -28,6 +28,7 @@ aseprite_executable_path="C:/Program Files (x86)/Steam/steamapps/common/Aseprite
 XRToolsUserSettings="*uid://cpsxttlvwdacf"
 XRToolsRumbleManager="*uid://dw3etnjbvmpt6"
 WorldOptions="*uid://bgwsc065if22t"
+SaveManager="*uid://b6vsjaa6jkxrd"
 
 [display]
 

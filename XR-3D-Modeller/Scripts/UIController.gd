@@ -34,9 +34,12 @@ var edit_select_group = ButtonGroup.new()
 var intersection_button: Button
 var subtraction_button: Button
 
-# Virtual Keyboard functions
+# Virtual Keyboard / Saving and Loading variables
 var save_name_input: LineEdit
 var keyboard: Node
+var confirm_button: Button
+var loaded_scenes_container: HBoxContainer
+var file_tab_node: Node
 
 func _ready():
 	_group_fix()
@@ -71,6 +74,12 @@ func _ready():
 		var file_tab = viewport_scene.get_node("File/MainContainer")
 		var save_as_button = file_tab.get_node("SavingContainer/Showing/Operations/SaveAs")
 		var quick_save_button = file_tab.get_node("SavingContainer/Showing/Operations/QuickSave")
+		var load_button = file_tab.get_node("LoadContainer/LoadButton")
+		
+		loaded_scenes_container = file_tab.get_node("LoadContainer/SceneScroller/LoadedScenes")
+		
+		confirm_button = file_tab.get_node("SavingContainer/Showing/Confirm")
+		
 		save_name_input = file_tab.get_node("SavingContainer/Showing/File_Name")
 		
 		keyboard = get_node("PickableObject/VirtualKeyboard")
@@ -92,6 +101,8 @@ func _ready():
 		build_clear = build_vertex.get_node("Clear") # Button Node
 		
 		save_as_button.connect("pressed", Callable(self, "_save_as_pressed"))
+		confirm_button.connect("pressed", Callable(self, "_save_as_confirmed"))
+		quick_save_button.connect("pressed", Callable(self, "_quick_save_pressed"))
 		
 		# print(build_options)
 		if build_options:
@@ -247,12 +258,22 @@ func _save_as_pressed():
 	save_name_input.visible = true
 	save_name_input.grab_focus()
 	keyboard.visible = true
+	confirm_button.visible = true
 
 func _save_as_confirmed():
+	save_name_input.visible = false
+	keyboard.visible = false
+	confirm_button.visible = false
 	var file_name = save_name_input.text
-	if file_name.length() > 0 and file_name.length <= 60:
-		print("file saved as (not actually yet) : ", file_name)
+	if file_name.length() > 0 and file_name.length() <= 60:
+		SaveManager.save_scene(file_name)
 		keyboard.visible = false
 		save_name_input.visible = false
 	else:
 		print("Invalid file name!")
+
+func _quick_save_pressed():
+	if not WorldOptions.is_saved or WorldOptions.current_file_name == "":
+		_save_as_confirmed()
+	else:
+		SaveManager.save_scene(WorldOptions.current_file_name)
