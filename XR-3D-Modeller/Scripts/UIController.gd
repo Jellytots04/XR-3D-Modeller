@@ -40,6 +40,7 @@ var keyboard: Node
 var confirm_button: Button
 var loaded_scenes_container: HBoxContainer
 var file_tab_node: Node
+var selected_load_file: String = ""
 
 func _ready():
 	_group_fix()
@@ -77,11 +78,8 @@ func _ready():
 		var load_button = file_tab.get_node("LoadContainer/LoadButton")
 		
 		loaded_scenes_container = file_tab.get_node("LoadContainer/SceneScroller/LoadedScenes")
-		
 		confirm_button = file_tab.get_node("SavingContainer/Showing/Confirm")
-		
 		save_name_input = file_tab.get_node("SavingContainer/Showing/File_Name")
-		
 		keyboard = get_node("PickableObject/VirtualKeyboard")
 		
 		movement_toggle.button_pressed = WorldOptions.snapEnabled
@@ -103,6 +101,9 @@ func _ready():
 		save_as_button.connect("pressed", Callable(self, "_save_as_pressed"))
 		confirm_button.connect("pressed", Callable(self, "_save_as_confirmed"))
 		quick_save_button.connect("pressed", Callable(self, "_quick_save_pressed"))
+		
+		viewport_scene.connect("tab_changed", Callable(self, "_on_tab_changed"))
+		load_button.connect("pressed", Callable(self, "_load_file"))
 		
 		# print(build_options)
 		if build_options:
@@ -179,6 +180,8 @@ func _ready():
 				
 		if visual_button:
 			visual_button.connect("pressed", Callable(self, "_passthrough_toggled"))
+
+		_load_saved_list()
 
 	else:
 		print("Viewport root scene not loaded!")
@@ -277,3 +280,41 @@ func _quick_save_pressed():
 		_save_as_confirmed()
 	else:
 		SaveManager.save_scene(WorldOptions.current_file_name)
+
+func _on_tab_changed(idx):
+	if idx == 4:
+		_load_saved_list()
+		
+func _load_saved_list():
+	for child in loaded_scenes_container.get_children():
+		child.queue_free()
+		
+	print("Loading files list")
+	print("Container : ", loaded_scenes_container)
+	var files = SaveManager.get_save_files()
+	if files.size() == 0:
+		print("No files found")
+		return
+	
+	for file in files:
+		var btn = Button.new()
+		btn.text = file
+		btn.custom_minimum_size = Vector2(45,45)
+		btn.connect("pressed", Callable(self, "_select_load_file").bind(file, btn))
+		loaded_scenes_container.add_child(btn)
+		print("Added button for : ", file)
+
+func _select_load_file(file_name, btn):
+	for child in loaded_scenes_container.get_children():
+		child.modulate = Color(1,1,1,1)
+		
+	btn.modulate = Color(0.913, 0.967, 0.331, 1.0)
+	selected_load_file = file_name
+	print("Selected file : ", file_name)
+
+func _load_file():
+	if selected_load_file == "":
+		print("No file selected")
+		return
+	print("Loading : ", selected_load_file)
+	SaveManager.load_scene(selected_load_file)

@@ -57,6 +57,9 @@ func _process(delta: float) -> void:
 			remove_object()
 		update_highlighted_object()
 
+		if controller.is_button_pressed("ax_button") and controller.is_button_pressed("by_button"):
+			clear_all()
+
 		# If the user clicks / presses right trigger on an highlighted object it will become the selected object
 		if controller.is_button_pressed("trigger_click") and !triggerPressed: # This is group select aka entire object because highlighted_object will be the CSGCombiner
 			if highlighted_object:
@@ -119,6 +122,25 @@ func _process(delta: float) -> void:
 
 		elif not controller.is_button_pressed("trigger_click"):
 			triggerPressed = false
+
+func clear_all():
+	for obj in get_tree().get_nodes_in_group("summonedObjects"):
+		if is_instance_valid(obj):
+			obj.queue_free()
+			
+	var main = get_tree().get_first_node_in_group("main_node")
+	main.clear_ghosted("intersection_ghosts")
+	main.clear_ghosted("subtraction_ghosts")
+	
+	currentSelectedObject = null
+	highlighted_object = null
+	multiSelectHolder.clear()
+	true_materials.clear()
+	original_materials.clear()
+	
+	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+	emit_signal("objectRemoved")
+	print("Scene cleared!")
 
 func remove_object():
 	if currentSelectedObject and (currentSelectedObject.is_in_group("intersection_ghosts") or currentSelectedObject.is_in_group("subtraction_ghosts")):

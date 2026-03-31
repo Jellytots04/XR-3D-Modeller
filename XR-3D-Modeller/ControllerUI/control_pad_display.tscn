@@ -21,7 +21,7 @@
 offset_right = 400.0
 offset_bottom = 200.0
 tab_alignment = 1
-current_tab = 4
+current_tab = 1
 
 [node name="Build" type="MarginContainer" parent="." unique_id=1469485864]
 visible = false
@@ -135,7 +135,6 @@ step = 0.01
 value = 1.0
 
 [node name="Remove" type="MarginContainer" parent="." unique_id=1607584328]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -155,15 +154,10 @@ layout_mode = 2
 toggle_mode = true
 icon = ExtResource("12_wjypm")
 
-[node name="Unparent" type="Button" parent="Remove/VerticalArrangement/RemoveOptions" unique_id=636162341]
+[node name="ClearAll" type="Button" parent="Remove/VerticalArrangement/RemoveOptions" unique_id=636162341]
 layout_mode = 2
 toggle_mode = true
 icon = ExtResource("12_wjypm")
-
-[node name="UndefinedBehaviour" type="Button" parent="Remove/VerticalArrangement/RemoveOptions" unique_id=135189834]
-layout_mode = 2
-toggle_mode = true
-icon = ExtResource("3_wus27")
 
 [node name="SelectOptions" type="HBoxContainer" parent="Remove/VerticalArrangement" unique_id=1214415797]
 layout_mode = 2
@@ -350,6 +344,7 @@ theme_override_font_sizes/font_size = 14
 text = "Passthrough"
 
 [node name="File" type="MarginContainer" parent="." unique_id=1989559722]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -409,10 +404,13 @@ text = "Load"
 horizontal_alignment = 1
 
 [node name="SceneScroller" type="ScrollContainer" parent="File/MainContainer/LoadContainer" unique_id=507758835]
+custom_minimum_size = Vector2(0, 45)
 layout_mode = 2
 
 [node name="LoadedScenes" type="HBoxContainer" parent="File/MainContainer/LoadContainer/SceneScroller" unique_id=1101253021]
 layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
 
 [node name="LoadButton" type="Button" parent="File/MainContainer/LoadContainer" unique_id=1089006588]
 layout_mode = 2
