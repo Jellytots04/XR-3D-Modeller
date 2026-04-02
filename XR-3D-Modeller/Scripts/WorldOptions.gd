@@ -16,9 +16,9 @@ var current_file_name: String = ""
 
 func snap(value):
 	if not snapEnabled:
-		print("Snap is not true!")
+		# print("Snap is not true!")
 		return value
-	print("Welcome to snaps ville")
+	# print("Welcome to snaps ville")
 	var s = snapSizeM
 	return round(value / s) * s
 

@@ -41,7 +41,7 @@ func _ready() -> void:
 	var ui_controllers = get_tree().get_nodes_in_group("ui_controller")
 	if ui_controllers.size() > 0:
 		var ui_controller = ui_controllers[0]
-		print("Hello from readying Remover")
+		# print("Hello from readying Remover")
 		ui_controller.connect("change_page", Callable(self, "set_page_index"))
 		ui_controller.connect("select_change", Callable(self, "select_index_change"))
 		print("UI Controller: ", ui_controller)

@@ -411,7 +411,7 @@ func moveObject(delta):
 
 # Reattach functions
 func reattach(obj, combiner):
-	print("Reattach this object : ", obj, " : to the new object : ", combiner)
+	# print("Reattach this object : ", obj, " : to the new object : ", combiner)
 	var target_combiner
 	if combiner is CSGCombiner3D:
 		target_combiner = combiner
@@ -437,7 +437,7 @@ func reattach(obj, combiner):
 
 	elif obj is CSGCombiner3D:
 		if obj == target_combiner:
-			print("This is me!!")
+			# print("This is me!!")
 			return
 		
 		for child in obj.get_children():
@@ -495,9 +495,9 @@ func _rotateObject():
 
 # Plane Scaling functions
 func startScale():
-	print("Beginning of the scaling")
-	print("current Scale : ", currentSelectedObject.scale)
-	print("current Position : ", currentSelectedObject.global_position)
+	# print("Beginning of the scaling")
+	# print("current Scale : ", currentSelectedObject.scale)
+	# print("current Position : ", currentSelectedObject.global_position)
 	activeOrb = highlighted_orb
 	scaleAxis = activeOrb.get_meta("scale_axis")
 	scaleStartingScale = currentSelectedObject.scale
@@ -507,7 +507,7 @@ func startScale():
 	scaleStartingDistance = controller.global_position.dot(scaleWorldAxis)
 
 func plane_orb_scaling():
-	print("Use this orb to SCALE!!!")
+	# print("Use this orb to SCALE!!!")
 	if not is_instance_valid(currentSelectedObject) or not is_instance_valid(activeOrb):
 		return
 
@@ -543,14 +543,14 @@ func spawnPlaneOrbs(obj): # Spawn the orbs
 	if obj == null:
 		return
 	clearOrbs()
-	print("Spawning the orbs on this object : ", obj)
+	# print("Spawning the orbs on this object : ", obj)
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD] # Directions
 	for axis in axes:
 		var orb = orb_scene.instantiate()
 		get_tree().root.add_child(orb)
 		orb.set_meta("scale_axis", axis)
 		planeScalingOrbs.append(orb)
-		print("Orb now exists : ", orb)
+		# print("Orb now exists : ", orb)
 	updateOrbPositions(obj)
 
 func updateOrbPositions(obj): # Update their positions once spawned
@@ -574,7 +574,7 @@ func update_highlighted_orb():
 	var closest_orb = null
 	
 	if scaleCast.is_colliding():
-		print("Orb has been hit")
+		# print("Orb has been hit")
 		var obj = scaleCast.get_collider()
 		for orb in planeScalingOrbs:
 			if not is_instance_valid(orb):
@@ -598,7 +598,7 @@ func spawnArrows(obj):
 	if obj == null:
 		return
 	clearArrows()
-	print("Summoning the arrows at : ", obj)
+	# print("Summoning the arrows at : ", obj)
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD]
 	for axis in axes:
 		var arrow = arrow_scene.instantiate()
@@ -626,7 +626,7 @@ func clearArrows():
 	for arrow in planeMoveArrows:
 		if is_instance_valid(arrow):
 			arrow.queue_free()
-	print("Removing the arrows")
+	# print("Removing the arrows")
 	planeMoveArrows.clear()
 
 func update_highlighted_arrow():
@@ -1075,7 +1075,7 @@ func set_page_index(idx):
 		is_active = false
 
 func set_edit_index(idx):
-	print("Edit Called")
+	# print("Edit Called")
 	clearArrows()
 	clearOrbs()
 	clearRotationTorus()
@@ -1090,7 +1090,7 @@ func set_edit_index(idx):
 			spawnPlaneOrbs(currentSelectedObject)
 
 func update_list():
-	print("Hello from Edit script new object update signal")
+	# print("Hello from Edit script new object update signal")
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
 
 # Add a clearance previous select on change
