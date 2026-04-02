@@ -10,6 +10,7 @@ signal scaleSize(value) # Signal for changing the building Scale size
 signal select_change(index) # Signal for changing the selected (select) option
 signal load_mesh()
 signal clear_vertices()
+signal render_object
 
 @export var edit_scaleSize: HSlider # Allows this variable to be edited by variables in other scripts
 @export var build_load: Button
@@ -76,6 +77,8 @@ func _ready():
 		var save_as_button = file_tab.get_node("SavingContainer/Showing/Operations/SaveAs")
 		var quick_save_button = file_tab.get_node("SavingContainer/Showing/Operations/QuickSave")
 		var load_button = file_tab.get_node("LoadContainer/LoadButton")
+		var export_tab = viewport_scene.get_node("Export/VerticalArrangement")
+		var rendering_button = export_tab.get_node("RenderingTab/RenderButton")
 		
 		loaded_scenes_container = file_tab.get_node("LoadContainer/SceneScroller/LoadedScenes")
 		confirm_button = file_tab.get_node("SavingContainer/Showing/Confirm")
@@ -104,6 +107,8 @@ func _ready():
 		
 		viewport_scene.connect("tab_changed", Callable(self, "_on_tab_changed"))
 		load_button.connect("pressed", Callable(self, "_load_file"))
+		
+		rendering_button.connect("pressed", Callable(self, "_render_object"))
 		
 		# print(build_options)
 		if build_options:
@@ -338,3 +343,6 @@ func _load_file():
 func _delete_save_file(file_name):
 	SaveManager.delete_save(file_name)
 	_load_saved_list()
+
+func _render_object():
+	emit_signal("render_object")

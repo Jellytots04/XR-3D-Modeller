@@ -42,6 +42,7 @@ func _ready() -> void:
 		ui_controller.connect("change_page", Callable(self, "set_page_index"))
 		ui_controller.connect("render_object", Callable(self, "render_selected"))
 		print("Render Function connected to UI")
+		ui_controller.connect("render_object", Callable(self, "render_selected"))
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -63,6 +64,48 @@ func _process(delta: float) -> void:
 		
 		elif not controller.is_button_pressed("trigger_click"):
 			triggerPressed = false
+
+func render_selected():
+	if not currentSelectedObject or not is_instance_valid(currentSelectedObject):
+		print("Nothing selected to render")
+		return
+	
+	var mesh: Mesh = null
+	
+	if currentSelectedObject is CSGCombiner3D:
+		await get_tree().process_frame
+		var meshes = currentSelectedObject.get_meshes()
+		if meshes.size() < 2:
+			print("CSG has no mesh data yet")
+			return
+		mesh = meshes[1]
+	elif currentSelectedObject is MeshInstance3D:
+		mesh = currentSelectedObject.mesh
+	
+	if not mesh:
+		print("No mesh found")
+		return
+	
+	var pickable = XRToolsPickable.new()
+	pickable.collision_layer = 1 | 4
+	pickable.collision_mask = 1
+	pickable.picked_up_layer = 0
+	
+	var mesh_instance = MeshInstance3D.new()
+	mesh_instance.mesh = mesh
+	
+	var collision = CollisionShape3D.new()
+	var convex_shape = mesh.create_convex_shape()
+	collision.shape = convex_shape
+	
+	pickable.add_child(mesh_instance)
+	pickable.add_child(collision)
+	
+	var spawn_pos = controller.global_transform.origin + -controller.global_transform.basis.z * 1.0
+	get_tree().current_scene.add_child(pickable)
+	pickable.global_transform.origin = spawn_pos
+	
+	print("Rendered object spawned at: ", spawn_pos)
 
 # Update highlighted object
 func update_highlighted_object():
