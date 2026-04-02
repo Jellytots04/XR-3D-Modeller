@@ -10,3 +10,5 @@ script = ExtResource("1_0f1qj")
 
 [node name="EditFunction" type="Node3D" parent="." unique_id=75271281]
 script = ExtResource("2_kv11s")
+
+[node name="ExportFunction" type="Node3D" parent="." unique_id=1144185296]

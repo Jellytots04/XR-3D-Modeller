@@ -21,7 +21,7 @@
 offset_right = 400.0
 offset_bottom = 200.0
 tab_alignment = 1
-current_tab = 1
+current_tab = 5
 
 [node name="Build" type="MarginContainer" parent="." unique_id=1469485864]
 visible = false
@@ -135,6 +135,7 @@ step = 0.01
 value = 1.0
 
 [node name="Remove" type="MarginContainer" parent="." unique_id=1607584328]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -416,3 +417,68 @@ size_flags_vertical = 3
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "Load"
+
+[node name="Export" type="MarginContainer" parent="." unique_id=810857528]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+metadata/_tab_index = 5
+
+[node name="VerticalArrangement" type="VBoxContainer" parent="Export" unique_id=1925955816]
+layout_mode = 2
+
+[node name="RenderingTab" type="VBoxContainer" parent="Export/VerticalArrangement" unique_id=2022352897]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Export/VerticalArrangement/RenderingTab" unique_id=1958480926]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Render"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="RenderButton" type="Button" parent="Export/VerticalArrangement/RenderingTab" unique_id=544119353]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Render Object"
+
+[node name="Label2" type="Label" parent="Export/VerticalArrangement" unique_id=1434982004]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Exporting"
+horizontal_alignment = 1
+
+[node name="ExportingTab" type="HBoxContainer" parent="Export/VerticalArrangement" unique_id=1874442279]
+layout_mode = 2
+
+[node name="SceneExport" type="VBoxContainer" parent="Export/VerticalArrangement/ExportingTab" unique_id=1990665254]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Export/VerticalArrangement/ExportingTab/SceneExport" unique_id=197944609]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Godot Scene"
+horizontal_alignment = 1
+
+[node name="SceneExportButton" type="Button" parent="Export/VerticalArrangement/ExportingTab/SceneExport" unique_id=655052097]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "Godot Export"
+
+[node name="OBJExport" type="VBoxContainer" parent="Export/VerticalArrangement/ExportingTab" unique_id=1784919085]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="Export/VerticalArrangement/ExportingTab/OBJExport" unique_id=142600168]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = ".OBJ"
+horizontal_alignment = 1
+
+[node name="OBJExportButton" type="Button" parent="Export/VerticalArrangement/ExportingTab/OBJExport" unique_id=371723081]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = ".OBJ Export"
