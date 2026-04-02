@@ -13,6 +13,7 @@ func _ready() -> void:
 	env.background_color = Color(0.902, 0.902, 0.922, 1.0)
 	env.volumetric_fog_enabled = true
 	get_node("Floor/MeshInstance3D2").visible = true
+	SaveManager.ensure_directories() # Upon startup ensure the directories are real for saving
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

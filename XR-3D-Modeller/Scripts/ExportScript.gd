@@ -41,6 +41,7 @@ func _ready() -> void:
 		var ui_controller = ui_controllers[0]
 		ui_controller.connect("change_page", Callable(self, "set_page_index"))
 		ui_controller.connect("render_object", Callable(self, "render_selected"))
+		ui_controller.connect("export_object", Callable(self, "export_selected"))
 		print("Render Function connected to UI")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -122,6 +123,12 @@ func render_selected():
 	pickable.global_transform.origin = spawn_pos
 	
 	print("Rendered object spawned at: ", spawn_pos)
+
+func export_selected(file_name):
+	if not currentSelectedObject or not is_instance_valid(currentSelectedObject):
+		print("Nothing selected to export")
+		return
+	await SaveManager.export_mesh(currentSelectedObject, file_name)
 
 # Update highlighted object
 func update_highlighted_object():

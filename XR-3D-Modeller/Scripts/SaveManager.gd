@@ -2,6 +2,8 @@ extends Node
 
 const PACKAGE_NAME = "com.jello.polymesh"
 const SAVE_PATH = "/sdcard/Android/data/" + PACKAGE_NAME + "/files/saves/"
+const MESH_PATH = "/sdcard/Android/data/" + PACKAGE_NAME + "/files/meshes/"
+const OBJECT_PATH = "/sdcard/Android/data/" + PACKAGE_NAME + "/files/objects/"
 
 func save_scene(file_name):
 	var clean_name = file_name.replace(" ", "_")
@@ -91,3 +93,54 @@ func delete_save(file_name):
 		print("Deleted : ", file_name)
 	else:
 		print("File not found : ", file_name)
+
+func export_mesh(node, file_name):
+	print("Export mesh called with: ", node, " name: ", file_name)
+	var clean_name = file_name.replace(" ", "_")
+	print("Saving to: ", MESH_PATH + clean_name + ".tscn")
+	var node_to_export = null
+	
+	if node is RigidBody3D:
+		print("Is RigidBody3D")
+		for child in node.get_children():
+			if child is MeshInstance3D:
+				var mesh_instance = MeshInstance3D.new()
+				mesh_instance.mesh = child.mesh
+				node_to_export = mesh_instance
+				print("Found mesh instance")
+				break
+	
+	if node is CSGCombiner3D:
+		await get_tree().process_frame
+		var meshes = node.get_meshes()
+		if meshes.size() < 2:
+			print("No mesh data")
+			return
+		var mesh_instance = MeshInstance3D.new()
+		mesh_instance.mesh = meshes[1]
+		node_to_export = mesh_instance
+	
+	elif node.is_in_group("placedMeshes"):
+		for child in node.get_children():
+			if child is MeshInstance3D:
+				var mesh_instance = MeshInstance3D.new()
+				mesh_instance.mesh = child.mesh
+				node_to_export = mesh_instance
+				break
+	
+	elif node is MeshInstance3D:
+		node_to_export = node
+	
+	if not node_to_export:
+		print("Nothing to export")
+		return
+		
+	var packed = PackedScene.new()
+	packed.pack(node_to_export)
+	ResourceSaver.save(packed, MESH_PATH + clean_name + ".tscn")
+	print("Exported mesh as : ", clean_name)
+
+func ensure_directories():
+	DirAccess.make_dir_recursive_absolute(SAVE_PATH)
+	DirAccess.make_dir_recursive_absolute(MESH_PATH)
+	DirAccess.make_dir_recursive_absolute(OBJECT_PATH)

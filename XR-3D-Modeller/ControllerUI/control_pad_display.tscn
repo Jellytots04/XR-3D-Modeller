@@ -482,3 +482,8 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = ".OBJ Export"
+
+[node name="SceneEdit" type="LineEdit" parent="Export/VerticalArrangement" unique_id=62284765]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
