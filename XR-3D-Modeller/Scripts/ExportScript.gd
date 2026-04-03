@@ -42,6 +42,7 @@ func _ready() -> void:
 		ui_controller.connect("change_page", Callable(self, "set_page_index"))
 		ui_controller.connect("render_object", Callable(self, "render_selected"))
 		ui_controller.connect("export_object", Callable(self, "export_selected"))
+		ui_controller.connect("export_obj_file", Callable(self, "export_obj_selected"))
 		print("Render Function connected to UI")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -84,6 +85,16 @@ func render_selected():
 			print("CSG has no mesh data yet")
 			return
 		mesh = meshes[1]
+		
+		var st = SurfaceTool.new()
+		var processed = ArrayMesh.new()
+		for i in meshes[1].get_surface_count():
+			st.create_from(meshes[1], i)
+			st.generate_normals()
+			st.index()
+			st.commit(processed)
+		mesh = processed
+		
 	elif original is MeshInstance3D:
 		mesh = original.mesh
 	elif original is StaticBody3D and original.is_in_group("placedMeshes"):
@@ -91,7 +102,7 @@ func render_selected():
 			if child is MeshInstance3D:
 				mesh = child.mesh
 				break
-	
+
 	if not mesh:
 		print("No mesh found")
 		return
@@ -129,6 +140,12 @@ func export_selected(file_name):
 		print("Nothing selected to export")
 		return
 	await SaveManager.export_mesh(currentSelectedObject, file_name)
+
+func export_obj_selected(file_name):
+	if not currentSelectedObject or not is_instance_valid(currentSelectedObject):
+		print("Nothing has been selected")
+		return
+	await SaveManager.export_obj(currentSelectedObject, file_name)
 
 # Update highlighted object
 func update_highlighted_object():

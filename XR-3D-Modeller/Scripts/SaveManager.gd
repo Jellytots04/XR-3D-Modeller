@@ -140,6 +140,44 @@ func export_mesh(node, file_name):
 	ResourceSaver.save(packed, MESH_PATH + clean_name + ".tscn")
 	print("Exported mesh as : ", clean_name)
 
+func export_obj(node: Node, file_name: String):
+	var clean_name = file_name.replace(" ", "_")
+	var mesh: Mesh = null
+	
+	if node is RigidBody3D:
+		for child in node.get_children():
+			if child is MeshInstance3D:
+				mesh = child.mesh
+				print("Found mesh: ", mesh)
+				print("Surface count: ", mesh.get_surface_count() if mesh else 0)
+				break
+	elif node is CSGCombiner3D:
+		await get_tree().process_frame
+		var meshes = node.get_meshes()
+		if meshes.size() < 2:
+			print("No mesh data")
+			return
+		mesh = meshes[1]
+	elif node.is_in_group("placedMeshes"):
+		for child in node.get_children():
+			if child is MeshInstance3D:
+				mesh = child.mesh
+				break
+	elif node is MeshInstance3D:
+		mesh = node.mesh
+	
+	if not mesh:
+		print("No mesh found for obj export")
+		return
+	
+	print("Exporting obj to: ", OBJECT_PATH, clean_name)
+	OBJExporter.export_completed.connect(_on_obj_export_completed, CONNECT_ONE_SHOT)
+	OBJExporter.save_mesh_to_files(mesh, OBJECT_PATH, clean_name)
+
+func _on_obj_export_completed(obj_file, mtl_file):
+	print("OBJ exported: ", obj_file)
+	print("MTL exported: ", mtl_file)
+
 func ensure_directories():
 	DirAccess.make_dir_recursive_absolute(SAVE_PATH)
 	DirAccess.make_dir_recursive_absolute(MESH_PATH)

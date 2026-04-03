@@ -12,6 +12,7 @@ signal load_mesh()
 signal clear_vertices()
 signal render_object
 signal export_object(file_name)
+signal export_obj_file(file_name)
 
 @export var edit_scaleSize: HSlider # Allows this variable to be edited by variables in other scripts
 @export var build_load: Button
@@ -45,7 +46,7 @@ var file_tab_node: Node
 var selected_load_file: String = ""
 var export_input_active = false
 var export_name_input: LineEdit
-var export_keyboard_active = false
+var object_export_input_active = false
 
 func _ready():
 	_group_fix()
@@ -84,6 +85,7 @@ func _ready():
 		var export_tab = viewport_scene.get_node("Export/VerticalArrangement")
 		var rendering_button = export_tab.get_node("RenderingTab/RenderButton")
 		var godot_export_button = export_tab.get_node("ExportingTab/SceneExport/SceneExportButton")
+		var obj_export_button = export_tab.get_node("ExportingTab/OBJExport/OBJExportButton")
 		
 		loaded_scenes_container = file_tab.get_node("LoadContainer/SceneScroller/LoadedScenes")
 		confirm_button = file_tab.get_node("SavingContainer/Showing/Confirm")
@@ -118,6 +120,8 @@ func _ready():
 		rendering_button.connect("pressed", Callable(self, "_render_object"))
 		
 		godot_export_button.connect("pressed", Callable(self, "_export_pressed"))
+		
+		obj_export_button.connect("pressed", Callable(self, "_export_object_pressed"))
 		
 		# print(build_options)
 		if build_options:
@@ -354,12 +358,12 @@ func _delete_save_file(file_name):
 	_load_saved_list()
 
 func _export_pressed():
-	if not export_input_active:
+	if not export_input_active and not object_export_input_active:
 		export_name_input.visible = true
 		export_name_input.grab_focus()
 		keyboard.visible = true
 		export_input_active = true
-	else:
+	elif export_input_active:
 		var file_name = export_name_input.text
 		if file_name.length() > 0 and file_name.length() <= 60:
 			export_object.emit(file_name)
@@ -367,6 +371,23 @@ func _export_pressed():
 			export_name_input.visible = false
 			keyboard.visible = false
 			export_input_active = false
+		else:
+			print("Invalid file name")
+
+func _export_object_pressed():
+	if not object_export_input_active and not export_input_active:
+		export_name_input.visible = true
+		export_name_input.grab_focus()
+		keyboard.visible = true
+		object_export_input_active = true
+	elif object_export_input_active:
+		var file_name = export_name_input.text
+		if file_name.length() > 0 and file_name.length() <= 60:
+			export_obj_file.emit(file_name)
+			export_name_input.text = ""
+			export_name_input.visible = false
+			keyboard.visible = false
+			object_export_input_active = false
 		else:
 			print("Invalid file name")
 
