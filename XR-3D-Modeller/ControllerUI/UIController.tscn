@@ -9,7 +9,7 @@
 size = Vector3(0.355, 0.215, 0.02)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cjv01"]
-albedo_color = Color(0.627451, 0.627451, 0.627451, 1)
+albedo_color = Color(0.5890956, 0.5890956, 0.5890956, 1)
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_cjv01"]
 points = PackedVector3Array(0.17750002, 0.1075, 0.01, 0.17750002, 0.1075, -0.01, -0.1775, 0.1075, 0.01, 0.17750002, -0.1075, 0.01, 0.17750002, -0.1075, -0.01, -0.1775, 0.1075, -0.01, -0.1775, -0.1075, 0.01, -0.1775, -0.1075, -0.01)
@@ -24,7 +24,7 @@ gravity_scale = 0.0
 ranged_grab_method = 0
 
 [node name="Viewport2Din3D" parent="PickableObject" unique_id=838079065 instance=ExtResource("2_cjv01")]
-transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, 0)
+transform = Transform3D(0.1, 0, 0, 0, 0.1, 0, 0, 0, 0.1, 0, 0, -0.0032187179)
 collision_layer = 5242880
 viewport_size = Vector2(400, 200)
 transparent = 2

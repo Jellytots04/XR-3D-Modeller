@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://iiff5qognyv5"]
+
+[ext_resource type="Theme" uid="uid://ck52fr37rq2gt" path="res://UI_Themes/UI_Theme.tres" id="1_6aok2"]
+
+[node name="PanelContainer" type="Panel" unique_id=230413313]
+custom_minimum_size = Vector2(600, 300)
+offset_right = 600.0
+offset_bottom = 300.0
+theme = ExtResource("1_6aok2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2106049956]
+layout_mode = 0
+offset_right = 600.0
+offset_bottom = 300.0
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=1408299668]
+layout_mode = 2
+size_flags_vertical = 6
+theme_override_constants/line_spacing = 15
+theme_override_font_sizes/font_size = 30
+text = "Welcome to PolyMesh
+Would you like a quick tutorial?"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1436104482]
+layout_mode = 2
+size_flags_vertical = 6
+
+[node name="QuickTutorial" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=445145250]
+custom_minimum_size = Vector2(200, 70)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 8
+text = "Qucik Tutorial"
+
+[node name="Skip" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=320160581]
+custom_minimum_size = Vector2(200, 70)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 8
+text = "Skip"

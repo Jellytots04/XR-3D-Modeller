@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://b0r2wnjuhxca7"]
+
+[ext_resource type="PackedScene" uid="uid://bxt5nvnjdxrvr" path="res://TutorialUI/IntroUI/3D_UI_Screen.tscn" id="1_d1m0d"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_d1m0d"]
+size = Vector3(3.065, 2.03, 0.01)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qw80a"]
+albedo_color = Color(0.2, 0.1882353, 0.18039216, 1)
+
+[node name="IntroPanel" type="Node3D" unique_id=516282020]
+
+[node name="XRViewPort" parent="." unique_id=640791018 instance=ExtResource("1_d1m0d")]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=77220290]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0051303506)
+mesh = SubResource("BoxMesh_d1m0d")
+surface_material_override/0 = SubResource("StandardMaterial3D_qw80a")

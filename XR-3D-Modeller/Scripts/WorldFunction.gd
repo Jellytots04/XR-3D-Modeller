@@ -1,5 +1,10 @@
 extends Node3D
 
+var tutorial_toast = preload("res://TutorialUI/IntroUI/3D_Intro_UI_Screen.tscn")
+var tutorial_toast_instance = null
+
+var ghosted_mesh = {}
+var passthrough_on = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -14,14 +19,70 @@ func _ready() -> void:
 	env.volumetric_fog_enabled = true
 	get_node("Floor/MeshInstance3D2").visible = true
 	SaveManager.ensure_directories() # Upon startup ensure the directories are real for saving
+	spawn_tutorial_toast()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
 
-var ghosted_mesh = {}
+func spawn_tutorial_toast():
+	if WorldOptions.has_meta("tutorial_completed"):
+		print("Tutorial has been completed")
+		return
+	
+	tutorial_toast_instance = tutorial_toast.instantiate()
+	
+	var xr_camera = get_node("XROrigin3D/XRCamera3D")
+	
+	if xr_camera:
+		add_child(tutorial_toast_instance)
 
-var passthrough_on = false
+		var forward = -xr_camera.global_transform.basis.z
+		var spawn_pos = xr_camera.global_position + forward * 1.5
+		spawn_pos.y = xr_camera.global_position.y + 1.5
+		
+		tutorial_toast_instance.global_position = spawn_pos
+		
+		var look_direction = tutorial_toast_instance.global_position - xr_camera.global_position
+		look_direction.y = 0
+		
+		tutorial_toast_instance.look_at(xr_camera.global_position)
+		
+		tutorial_toast_instance.rotate_y(deg_to_rad(180))
+		
+		connect_tutorial_button()
+		print("Spawned in tutorial")
+
+func connect_tutorial_button():
+	var tutorial = tutorial_toast_instance.find_child("QuickTutorial", true, false)
+	var skip = tutorial_toast_instance.find_child("Skip", true, false)
+	# var tutorial = tutorial_toast_instance.get_node("XRViewPort/XRViewPort/SubViewport/PanelContainer/VBoxContainer/HBoxContainer/QuickTutorial")
+	# var skip = tutorial_toast_instance.get_node("XRViewPort/XRViewPort/SubViewport/PanelContainer/VBoxContainer/HBoxContainer/Skip")
+	
+	print("Tutorial button found : ", tutorial, " : Skip button found : ", skip)
+	
+	if tutorial:
+		tutorial.pressed.connect(quick_tutorial_pressed)
+		print("Tutorial button connected")
+	
+	if skip:
+		skip.pressed.connect(skip_pressed)
+		print("Skip button connected")
+
+func quick_tutorial_pressed():
+	print("Quick tutorial clicked!")
+	
+	if is_instance_valid(tutorial_toast_instance):
+		tutorial_toast_instance.queue_free()
+		tutorial_toast_instance = null
+	
+
+func skip_pressed():
+	print("Skip clicked!")
+	
+	if is_instance_valid(tutorial_toast_instance):
+		tutorial_toast_instance.queue_free()
+		tutorial_toast_instance = null
 
 func toggle_passthrough():
 	passthrough_on = not passthrough_on

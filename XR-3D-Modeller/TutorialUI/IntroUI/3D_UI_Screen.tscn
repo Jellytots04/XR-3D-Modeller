@@ -1,20 +1,20 @@
-[gd_scene format=3 uid="uid://clujaf3u776a3"]
+[gd_scene format=3 uid="uid://bxt5nvnjdxrvr"]
 
-[ext_resource type="Script" uid="uid://tvkerymyjq5a" path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.gd" id="1"]
-[ext_resource type="Script" uid="uid://crm4sm5kblui5" path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d_body.gd" id="2"]
-[ext_resource type="PackedScene" uid="uid://dtu04ja1ciam2" path="res://ControllerUI/control_pad_display.tscn" id="2_4gj7x"]
+[ext_resource type="Script" uid="uid://tvkerymyjq5a" path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d.gd" id="1_1oca1"]
+[ext_resource type="PackedScene" uid="uid://iiff5qognyv5" path="res://TutorialUI/IntroUI/introUIScreen.tscn" id="2_5cw2v"]
+[ext_resource type="Script" uid="uid://crm4sm5kblui5" path="res://addons/godot-xr-tools/objects/viewport_2d_in_3d_body.gd" id="3_40hea"]
 
 [sub_resource type="QuadMesh" id="1"]
 resource_local_to_scene = true
 size = Vector2(3, 2)
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_4gj7x"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_8ywnf"]
 viewport_path = NodePath("Viewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_4gj7x"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_40hea"]
 transparency = 1
 cull_mode = 2
-albedo_texture = SubResource("ViewportTexture_4gj7x")
+albedo_texture = SubResource("ViewportTexture_8ywnf")
 texture_filter = 1
 
 [sub_resource type="BoxShape3D" id="4"]
@@ -22,8 +22,9 @@ resource_local_to_scene = true
 size = Vector3(3, 2, 0.02)
 
 [node name="Viewport2Din3D" type="Node3D" unique_id=593767825]
-script = ExtResource("1")
-scene = ExtResource("2_4gj7x")
+script = ExtResource("1_1oca1")
+scene = ExtResource("2_5cw2v")
+viewport_size = Vector2(600, 300)
 alpha_scissor_threshold = 0.25
 unshaded = false
 filter = true
@@ -33,18 +34,18 @@ scene_properties_keys = PackedStringArray()
 disable_3d = true
 transparent_bg = true
 gui_embed_subwindows = true
-size = Vector2i(300, 200)
+size = Vector2i(600, 300)
 render_target_update_mode = 1
 
 [node name="Screen" type="MeshInstance3D" parent="." unique_id=997748569]
 mesh = SubResource("1")
-surface_material_override/0 = SubResource("StandardMaterial3D_4gj7x")
+surface_material_override/0 = SubResource("StandardMaterial3D_40hea")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=86598596]
 collision_layer = 5242881
 collision_mask = 0
-script = ExtResource("2")
-viewport_size = Vector2(300, 200)
+script = ExtResource("3_40hea")
+viewport_size = Vector2(600, 300)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=791964348]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.01)

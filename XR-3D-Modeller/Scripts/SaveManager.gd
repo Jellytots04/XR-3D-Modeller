@@ -1,6 +1,6 @@
 extends Node
 
-signal scene_load
+signal scene_loaded
 
 const PACKAGE_NAME = "com.jello.polymesh"
 const SAVE_PATH = "/sdcard/Android/data/" + PACKAGE_NAME + "/files/saves/"
@@ -10,13 +10,23 @@ const OBJECT_PATH = "/sdcard/Android/data/" + PACKAGE_NAME + "/files/objects/"
 func save_scene(file_name):
 	var clean_name = file_name.replace(" ", "_")
 	
+	var rendered = get_tree().get_nodes_in_group("rendered_objects")
+	var rendered_parents = {}
+	for obj in rendered:
+		if is_instance_valid(obj):
+			rendered_parents[obj] = obj.get_parent()
+			obj.get_parent().remove_child(obj)
+	
 	var root = get_tree().current_scene
 	_set_owner_recursive(root, root)
-	
-	DirAccess.make_dir_recursive_absolute(SAVE_PATH)
 	var save = PackedScene.new()
 	save.pack(root)
 	ResourceSaver.save(save, SAVE_PATH + clean_name + ".scn")
+	
+	for obj in rendered_parents:
+		if is_instance_valid(obj):
+			rendered_parents[obj].add_child(obj)
+	
 	WorldOptions.current_file_name = clean_name
 	WorldOptions.is_saved = true
 	print("Scene saved as : ", clean_name)
@@ -73,7 +83,7 @@ func load_scene(file_name):
 	WorldOptions.current_file_name = file_name
 	WorldOptions.is_saved = true
 	
-	scene_load.emit()
+	scene_loaded.emit()
 	
 	print("Loaded : ", file_name)
 
