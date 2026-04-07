@@ -38,6 +38,7 @@ func _ready() -> void:
 	summoner.connect("verticeSummoned", Callable(self, "update_list"))
 	var editor = get_node("../EditFunction")
 	editor.connect("objectEdited", Callable(self, "update_list"))
+	SaveManager.scene_loaded.connect(Callable(self, "update_list"))
 	var ui_controllers = get_tree().get_nodes_in_group("ui_controller")
 	if ui_controllers.size() > 0:
 		var ui_controller = ui_controllers[0]
@@ -464,3 +465,4 @@ func update_list():
 # Add a clearance previous select on change
 func select_index_change(idx):
 	await clear_select(idx) # Clears and sets the new index
+	

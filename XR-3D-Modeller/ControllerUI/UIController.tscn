@@ -9,7 +9,7 @@
 size = Vector3(0.355, 0.215, 0.02)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cjv01"]
-albedo_color = Color(0.23921569, 1, 1, 1)
+albedo_color = Color(0.627451, 0.627451, 0.627451, 1)
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_cjv01"]
 points = PackedVector3Array(0.17750002, 0.1075, 0.01, 0.17750002, 0.1075, -0.01, -0.1775, 0.1075, 0.01, 0.17750002, -0.1075, 0.01, 0.17750002, -0.1075, -0.01, -0.1775, 0.1075, -0.01, -0.1775, -0.1075, 0.01, -0.1775, -0.1075, -0.01)

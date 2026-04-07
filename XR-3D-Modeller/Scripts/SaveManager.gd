@@ -1,5 +1,7 @@
 extends Node
 
+signal scene_load
+
 const PACKAGE_NAME = "com.jello.polymesh"
 const SAVE_PATH = "/sdcard/Android/data/" + PACKAGE_NAME + "/files/saves/"
 const MESH_PATH = "/sdcard/Android/data/" + PACKAGE_NAME + "/files/meshes/"
@@ -70,6 +72,9 @@ func load_scene(file_name):
 	
 	WorldOptions.current_file_name = file_name
 	WorldOptions.is_saved = true
+	
+	scene_load.emit()
+	
 	print("Loaded : ", file_name)
 
 func get_save_files():

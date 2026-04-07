@@ -96,6 +96,7 @@ func _ready() -> void:
 	summoner.connect("objectSummoned", Callable(self,  "update_list"))
 	var remover = get_node("../RemoveFunction")
 	remover.connect("objectRemoved", Callable(self, "update_list"))
+	SaveManager.scene_load.connect(Callable(self, "update_list"))
 	var ui_controllers = get_tree().get_nodes_in_group("ui_controller")
 	if ui_controllers.size() > 0:
 		ui_controller = ui_controllers[0]

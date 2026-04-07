@@ -113,10 +113,10 @@ func _ready() -> void:
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
 	placed_vertices = get_tree().get_nodes_in_group("placedVertices")
 	var remover = get_node("FunctionToolNode/RemoveFunction") # Remove Function
-	# print(remover)
 	remover.connect("objectRemoved", Callable(self, "update_list"))
 	var editor = get_node("FunctionToolNode/EditFunction") # Editing function
 	editor.connect("objectEdited", Callable(self, "update_list"))
+	SaveManager.scene_loaded.connect(Callable(self, "update_list")) # upon loading update the object_summoned
 	var ui_controllers = get_tree().get_nodes_in_group("ui_controller")
 	if ui_controllers.size() > 0:
 		ui_controller = ui_controllers[0]

@@ -39,6 +39,10 @@ window/size/transparent=true
 
 enabled=PackedStringArray("res://addons/godot-xr-tools/plugin.cfg", "res://addons/nklbdev.aseprite_importers/plugin.cfg", "res://addons/obj_exporter/plugin.cfg")
 
+[gui]
+
+theme/custom_font="uid://c7c0rx4wp7ybn"
+
 [layer_names]
 
 3d_physics/layer_1="Static World"
