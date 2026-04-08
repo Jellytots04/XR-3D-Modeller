@@ -704,6 +704,12 @@ func update_highlighted_object():
 	if raycast_3d.is_colliding():
 		var combiner = raycast_3d.get_collider()
 		
+		if not combiner or not is_instance_valid(combiner):
+			if highlighted_object and highlighted_object != currentSelectedObject:
+				_remove_highlight(highlighted_object)
+			highlighted_object = null
+			return
+
 		if combiner.is_in_group("intersection_ghosts") or combiner.is_in_group("subtraction_ghosts"):
 			if combiner != highlighted_object:
 				if highlighted_object and highlighted_object != currentSelectedObject:

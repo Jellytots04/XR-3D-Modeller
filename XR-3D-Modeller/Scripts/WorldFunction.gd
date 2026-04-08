@@ -206,38 +206,110 @@ var tutorial_steps = [
 	},
 	{
 		"title": "UI Tablet",
-		"description": "Press the X button to summon the tablet infront of you, this is where all the magic happens and all the functionalities are here, if you press the Y Button you can have it attached to your arm",
+		"description": "Press the X button to summon the tablet infront of you, this is where all the magic happens and all the functionalities are here, if you press the Y Button you can have it attached to your arm.",
 		"tab": 0
 	},
 	{
-		"title": "Summon Tab (Summoning)",
-		"description": "With this tab you can spawn in shapes and vertices to make your objects as well as copy any existing ones, try to summon a cube!",
+		"title": "Build Tab (Summoning)",
+		"description": "With this tab you can spawn in shapes and vertices to make your objects as well as copy any existing ones. \nPress the A Button and summon a cube!",
 		"tab": 1
 	},
 	{
-		"title": "Summon Tab (Operations)",
-		"description": "You can also select different types of operations for the objects summoned, Uinon (Merge), Intersection (Overlap only) or Subtract (Cut away), try to cut a sphere from a cube",
+		"title": "Build Tab (Operations)",
+		"description": "You can also select different types of operations for the objects summoned, Uinon (Merge), Intersection (Overlap only) or Subtract (Cut away). \nSelect subtract to cut a sphere from a cube",
 		"tab": 2
 	},
 	{
-		"title": "Summon Tab (Vertices)",
-		"description": "Here you can create complex objects from scratch, this building style is on its own, (due to a Godot limitation this operation is on its own and does not work with other summoned objects), place vertices down with the A Button and combine it with the right grip.\nWhen you are happy press load and the object will appear. (Follows the Eulers Polyhedron Theorem)",
+		"title": "Build Tab (Vertices)",
+		"description": "Here you can create objects from scratch, place vertices down connect them with grip then click load to create the shape. \n(These objects are on their own and don't work with summoned objects)",
+		#"description": "Here you can create complex objects from scratch, this building style is on its own, (due to a Godot limitation this operation is on its own and does not work with other summoned objects), place vertices down with the A Button and combine it with the right grip.\nWhen you are happy press load and the object will appear. (Follows the Eulers Polyhedron Theorem)",
 		"tab": 3
 	},
 	{
-		"title": "Remove Tab",
-		"description": "Point and press A to delete individual objects. Hold A+B together for 2 seconds to clear the entire scene.",
+		"title": "Build Tab (Select and Copy)",
+		"description": "The bottom row is in most of the tabs and is used for specifying the select type, Whole Select (Entire object), Multi Select (Individual Nodes), Single Node Select. \nCopy with Whole select and place down your copied object.",
+		#"description": "Lastly selecting and Copy, the bottom row appears in most of the other tabs, they consist of Whole Select (The entie object tree), Multi Select (Select multiple single objects) or Single Select (Single node within a tree). \nFor copying you must use Whole select and once highlighted you can press the A Button to summon your copied object.",
 		"tab": 4
 	},
 	{
-		"title": "File Tab",
-		"description": "Save your work, load previous creations, or delete old files. All files are stored on your Quest's internal storage.",
+		"title": "Remove Tab",
+		"description": "Point and select an object, then press A to delete the object(s).\nHold A+B together for 2 seconds to clear the entire scene.",
 		"tab": 5
 	},
 	{
-		"title": "Export Tab",
-		"description": "Render CSG objects as grabbable mesh items, or export as OBJ/TSCN files to use in other 3D software or Godot projects.",
+		"title": "Edit Tab (Free Move)",
+		"description": "This tab is where specifications can be done, firstly moving an object when you select object(s), you can press the right grip and the object will move along your controller!, \nTry move your object!",
 		"tab": 6
+	},
+	{
+		"title": "Edit Tab (Plane Move)",
+		"description": "Now that you can move freely, as you can see when you select an object while in move mode, arrows appear, when you grip at one and you start moving your controller in that plane the object moves along side it!",
+		"tab": 7
+	},
+	{
+		"title": "Edit Tab (Stretch)",
+		"description": "After moving you may want to change the object size, using the stretchy mode once selected you can use the two controller grips and start stretching your arms apart to increase the size, this works both ways!",
+		"tab": 8
+	},
+	{
+		"title": "Edit Tab (Free Rotation)",
+		"description": "Rotating the object freely works the same as free move, when you have a selected object, you can press grip to start rotating your controller and the object will rotate in the same way. \nTry to spin a cube!",
+		"tab": 9
+	},
+	{
+		"title": "Edit Tab (Plane Rotation)",
+		"description": "You might have noticed the gizmo infront of you, this is for plane rotation, similar to plane movements when you grip one of the rings, you can rotate in that oreintation and the object will rotate accordingly",
+		"tab": 10
+	},
+	{
+		"title": "Edit Tab (Plane Scaling)",
+		"description": "Maybe you want more percise scaling, when you click the plane scaling option and you select an object, orbs will spawn, gripping one will allow you to scale the same way plane moving works!",
+		"tab": 11
+	},
+	{
+		"title": "World Tab (Visibility)",
+		"description": "You may have noticed you can't see your Intersection or Subtractions, in the world Tab you can click the intersection or subtraction buttons to make them appear.\nThey can be edited now",
+		"tab": 12
+	},
+	{
+		"title": "World Tab (Snap feature)",
+		"description": "Now everything is moving freely maybe you want things to be more measured, you can select the scale of meters to snap objects to, things will move in that increment.\n Works for Build and Edit functions",
+		"tab": 13
+	},
+	{
+		"title": "World Tab (Passthrough)",
+		"description": "Maybe you would like to visualize your objects in the real world, well if you click the passthrough button, you'll be able to now work in your mixed reality setting.\nPress it again and you'll be back virtual!",
+		"tab": 14
+	},
+	{
+		"title": "File Tab (Saving the Scene)",
+		"description": "Let's assume you're in a hurry and need to go, don't worry if you press the Save as button, you'll be able to type a name for your file and it will be saved to the headset!\nJust use the keyboard above to type then hit confirm",
+		"tab": 15
+	},
+	{
+		"title": "File Tab (Loading up files)",
+		"description": "You're ready to start working on your project again, fantastic! Just click on the file name below then click load!\nJust be careful your current scene will not be saved so make sure to save before loading a new scene!",
+		"tab": 16
+	},
+	{
+		"title": "File Tab (Quick Save)",
+		"description": "Incase you need to quickly save something, as long as you currently have saved the current scene or loaded an old scene, just hit Quick Save and you'll re save the scene no name needed!\nHowever if you're not on a saved file you will be prompted to save it first!",
+		"tab": 17
+	},
+	{
+		"title": "Export (Render)",
+		"description": "Finally you have completed your object and you'd like to see it rendered, you can select the object, click render and it'll appear infront of you, you can play around with it and throw it about\n(This is not permanent and will not be saved to the scene)",
+		"tab": 18
+	},
+	{
+		"title": "Export (Godot Export)",
+		"description": "These Rendered objects can be saved as well so don't worry too much, you can save it as a Godot Scene .tscn to be used in other Godot Projects.\nSelect your object, click Godot Export, give it a name and hit Godot Export again.",
+		"tab": 19
+	},
+	{
+		"title": "Export (.OBJ Export)",
+		"description": "Lastly you can also export the objects as .OBJ to be used in other commercial and professional softwares, press .OBJ Export, select your object, give it a name and press .OBJ Export!\n(This will save its .mtl and .obj together)",
+		"tab": 20
 	},
 	{
 		"title": "Tutorial Complete!",

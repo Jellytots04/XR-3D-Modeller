@@ -154,6 +154,12 @@ func update_highlighted_object():
 		var obj = raycast_3d.get_collider()
 		# print("Hit: ", obj, " type: ", obj.get_class(), " groups: ", obj.get_groups())
 
+		if not obj or not is_instance_valid(obj):
+			if highlighted_object and highlighted_object != currentSelectedObject:
+				_remove_highlight(highlighted_object)
+			highlighted_object = null
+			return
+
 		if obj in summonedObjects and obj is CSGCombiner3D:
 			if obj != highlighted_object:
 				if highlighted_object and highlighted_object != currentSelectedObject:
