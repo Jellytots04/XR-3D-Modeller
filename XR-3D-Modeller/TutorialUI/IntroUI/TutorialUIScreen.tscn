@@ -1,0 +1,82 @@
+[gd_scene format=3 uid="uid://oa74bprqh0cg"]
+
+[ext_resource type="Theme" uid="uid://ck52fr37rq2gt" path="res://UI_Themes/UI_Theme.tres" id="1_pl3yh"]
+
+[node name="TabContainer" type="TabContainer" unique_id=909733772]
+custom_minimum_size = Vector2(1000, 400)
+offset_right = 8.0
+offset_bottom = 40.0
+current_tab = 0
+clip_tabs = false
+tabs_visible = false
+
+[node name="Panel" type="Panel" parent="." unique_id=566977738]
+layout_mode = 2
+theme = ExtResource("1_pl3yh")
+metadata/_tab_index = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=708708466]
+custom_minimum_size = Vector2(940, 300)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -470.0
+offset_right = 470.0
+offset_bottom = 300.0
+grow_horizontal = 2
+theme_override_constants/separation = 20
+
+[node name="StepLabel" type="Label" parent="Panel/VBoxContainer" unique_id=1198328438]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Step"
+horizontal_alignment = 1
+
+[node name="TitleLabel" type="Label" parent="Panel/VBoxContainer" unique_id=1796313362]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Title"
+horizontal_alignment = 1
+
+[node name="DescLabel" type="Label" parent="Panel/VBoxContainer" unique_id=2075090715]
+custom_minimum_size = Vector2(940, 120)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Desc"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Panel" unique_id=2021979702]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -290.0
+offset_top = -100.0
+offset_right = 290.0
+offset_bottom = -40.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="BackButton" type="Button" parent="Panel/HBoxContainer" unique_id=860587404]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "< Back "
+
+[node name="NextButton" type="Button" parent="Panel/HBoxContainer" unique_id=977888824]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = " Next > "
+
+[node name="ExitButton" type="Button" parent="Panel/HBoxContainer" unique_id=1467872498]
+custom_minimum_size = Vector2(180, 60)
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = " Exit X "

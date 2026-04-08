@@ -383,3 +383,9 @@ func _export_object_pressed():
 
 func _render_object():
 	emit_signal("render_object")
+	
+func switch_to_tab(tab_index: int):
+	var viewport_scene = $PickableObject/Viewport2Din3D/Viewport.get_child(0)
+	if viewport_scene:
+		viewport_scene.current_tab = tab_index
+		print("Switched tab via tutorial : ", tab_index)
