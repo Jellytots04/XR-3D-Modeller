@@ -480,17 +480,23 @@ func _rotateObject():
 	var snapped_rotation = Basis.from_euler(snapped_euler)
 	
 	if selectIndex == 0:
+		var current_scale = currentSelectedObject.scale
 		currentSelectedObject.global_transform.basis = snapped_rotation * startingBasis.inverse()
+		currentSelectedObject.scale = current_scale
 
 	elif selectIndex == 2:
+		var current_scale = currentSelectedObject.scale
 		currentSelectedObject.global_transform.basis = snapped_rotation * startingBasis.inverse()
 		var original = get_ghost_original(currentSelectedObject)
 		if original:
 			original.global_transform.basis = currentSelectedObject.global_transform.basis
+			original.scale = current_scale
 
 	elif selectIndex == 1:
 		for obj in multiSelectHolder:
+			var current_scale = obj.scale
 			obj.global_transform.basis = snapped_rotation * objectStartingBasisMulti[obj]
+			obj.scale = current_scale
 
 	emit_signal("objectEdited")
 

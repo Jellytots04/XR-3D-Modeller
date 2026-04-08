@@ -640,25 +640,21 @@ func clear_vertices():
 func place_copy():
 	if not copySelectedObject or not is_instance_valid(copySelectedObject):
 		return
-	print("place_copy called")
-	print("copySelectedObject: ", copySelectedObject)
-	print("selectIndex: ", selectIndex)
+
 	if raycast_3d.is_colliding():
 		var obj = raycast_3d.get_collider()
-		print("raycast hit: ", obj.name)
-		print("obj in summonedObjects: ", obj in summonedObjects)
-		print("obj != copySelectedObject: ", obj != copySelectedObject)
 		if obj in summonedObjects and obj != copySelectedObject:
-			print("Enter combine path : ", selectIndex == 0, " : ", selectIndex == 2)
 			if selectIndex == 0:
-				print("enter selectIndex 0")
 				if not copySelectedObject is CSGCombiner3D:
 					return
+				
+				var parent_position = copySelectedObject.global_transform.origin
+				var target_position = WorldOptions.snap_vec(raycast_3d.get_collision_point())
+				
 				for i in range(copySelectedObject.get_child_count()):
 					var original_child = copySelectedObject.get_child(i)
 					if original_child is CSGMesh3D:
 						var new_obj = original_child.duplicate()
-						var snapped = WorldOptions.snap_vec(raycast_3d.get_collision_point())
 						if original_child in true_materials:
 							new_obj.material = true_materials[original_child]
 						else:
@@ -667,7 +663,13 @@ func place_copy():
 						new_obj.collision_layer = 2
 						get_tree().current_scene.add_child(new_obj)
 						new_obj.reparent(obj)
-						new_obj.global_transform.origin = snapped + raycast_3d.get_collision_normal() * 0.01
+						
+						var offset = original_child.global_transform.origin - parent_position
+						new_obj.global_transform.origin = target_position + offset + raycast_3d.get_collision_point() * 0.01
+						
+						new_obj.global_transform.basis = original_child.global_transform.basis
+						
+						print("Added child ", i, " to ", obj.name)
 			elif selectIndex == 2:
 				print("enter selectIndex 2")
 				if not copySelectedObject is CSGMesh3D:
@@ -675,7 +677,7 @@ func place_copy():
 				var new_obj = copySelectedObject.duplicate()
 				print("new_obj mesh: ", new_obj.mesh)
 				print("new_obj operation: ", new_obj.operation)
-				var snapped = WorldOptions.snap_vec(raycast_3d.get_collision_point())
+				var _snapped = WorldOptions.snap_vec(raycast_3d.get_collision_point())
 				if copySelectedObject in true_materials:
 					new_obj.material = true_materials[copySelectedObject]
 				else:
@@ -684,7 +686,7 @@ func place_copy():
 				new_obj.collision_layer = 2
 				get_tree().current_scene.add_child(new_obj)
 				new_obj.reparent(obj)
-				new_obj.global_transform.origin = snapped + raycast_3d.get_collision_normal() * 0.01
+				new_obj.global_transform.origin = _snapped + raycast_3d.get_collision_normal() * 0.01
 			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
 			emit_signal("objectSummoned")
 			return
