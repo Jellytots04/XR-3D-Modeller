@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://diyu06cw06syv" path="res://addons/godot-xr-tools/player/player_body.tscn" id="9_55u2w"]
 [ext_resource type="PackedScene" uid="uid://ij0g0qwuumpn" path="res://FunctionToolNode.tscn" id="9_bayos"]
 [ext_resource type="PackedScene" uid="uid://b6bk2pj8vbj28" path="res://addons/godot-xr-tools/functions/movement_turn.tscn" id="10_55u2w"]
+[ext_resource type="PackedScene" uid="uid://djxkdxadcfl2j" path="res://Scenes/ProgressBar3DScene.tscn" id="11_n06rb"]
 
 [node name="XROrigin3D" type="XROrigin3D" unique_id=333387704]
 
@@ -79,6 +80,9 @@ debug_shape_thickness = 5
 
 [node name="MovementTurn" parent="RightHand" unique_id=1076150263 instance=ExtResource("10_55u2w")]
 turn_mode = 2
+
+[node name="RemoveAllProgressBar" parent="RightHand" unique_id=1232622071 instance=ExtResource("11_n06rb")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.21645725, -0.19427979)
 
 [node name="PlayerBody" parent="." unique_id=1094677019 instance=ExtResource("9_55u2w")]
 collision_mask = 1019

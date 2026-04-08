@@ -29,6 +29,12 @@ var highlighted_object = null
 var highlight_color = Color(0.833, 0.363, 0.379, 1.0) # Red highlight / Pinkish highlight
 var selected_color = Color(0.913, 0.967, 0.331, 1.0) # When clicked on this is the color the object will assume
 
+# Clear All variables
+@onready var clear_confirmation = controller.get_node("RemoveAllProgressBar")
+var is_holding_clear = false
+var clear_cooldown_timer: float = 0.0
+const CLEAR_COOLDOWN = 1.0
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # If there are any existing objects already then load, will be used later on for previous saves
@@ -45,21 +51,33 @@ func _ready() -> void:
 		# print("Hello from readying Remover")
 		ui_controller.connect("change_page", Callable(self, "set_page_index"))
 		ui_controller.connect("select_change", Callable(self, "select_index_change"))
-		print("UI Controller: ", ui_controller)
-	print("Players controller: ", controller)
+		# print("UI Controller: ", ui_controller)
+	clear_confirmation.clear_confirmed.connect(_on_clear_confirmed)
+	clear_confirmation.hide_confirmation()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	# print(controller.is_button_pressed("ax_button"))
 	if is_active:
+		
+		if clear_cooldown_timer > 0:
+			clear_cooldown_timer -= delta
+		
 		# Delete the selected objects
-		if controller.is_button_pressed("ax_button"):
+		if controller.is_button_pressed("ax_button") and not controller.is_button_pressed("by_button"):
 			# print("Hello From remove Script")
 			remove_object()
 		update_highlighted_object()
 
 		if controller.is_button_pressed("ax_button") and controller.is_button_pressed("by_button"):
-			clear_all()
+			if not is_holding_clear and clear_cooldown_timer <= 0:
+				clear_confirmation.start_holding()
+				is_holding_clear = true
+			return
+		else:
+			if is_holding_clear:
+				clear_confirmation.stop_holding()
+				is_holding_clear = false
 
 		# If the user clicks / presses right trigger on an highlighted object it will become the selected object
 		if controller.is_button_pressed("trigger_click") and !triggerPressed: # This is group select aka entire object because highlighted_object will be the CSGCombiner
@@ -123,6 +141,13 @@ func _process(delta: float) -> void:
 
 		elif not controller.is_button_pressed("trigger_click"):
 			triggerPressed = false
+
+func _on_clear_confirmed():
+	print("Clear all confirmed!")
+	clear_all()
+	is_holding_clear = false
+	clear_cooldown_timer = CLEAR_COOLDOWN
+	print("Timer started")
 
 func clear_all():
 	for obj in get_tree().get_nodes_in_group("summonedObjects"):

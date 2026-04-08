@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://c4u6m8vxbjid"]
+
+[ext_resource type="Theme" uid="uid://ck52fr37rq2gt" path="res://UI_Themes/UI_Theme.tres" id="1_bsluq"]
+
+[node name="ProgressBar" type="ProgressBar" unique_id=1714374850]
+custom_minimum_size = Vector2(250, 30)
+offset_right = 250.0
+offset_bottom = 30.0
+theme = ExtResource("1_bsluq")
+step = 1.0

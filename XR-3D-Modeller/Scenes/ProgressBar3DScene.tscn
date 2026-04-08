@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://djxkdxadcfl2j"]
+
+[ext_resource type="PackedScene" uid="uid://bqdhi52jlrll" path="res://Scenes/ProgressBarScreen.tscn" id="1_d2x3n"]
+[ext_resource type="Script" uid="uid://b8gr1oivkys2i" path="res://Scripts/RemoveAllScript.gd" id="1_ss4fm"]
+
+[node name="ProgressBar" type="Node3D" unique_id=1232622071]
+script = ExtResource("1_ss4fm")
+
+[node name="Viewport2D" parent="." unique_id=593767825 instance=ExtResource("1_d2x3n")]
+collision_layer = 5242880
+viewport_size = Vector2(250, 30)
