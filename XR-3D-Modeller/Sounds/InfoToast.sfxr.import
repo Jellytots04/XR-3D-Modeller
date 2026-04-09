@@ -1,0 +1,17 @@
+[remap]
+
+importer="com.timothyqiu.gdfxr.importer"
+type="AudioStreamWAV"
+uid="uid://dk3obkgtsdbkg"
+path="res://.godot/imported/InfoToast.sfxr-19acd0664483ad8e9b0797485afe4ef6.sample"
+
+[deps]
+
+source_file="res://Sounds/InfoToast.sfxr"
+dest_files=["res://.godot/imported/InfoToast.sfxr-19acd0664483ad8e9b0797485afe4ef6.sample"]
+
+[params]
+
+loop=false
+bit_depth=0
+sample_rate=0

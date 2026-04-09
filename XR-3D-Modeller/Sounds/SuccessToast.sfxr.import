@@ -1,0 +1,17 @@
+[remap]
+
+importer="com.timothyqiu.gdfxr.importer"
+type="AudioStreamWAV"
+uid="uid://c58gxmymejbwg"
+path="res://.godot/imported/SuccessToast.sfxr-18012e19d6f66d086dd7ad079833d784.sample"
+
+[deps]
+
+source_file="res://Sounds/SuccessToast.sfxr"
+dest_files=["res://.godot/imported/SuccessToast.sfxr-18012e19d6f66d086dd7ad079833d784.sample"]
+
+[params]
+
+loop=false
+bit_depth=0
+sample_rate=0

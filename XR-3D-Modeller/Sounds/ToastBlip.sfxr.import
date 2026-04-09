@@ -1,0 +1,17 @@
+[remap]
+
+importer="com.timothyqiu.gdfxr.importer"
+type="AudioStreamWAV"
+uid="uid://bq50gx2u8ys00"
+path="res://.godot/imported/ToastBlip.sfxr-66c495ee52ce3ee0c682baa641166281.sample"
+
+[deps]
+
+source_file="res://Sounds/ToastBlip.sfxr"
+dest_files=["res://.godot/imported/ToastBlip.sfxr-66c495ee52ce3ee0c682baa641166281.sample"]
+
+[params]
+
+loop=false
+bit_depth=0
+sample_rate=0

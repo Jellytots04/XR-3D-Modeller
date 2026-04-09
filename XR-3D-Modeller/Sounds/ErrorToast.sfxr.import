@@ -1,0 +1,17 @@
+[remap]
+
+importer="com.timothyqiu.gdfxr.importer"
+type="AudioStreamWAV"
+uid="uid://bem3cnkvllgrw"
+path="res://.godot/imported/ErrorToast.sfxr-054786e21f11e9cdd6c4797832791959.sample"
+
+[deps]
+
+source_file="res://Sounds/ErrorToast.sfxr"
+dest_files=["res://.godot/imported/ErrorToast.sfxr-054786e21f11e9cdd6c4797832791959.sample"]
+
+[params]
+
+loop=false
+bit_depth=0
+sample_rate=0
