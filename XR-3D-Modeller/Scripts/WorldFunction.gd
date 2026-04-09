@@ -330,7 +330,7 @@ var tutorial_steps = [
 	},
 	{
 		"title": "Edit Tab (Free Move)",
-		"description": "This tab is edits can be done, firstly moving an object when you select object(s), you can press the right grip and the object will move along your controller! (If you pull the right joystick towards you it will come closer, it works the other way too), \nTry move your object!",
+		"description": "This tab is edits can be done, firstly moving an object when you select object(s), you can press the right grip and the object will move along your controller! (If you pull the right joystick towards you it will come closer, it works the other way too)",
 		"tab": 7
 	},
 	{

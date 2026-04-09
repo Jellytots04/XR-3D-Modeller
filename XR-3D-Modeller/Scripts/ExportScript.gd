@@ -70,6 +70,7 @@ func _process(delta: float) -> void:
 func render_selected():
 	if not currentSelectedObject or not is_instance_valid(currentSelectedObject):
 		print("Nothing selected to render")
+		ToastManager.error("Render Failed", "No object selected")
 		return
 	
 	var original = currentSelectedObject
@@ -134,17 +135,19 @@ func render_selected():
 	get_tree().current_scene.add_child(pickable)
 	pickable.global_transform.origin = spawn_pos
 	
-	print("Rendered object spawned at: ", spawn_pos)
+	# print("Rendered object spawned at: ", spawn_pos)
 
 func export_selected(file_name):
 	if not currentSelectedObject or not is_instance_valid(currentSelectedObject):
 		print("Nothing selected to export")
+		ToastManager.error("Export Failed", "No object selected")
 		return
 	await SaveManager.export_mesh(currentSelectedObject, file_name)
 
 func export_obj_selected(file_name):
 	if not currentSelectedObject or not is_instance_valid(currentSelectedObject):
 		print("Nothing has been selected")
+		ToastManager.error("Export Failed", "No Object selected")
 		return
 	await SaveManager.export_obj(currentSelectedObject, file_name)
 

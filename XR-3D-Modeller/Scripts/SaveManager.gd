@@ -21,15 +21,20 @@ func save_scene(file_name):
 	_set_owner_recursive(root, root)
 	var save = PackedScene.new()
 	save.pack(root)
-	ResourceSaver.save(save, SAVE_PATH + clean_name + ".scn")
+	var result = ResourceSaver.save(save, SAVE_PATH + clean_name + ".scn")
 	
 	for obj in rendered_parents:
 		if is_instance_valid(obj):
 			rendered_parents[obj].add_child(obj)
 	
-	WorldOptions.current_file_name = clean_name
-	WorldOptions.is_saved = true
-	print("Scene saved as : ", clean_name)
+	if result == OK:
+		WorldOptions.current_file_name = clean_name
+		WorldOptions.is_saved = true
+		ToastManager.success("Scene Saved", "Saved as: " + clean_name)
+		print("Scene saved as : ", clean_name)
+	else:
+		ToastManager.error("Save Failed", "Could not save scene")
+		print("Failed with error : ", result)
 
 func _set_owner_recursive(node, ownerNode):
 	for child in node.get_children():
@@ -41,6 +46,7 @@ func load_scene(file_name):
 	print("Loading scene from : ", path)
 	if not ResourceLoader.exists(path):
 		print("Save file not found: ", path)
+		ToastManager.error("Load Failed", "File not found : " + file_name)
 		return
 	
 	for obj in get_tree().get_nodes_in_group("summonedObjects"):
@@ -85,6 +91,7 @@ func load_scene(file_name):
 	
 	scene_loaded.emit()
 	
+	ToastManager.success("Scene Loaded", "Loaded : " + file_name)
 	print("Loaded : ", file_name)
 
 func get_save_files():
@@ -105,8 +112,10 @@ func delete_save(file_name):
 	var path = SAVE_PATH + file_name + ".scn"
 	if FileAccess.file_exists(path):
 		DirAccess.remove_absolute(path)
+		ToastManager.info("Filed Deleted", "Deleted : " + file_name)
 		print("Deleted : ", file_name)
 	else:
+		ToastManager.error("Delete Failed", "File not found : " + file_name)
 		print("File not found : ", file_name)
 
 func export_mesh(node, file_name):
@@ -122,14 +131,15 @@ func export_mesh(node, file_name):
 				var mesh_instance = MeshInstance3D.new()
 				mesh_instance.mesh = child.mesh
 				node_to_export = mesh_instance
-				print("Found mesh instance")
+				# print("Found mesh instance")
 				break
 	
 	if node is CSGCombiner3D:
 		await get_tree().process_frame
 		var meshes = node.get_meshes()
 		if meshes.size() < 2:
-			print("No mesh data")
+			# print("No mesh data")
+			ToastManager.error("Export Failed", "No mesh data available")
 			return
 		var mesh_instance = MeshInstance3D.new()
 		mesh_instance.mesh = meshes[1]
@@ -148,12 +158,17 @@ func export_mesh(node, file_name):
 	
 	if not node_to_export:
 		print("Nothing to export")
+		ToastManager.error("Export Failed", "Nothing to export")
 		return
 		
 	var packed = PackedScene.new()
 	packed.pack(node_to_export)
-	ResourceSaver.save(packed, MESH_PATH + clean_name + ".tscn")
-	print("Exported mesh as : ", clean_name)
+	var result = ResourceSaver.save(packed, MESH_PATH + clean_name + ".tscn")
+	if result == OK:
+		ToastManager.success("Mesh Exported", "Saved as : "+ clean_name + ".tscn")
+		print("Exported mesh as : ", clean_name)
+	else:
+		ToastManager.error("Export Failed", "Could not save mesh file")
 
 func export_obj(node: Node, file_name: String):
 	var clean_name = file_name.replace(" ", "_")
@@ -171,6 +186,7 @@ func export_obj(node: Node, file_name: String):
 		var meshes = node.get_meshes()
 		if meshes.size() < 2:
 			print("No mesh data")
+			ToastManager.error("Export Failed", "No mesh data available")
 			return
 		mesh = meshes[1]
 	elif node.is_in_group("placedMeshes"):
@@ -183,15 +199,18 @@ func export_obj(node: Node, file_name: String):
 	
 	if not mesh:
 		print("No mesh found for obj export")
+		ToastManager.error("Export Failed", "No mesh found")
 		return
 	
 	print("Exporting obj to: ", OBJECT_PATH, clean_name)
+	ToastManager.info("Exporting OBJ", "Creating : " + clean_name + ".obj")
 	OBJExporter.export_completed.connect(_on_obj_export_completed, CONNECT_ONE_SHOT)
 	OBJExporter.save_mesh_to_files(mesh, OBJECT_PATH, clean_name)
 
 func _on_obj_export_completed(obj_file, mtl_file):
 	print("OBJ exported: ", obj_file)
 	print("MTL exported: ", mtl_file)
+	ToastManager.success("OBJ Exported", "Files created succesfully!")
 
 func ensure_directories():
 	DirAccess.make_dir_recursive_absolute(SAVE_PATH)
