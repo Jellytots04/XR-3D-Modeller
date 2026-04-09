@@ -15,7 +15,7 @@
 
 [node name="XROrigin3D" type="XROrigin3D" unique_id=333387704]
 
-[node name="XRCamera3D" type="XRCamera3D" parent="." unique_id=1259197729]
+[node name="XRCamera3D" type="XRCamera3D" parent="." unique_id=1259197729 groups=["xr_camera"]]
 
 [node name="LeftHand" type="XRController3D" parent="." unique_id=1904736302]
 tracker = &"left_hand"

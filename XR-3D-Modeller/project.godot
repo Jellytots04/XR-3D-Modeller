@@ -30,6 +30,7 @@ XRToolsRumbleManager="*uid://dw3etnjbvmpt6"
 WorldOptions="*uid://bgwsc065if22t"
 SaveManager="*uid://b6vsjaa6jkxrd"
 OBJExporter="*uid://cypdhf5ssdtga"
+ToastManager="*uid://d1ney46j7ljom"
 
 [display]
 
@@ -38,6 +39,10 @@ window/size/transparent=true
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/godot-xr-tools/plugin.cfg", "res://addons/nklbdev.aseprite_importers/plugin.cfg", "res://addons/obj_exporter/plugin.cfg")
+
+[global_group]
+
+xr_camera=""
 
 [gui]
 

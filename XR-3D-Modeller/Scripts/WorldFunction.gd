@@ -30,6 +30,18 @@ func _ready() -> void:
 	await get_tree().create_timer(1.0).timeout
 	spawn_tutorial_toast()
 
+	await get_tree().create_timer(2.0).timeout
+	ToastManager.success("Save Complete", "Scene saved successfully!")
+	print("Success")
+
+	await get_tree().create_timer(1.0).timeout
+	ToastManager.error("Load Failed", "Could not find save file!")
+	print("Error")
+
+	await get_tree().create_timer(1.0).timeout
+	ToastManager.info("Exporting", "Creating OBJ file...")
+	print("Info")
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	var left_controller = get_node("XROrigin3D/LeftHand")

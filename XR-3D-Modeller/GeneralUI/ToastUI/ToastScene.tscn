@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://2bu23wmbif78"]
+
+[ext_resource type="PackedScene" uid="uid://cwlspwf3hn22l" path="res://GeneralUI/ToastUI/Toast_Screen.tscn" id="1_p8xu7"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_i8aa5"]
+size = Vector2(1.2, 0.6)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p8xu7"]
+albedo_color = Color(0.23921569, 0.22745098, 0.21568628, 1)
+
+[node name="ToastNode" type="Node3D" unique_id=1139159904]
+
+[node name="Viewport" parent="." unique_id=593767825 instance=ExtResource("1_p8xu7")]
+screen_size = Vector2(1.2, 0.6)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=606506686]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.003448069)
+mesh = SubResource("QuadMesh_i8aa5")
+surface_material_override/0 = SubResource("StandardMaterial3D_p8xu7")
