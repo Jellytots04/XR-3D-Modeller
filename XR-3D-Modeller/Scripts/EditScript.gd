@@ -78,6 +78,9 @@ var rotaitonStartingBasis
 var rotationObjectStartingBasis
 var rotationObjectStartingBasisMulti = {}
 
+# CSG Operation variables
+var current_operation = 0
+
 # Highlighting variables
 var highlighting_cancelled = false
 var highlighting = false
@@ -105,6 +108,7 @@ func _ready() -> void:
 		ui_controller.connect("change_page", Callable(self, "set_page_index"))
 		ui_controller.connect("scaleSize", Callable(self, "scale_selected_object"))
 		ui_controller.connect("select_change", Callable(self, "select_index_change"))
+		ui_controller.connect("csg_operation", Callable(self, "change_csg_operation"))
 		print("UI Controller: ", ui_controller)
 	print("Players controller: ", controller)
 
@@ -1078,6 +1082,26 @@ func scale_selected_object(value):
 				newScale.y = clamp(newScale.y, 0.01, 10.0)
 				newScale.z = clamp(newScale.z, 0.01, 10.0)
 				obj.scale = newScale
+
+func change_csg_operation(idx):
+	if not is_active:
+		return
+	
+	current_operation = idx
+	print("CSG operation changed too : ", idx)
+	
+	if selectIndex == 2 and currentSelectedObject:
+		if currentSelectedObject is CSGMesh3D:
+			currentSelectedObject.operation = idx
+			print("Changed : ", currentSelectedObject.name, " : operation to : ", idx)
+			
+			var original = get_ghost_original(currentSelectedObject)
+			if original:
+				original.operation = idx
+				
+			emit_signal("objectEdited")
+		else:
+			print("Selected obj is not a CSGMesh3D, cannot change operation on non CSGMesh3Ds !!!")
 
 func set_page_index(idx):
 	# print("Hello from remove call index")

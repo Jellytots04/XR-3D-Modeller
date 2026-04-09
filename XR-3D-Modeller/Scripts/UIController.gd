@@ -70,6 +70,7 @@ func _ready():
 		var edit_tab = viewport_scene.get_node("Edit/VBoxContainer")
 		var edit_options = edit_tab.get_node("EditOptions")
 		var edit_select = edit_tab.get_node("SelectOptions")
+		var edit_csg = edit_tab.get_node("AlwaysEditable")
 		var world_tab = viewport_scene.get_node("World/MainContainer")
 		intersection_button = world_tab.get_node("ShowingContainer/Showing/Operations/Intersection")
 		subtraction_button = world_tab.get_node("ShowingContainer/Showing/Operations/Subtraction")
@@ -176,6 +177,13 @@ func _ready():
 		else:
 			print("EditOptions node not found!")
 			
+		if edit_csg:
+			for idx in range(edit_csg.get_child_count()):
+				var button = edit_csg.get_child(idx)
+				button.connect("pressed", Callable(self, "_csg_operation").bind(idx))
+		else:
+			print("Edit CSGs node not found")
+		
 		if edit_scaleSize:
 			edit_scaleSize.connect("value_changed", Callable(self, "_size_change"))
 			print("Edit scales are connected")

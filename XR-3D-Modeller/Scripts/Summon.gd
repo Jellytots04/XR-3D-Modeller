@@ -641,6 +641,10 @@ func place_copy():
 	if not copySelectedObject or not is_instance_valid(copySelectedObject):
 		return
 
+	if csgIndex == CSGShape3D.OPERATION_INTERSECTION:
+		print("Cannot copy intersect operation, use union or subtraction")
+		return
+
 	if raycast_3d.is_colliding():
 		var obj = raycast_3d.get_collider()
 		if obj in summonedObjects and obj != copySelectedObject:
@@ -655,6 +659,9 @@ func place_copy():
 					var original_child = copySelectedObject.get_child(i)
 					if original_child is CSGMesh3D:
 						var new_obj = original_child.duplicate()
+						
+						new_obj.operation = csgIndex
+						
 						if original_child in true_materials:
 							new_obj.material = true_materials[original_child]
 						else:
@@ -675,6 +682,9 @@ func place_copy():
 				if not copySelectedObject is CSGMesh3D:
 					return
 				var new_obj = copySelectedObject.duplicate()
+				
+				new_obj.operation = csgIndex
+				
 				print("new_obj mesh: ", new_obj.mesh)
 				print("new_obj operation: ", new_obj.operation)
 				var _snapped = WorldOptions.snap_vec(raycast_3d.get_collision_point())
@@ -702,6 +712,9 @@ func place_copy():
 		var new_children = new_combiner.get_children()
 		for i in range(min(original_children.size(), new_children.size())):
 			if new_children[i] is CSGMesh3D:
+				
+				new_children[i].operation = csgIndex
+				
 				if original_children[i] in true_materials:
 					new_children[i].material = true_materials[original_children[i]]
 				else:
@@ -721,6 +734,9 @@ func place_copy():
 			return
 		var new_combiner = CSGCombiner3D.new()
 		var new_obj = copySelectedObject.duplicate()
+		
+		new_obj.operation = csgIndex
+		
 		print("new_obj mesh: ", new_obj.mesh)
 		print("new_obj operation: ", new_obj.operation)
 		get_tree().current_scene.add_child(new_combiner)
@@ -1008,7 +1024,7 @@ func set_page_index(idx):
 		is_active = false
 
 func change_csg_operation(idx):
-	print("The new oepration is : ")
+	print("The new oepration is : ", idx)
 	csgIndex = idx
 
 func update_list():
