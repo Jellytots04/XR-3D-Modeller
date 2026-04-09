@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://bodwogs8x03rp"]
+
+[ext_resource type="PackedScene" uid="uid://dcnwywbtrfjj6" path="res://GeneralUI/SettingsUI/SettingsScreen3D.tscn" id="1_hxx8i"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_hxx8i"]
+size = Vector2(2, 3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rpi3i"]
+albedo_color = Color(0.23921569, 0.22745098, 0.21568628, 1)
+
+[node name="SettingsNode" type="Node3D" unique_id=1283410909]
+
+[node name="Viewport" parent="." unique_id=593767825 instance=ExtResource("1_hxx8i")]
+screen_size = Vector2(2, 3)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1918529564]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0061627626)
+mesh = SubResource("QuadMesh_hxx8i")
+surface_material_override/0 = SubResource("StandardMaterial3D_rpi3i")

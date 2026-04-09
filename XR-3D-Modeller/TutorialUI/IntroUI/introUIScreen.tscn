@@ -31,11 +31,13 @@ custom_minimum_size = Vector2(200, 70)
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 8
-text = "Qucik Tutorial"
+theme_override_font_sizes/font_size = 30
+text = "Tutorial"
 
 [node name="Skip" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=320160581]
 custom_minimum_size = Vector2(200, 70)
 layout_mode = 2
 size_flags_horizontal = 6
 size_flags_vertical = 8
+theme_override_font_sizes/font_size = 30
 text = "Skip"

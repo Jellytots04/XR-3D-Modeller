@@ -1,0 +1,57 @@
+[gd_scene format=3 uid="uid://dn6rufbkakrim"]
+
+[ext_resource type="Theme" uid="uid://ck52fr37rq2gt" path="res://UI_Themes/UI_Theme.tres" id="1_aqwsn"]
+
+[node name="Panel" type="Panel" unique_id=1910175128]
+custom_minimum_size = Vector2(200, 300)
+offset_right = 40.0
+offset_bottom = 40.0
+theme = ExtResource("1_aqwsn")
+
+[node name="Label" type="Label" parent="." unique_id=1929041585]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 10.0
+offset_bottom = 50.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=592888161]
+custom_minimum_size = Vector2(180, 240)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -90.0
+offset_top = -100.0
+offset_right = 90.0
+offset_bottom = 140.00009
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 50
+
+[node name="TutorialButton" type="Button" parent="VBoxContainer" unique_id=2007333734]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Tutorial"
+
+[node name="HudButton" type="Button" parent="VBoxContainer" unique_id=888300546]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 20
+text = "HUD"
+
+[node name="ExitButton" type="Button" parent="VBoxContainer" unique_id=1626756000]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 20
+text = "Exit"

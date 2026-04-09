@@ -7,6 +7,10 @@ var tutorial_panel_scene = preload("res://TutorialUI/IntroUI/TutorialPanel.tscn"
 var tutorial_panel_instance = null
 var current_tutorial_step = 0
 
+var settings_menu = preload("res://GeneralUI/SettingsUI/SettingsScene.tscn")
+var settings_menu_instance = null
+var settings_menu_open = false
+
 var ghosted_mesh = {}
 var passthrough_on = false
 
@@ -23,11 +27,73 @@ func _ready() -> void:
 	env.volumetric_fog_enabled = true
 	get_node("Floor/MeshInstance3D2").visible = true
 	SaveManager.ensure_directories() # Upon startup ensure the directories are real for saving
+	await get_tree().create_timer(1.0).timeout
 	spawn_tutorial_toast()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	var left_controller = get_node("XROrigin3D/LeftHand")
+	if left_controller and left_controller.is_button_pressed("menu_button"):
+		if not settings_menu_open:
+			toggle_settings_menu()
+
+func toggle_settings_menu():
+	if settings_menu_open:
+		close_settings_menu()
+	else:
+		open_settings_menu()
+
+func open_settings_menu():
+	if settings_menu_instance:
+		return
+	
+	settings_menu_instance = settings_menu.instantiate()
+	
+	add_child(settings_menu_instance)
+	
+	var xr_camera = get_node("XROrigin3D/XRCamera3D")
+	if xr_camera:
+		var forward = -xr_camera.global_transform.basis.z
+		var spawn_pos = xr_camera.global_position + forward * 6
+		spawn_pos.y = xr_camera.global_position.y + 0.3
+		
+		settings_menu_instance.global_position = spawn_pos
+		settings_menu_instance.rotation.y = xr_camera.rotation.y
+		settings_menu_instance.rotation.x = 0
+		settings_menu_instance.rotation.z = 0
+	
+	_connect_settings_buttons()
+	settings_menu_open = true
+	print("Settings menu opened!")
+	
+func close_settings_menu():
+	if settings_menu_instance:
+		settings_menu_instance.queue_free()
+		settings_menu_instance = null
+	settings_menu_open = false
+	print("Settings menu closed")
+	
+func _connect_settings_buttons():
+	var viewport = settings_menu_instance.get_node("Viewport/Viewport")
+	
+	var tutorial_button = viewport.find_child("TutorialButton", true, false)
+	var exit_button = viewport.find_child("ExitButton", true, false)
+	
+	if tutorial_button:
+		tutorial_button.pressed.connect(_settings_tutorial_pressed)
+		print("Tutorial Connected")
+	if exit_button:
+		exit_button.pressed.connect(_settings_exit_pressed)
+
+func _settings_tutorial_pressed():
+	print("Re open tutorial via settings")
+	close_settings_menu()
+	current_tutorial_step = 0
+	show_tutorial_panel()
+
+func _settings_exit_pressed():
+	print("Closing the menu")
+	close_settings_menu()
 
 func toggle_passthrough():
 	passthrough_on = not passthrough_on
@@ -163,8 +229,8 @@ func spawn_tutorial_toast():
 		add_child(tutorial_toast_instance)
 
 		var forward = -xr_camera.global_transform.basis.z
-		var spawn_pos = xr_camera.global_position + forward * 1.5
-		spawn_pos.y = xr_camera.global_position.y + 1.5
+		var spawn_pos = xr_camera.global_position + forward * 6
+		spawn_pos.y = xr_camera.global_position.y + 0.5
 		
 		tutorial_toast_instance.global_position = spawn_pos
 		
@@ -241,7 +307,7 @@ var tutorial_steps = [
 	},
 	{
 		"title": "Build Tab (Select and Copy)",
-		"description": "The bottom row is in most of the tabs and is used for specifying the select type, Whole Select (Entire object), Multi Select (Individual Nodes), Single Node Select. \nCopy with Whole select and place down your copied object.",
+		"description": "The bottom row is in most of the tabs and is used for specifying the select type, Whole Select (Entire object), Multi Select (Individual Nodes) and Single Node Select.\nIt uses your operation but only for union and subtraction!",
 		#"description": "Lastly selecting and Copy, the bottom row appears in most of the other tabs, they consist of Whole Select (The entie object tree), Multi Select (Select multiple single objects) or Single Select (Single node within a tree). \nFor copying you must use Whole select and once highlighted you can press the A Button to summon your copied object.",
 		"tab": 5
 	},
@@ -281,49 +347,54 @@ var tutorial_steps = [
 		"tab": 12
 	},
 	{
+		"title": "Edit Tab (Changing Operation)",
+		"description": "Accidentally placed an object as intersection or subtraction, don't worry you can always use single select, and change the objects CSG operation, after selecting an object click an operation and watch it change.",
+		"tab": 13
+	},
+	{
 		"title": "World Tab (Visibility)",
 		"description": "You may have noticed you can't see your Intersection or Subtractions, in the world Tab you can click the intersection or subtraction buttons to make them appear.\nThey can be edited now",
-		"tab": 13
+		"tab": 14
 	},
 	{
 		"title": "World Tab (Snap feature)",
 		"description": "Now everything is moving freely maybe you want things to be more measured, you can select the scale of meters to snap objects to, things will move in that increment.\n Works for Build and Edit functions",
-		"tab": 14
+		"tab": 15
 	},
 	{
 		"title": "World Tab (Passthrough)",
 		"description": "Maybe you would like to visualize your objects in the real world, well if you click the passthrough button, you'll be able to now work in your mixed reality setting.\nPress it again and you'll be back virtual!",
-		"tab": 15
+		"tab": 16
 	},
 	{
 		"title": "File Tab (Saving the Scene)",
 		"description": "Let's assume you're in a hurry and need to go, don't worry if you press the Save as button, you'll be able to type a name for your file and it will be saved to the headset!\nJust use the keyboard above to type then hit confirm",
-		"tab": 16
+		"tab": 17
 	},
 	{
 		"title": "File Tab (Loading up files)",
 		"description": "You're ready to start working on your project again, fantastic! Just click on the file name below then click load!\nJust be careful your current scene will not be saved so make sure to save before loading a new scene!",
-		"tab": 17
+		"tab": 18
 	},
 	{
 		"title": "File Tab (Quick Save)",
 		"description": "Incase you need to quickly save something, as long as you currently have saved the current scene or loaded an old scene, just hit Quick Save and you'll re save the scene no name needed!\nHowever if you're not on a saved file you will be prompted to save it first!",
-		"tab": 18
+		"tab": 19
 	},
 	{
 		"title": "Export (Render)",
 		"description": "Finally you have completed your object and you'd like to see it rendered, you can select the object, click render and it'll appear infront of you, you can play around with it and throw it about\n(This is not permanent and will not be saved to the scene)",
-		"tab": 19
+		"tab": 20
 	},
 	{
 		"title": "Export (Godot Export)",
 		"description": "These Rendered objects can be saved as well so don't worry too much, you can save it as a Godot Scene .tscn to be used in other Godot Projects.\nSelect your object, click Godot Export, give it a name and hit Godot Export again.",
-		"tab": 20
+		"tab": 21
 	},
 	{
 		"title": "Export (.OBJ Export)",
 		"description": "Lastly you can also export the objects as .OBJ to be used in other commercial and professional softwares, press .OBJ Export, select your object, give it a name and press .OBJ Export!\n(This will save its .mtl and .obj together)",
-		"tab": 21
+		"tab": 22
 	},
 	{
 		"title": "Tutorial Complete!",
@@ -343,7 +414,7 @@ func show_tutorial_panel():
 		add_child(tutorial_panel_instance)
 		
 		var forward = -xr_camera.global_transform.basis.z
-		var spawn_pos = xr_camera.global_position + forward * 2.0
+		var spawn_pos = xr_camera.global_position + forward * 6
 		spawn_pos.y = xr_camera.global_position.y + 0.5
 		
 		tutorial_panel_instance.global_position = spawn_pos

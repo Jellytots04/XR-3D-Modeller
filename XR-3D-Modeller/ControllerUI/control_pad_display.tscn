@@ -22,10 +22,9 @@ offset_right = 400.0
 offset_bottom = 200.0
 theme = ExtResource("1_7oq3b")
 tab_alignment = 1
-current_tab = 2
+current_tab = 0
 
 [node name="Build" type="MarginContainer" parent="." unique_id=1469485864]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -131,7 +130,7 @@ text = "Size "
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
-max_value = 10.0
+max_value = 5.0
 step = 0.01
 value = 1.0
 
@@ -167,6 +166,7 @@ toggle_mode = true
 icon = ExtResource("15_a121i")
 
 [node name="Edit" type="MarginContainer" parent="." unique_id=1374180317]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
