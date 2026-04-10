@@ -29,22 +29,6 @@ func _ready() -> void:
 	SaveManager.ensure_directories() # Upon startup ensure the directories are real for saving
 	await get_tree().create_timer(1.0).timeout
 	spawn_tutorial_toast()
-	
-	# Testing audio, remove layter!!!!
-	await get_tree().create_timer(1.0).timeout
-	print("Testing sounds...")
-	
-	AudioManager.play_error_toast()
-	await get_tree().create_timer(2).timeout
-	
-	AudioManager.play_info_toast()
-	await get_tree().create_timer(2).timeout
-	
-	AudioManager.play_success_toast()
-	await get_tree().create_timer(1.0).timeout
-	
-	AudioManager.play_place_down()
-	print("Sound test complete!")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -94,7 +78,7 @@ func open_settings_menu():
 	_connect_settings_buttons()
 	settings_menu_open = true
 	print("Settings menu opened!")
-	
+
 func close_settings_menu():
 	if settings_menu_instance:
 		settings_menu_instance.queue_free()
@@ -115,12 +99,14 @@ func _connect_settings_buttons():
 		exit_button.pressed.connect(_settings_exit_pressed)
 
 func _settings_tutorial_pressed():
+	AudioManager.play_icon_click()
 	print("Re open tutorial via settings")
 	close_settings_menu()
 	current_tutorial_step = 0
 	show_tutorial_panel()
 
 func _settings_exit_pressed():
+	AudioManager.play_icon_click()
 	print("Closing the menu")
 	close_settings_menu()
 
@@ -285,6 +271,7 @@ func connect_tutorial_button():
 		print("Skip button connected")
 
 func skip_pressed():
+	AudioManager.play_icon_click()
 	print("Skip clicked!")
 	
 	if is_instance_valid(tutorial_toast_instance):
@@ -292,6 +279,7 @@ func skip_pressed():
 		tutorial_toast_instance = null
 
 func quick_tutorial_pressed():
+	AudioManager.play_icon_click()
 	print("Quick Tutorial clicked!")
 	
 	if tutorial_toast_instance:
@@ -510,12 +498,14 @@ func update_tutorial_content():
 			ui_controller.switch_to_tab(step["tab"])
 
 func _on_tutorial_back():
+	AudioManager.play_icon_click()
 	print("BACK CLICKED")
 	if current_tutorial_step > 0:
 		current_tutorial_step -= 1
 		update_tutorial_content()
 
 func _on_tutorial_next():
+	AudioManager.play_icon_click()
 	print("NEXT CLICKED")
 	if current_tutorial_step < tutorial_steps.size() - 1:
 		current_tutorial_step += 1
@@ -524,6 +514,7 @@ func _on_tutorial_next():
 		_on_tutorial_exit()
 
 func _on_tutorial_exit():
+	AudioManager.play_icon_click()
 	print("EXIT CLICKED")
 	if tutorial_panel_instance:
 		tutorial_panel_instance.queue_free()

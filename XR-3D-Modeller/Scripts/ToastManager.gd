@@ -98,6 +98,7 @@ func _connect_close_button(toast: Node):
 		
 		if close_button:
 			close_button.pressed.connect(func(): 
+				AudioManager.play_icon_click()
 				print("X clicked!")
 				_remove_toast(toast))
 			print("Close button connected for toast")

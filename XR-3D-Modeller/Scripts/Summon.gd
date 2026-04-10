@@ -319,6 +319,7 @@ func _process(_delta):
 func combine_objects(index, combiner, spawnPoint, objectNormal):
 	if combiner.is_in_group("intersection_ghosts") or combiner.is_in_group("subtraction_ghosts"):
 		print("Cannot combine to ghosts")
+		ToastManager.error("Combine Failed", "Cannot combine objects to ghosted nodes")
 		return
 
 	if index < summonableObjects.size():
@@ -340,6 +341,7 @@ func combine_objects(index, combiner, spawnPoint, objectNormal):
 		new_obj.collision_layer = 2
 		print("Parent is : ", new_obj.get_parent())
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Updates the summoned list within script
+		AudioManager.play_snap()
 		emit_signal("objectSummoned") # This gets called as an upadte is to be sent out due to a reparenting
 		print(summonedObjects)
 	else:
@@ -377,6 +379,7 @@ func summon_object(index):
 		print("Object Layer", new_obj.collision_layer)
 		combiner.add_to_group("summonedObjects")
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Updates the summoned list within script
+		AudioManager.play_place_down()
 		emit_signal("objectSummoned")
 		print(summonedObjects)
 	else:
@@ -399,6 +402,7 @@ func summon_vertex():
 	
 	placed_vertices = get_tree().get_nodes_in_group("placedVertices")
 	connect_vertices[vertex] = []
+	AudioManager.play_place_down()
 	emit_signal("verticeSummoned")
 	# print("Vertex placed : ", vertex.global_position)
 
@@ -415,7 +419,8 @@ func connect_vertex(vertex_1, vertex_2): # Assuming the this follows grip logic
 	if ghostEdge and is_instance_valid(ghostEdge):
 		ghostEdge.queue_free()
 		ghostEdge = null
-
+	
+	AudioManager.play_snap()
 	draw_edge(vertex_1, vertex_2)
 
 # Draw the edge that was created by connecting the two vertices
@@ -468,6 +473,7 @@ func preview_edge(vertex_1, vertex_2):
 func validate_mesh() -> bool:
 	if placed_vertices.size() < 4:
 		print("Required Vertices is 4")
+		ToastManager.error("Invalid Mesh", "At least 4 vertices are required")
 		return false
 		
 	var vertices_usable = []
@@ -482,6 +488,7 @@ func validate_mesh() -> bool:
 		
 	if vertices_usable.size() < 4:
 		print("Required usable (connected) vertices is 4")
+		ToastManager.error("Invalid Connections", "Each vertex needs at least 3 connections")
 		return false
 		
 	var edge_count = 0
@@ -516,9 +523,11 @@ func validate_mesh() -> bool:
 	
 	if V - E + F != 2:
 		print("Mesh isn't a closed manifold mesh")
+		ToastManager.error("Invalid Shape", "Mesh is not a closed surface V ("+V+") - E ("+E+") + F ("+F+") ≠2)")
 		return false
 		
 	print("Valid Shape")
+	ToastManager.success("Valid Mesh", "Shape created successfully!")
 	return true
 
 func build_mesh():
@@ -612,6 +621,9 @@ func build_mesh():
 	
 	static_body.collision_layer = 4
 	static_body.collision_mask = 4
+	
+	AudioManager.play_place_down()
+	
 	static_body.add_to_group("placedMeshes")
 	
 	await get_tree().process_frame
@@ -634,6 +646,7 @@ func clear_vertices():
 		
 	placed_vertices.clear()
 	connect_vertices.clear()
+	AudioManager.play_whoosh()
 	currentlyConnecting = null
 	highlighted_vertex = null
  
@@ -643,6 +656,7 @@ func place_copy():
 
 	if csgIndex == CSGShape3D.OPERATION_INTERSECTION:
 		print("Cannot copy intersect operation, use union or subtraction")
+		ToastManager.error("Copy failed", "Cannot copy with intersection operations")
 		return
 
 	if raycast_3d.is_colliding():
@@ -650,6 +664,7 @@ func place_copy():
 		if obj in summonedObjects and obj != copySelectedObject:
 			if selectIndex == 0:
 				if not copySelectedObject is CSGCombiner3D:
+					ToastManager.error("Copy Failed", "Can only copy CSG Combiners in group select!")
 					return
 				
 				var parent_position = copySelectedObject.global_transform.origin
@@ -680,6 +695,7 @@ func place_copy():
 			elif selectIndex == 2:
 				print("enter selectIndex 2")
 				if not copySelectedObject is CSGMesh3D:
+					ToastManager.error("Copy Failed", "Can only copy CSG Mesh in single select")
 					return
 				var new_obj = copySelectedObject.duplicate()
 				
@@ -698,12 +714,14 @@ func place_copy():
 				new_obj.reparent(obj)
 				new_obj.global_transform.origin = _snapped + raycast_3d.get_collision_normal() * 0.01
 			summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+			AudioManager.play_snap()
 			emit_signal("objectSummoned")
 			return
 
 	var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
 	if selectIndex == 0:
 		if not copySelectedObject is CSGCombiner3D:
+			ToastManager.error("Copy Failed", "Can only copy CSG Combiners in group select")
 			return
 		var new_combiner = copySelectedObject.duplicate()
 		get_tree().current_scene.add_child(new_combiner)
@@ -726,11 +744,13 @@ func place_copy():
 		new_combiner.collision_mask = new_combiner.collision_mask | (1 << 20)
 		new_combiner.add_to_group("summonedObjects")
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+		AudioManager.play_place_down()
 		emit_signal("objectSummoned")
 
 	elif selectIndex == 2:
 		print("Elif 2 selectIndex copy")
 		if not copySelectedObject is CSGMesh3D:
+			ToastManager.error("Copy Failed", "Can only copy CSG Mesh in single select")
 			return
 		var new_combiner = CSGCombiner3D.new()
 		var new_obj = copySelectedObject.duplicate()
@@ -754,6 +774,7 @@ func place_copy():
 		new_combiner.collision_mask = new_combiner.collision_mask | (1 << 20)
 		new_combiner.add_to_group("summonedObjects")
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
+		AudioManager.play_place_down()
 		emit_signal("objectSummoned")
 
 # Vertex highlighting

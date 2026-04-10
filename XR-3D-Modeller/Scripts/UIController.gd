@@ -221,15 +221,19 @@ func _remove_scale():
 
 func _build_option(idx):
 	# print("Button Pressed Summon", idx)
+	AudioManager.play_icon_click()
 	emit_signal("summonable_selected", idx)
 
 func _remove_option(idx):
+	AudioManager.play_icon_click()
 	emit_signal("remove_selected", idx)
 
 func _edit_option(idx):
+	AudioManager.play_icon_click()
 	emit_signal("edit_selected", idx)
 
 func _swap_page(idx):
+	AudioManager.play_icon_click()
 	# print("UI Controller idx emit, from _swap_page: ", idx)
 	emit_signal("change_page", idx)
 
@@ -238,18 +242,23 @@ func _size_change(value):
 	scaleSize.emit(value) # Another way to emit signals with argument(s)
 
 func _csg_operation(idx):
+	AudioManager.play_icon_click()
 	csg_operation.emit(idx)
 
 func _select_option(idx):
+	AudioManager.play_icon_click()
 	emit_signal("select_change", idx)
 
 func _load_mesh():
+	AudioManager.play_icon_click()
 	emit_signal("load_mesh")
 
 func _clear_vertices():
+	AudioManager.play_icon_click()
 	emit_signal("clear_vertices")
 
 func _snap_toggled():
+	AudioManager.play_icon_click()
 	WorldOptions.snapEnabled = not WorldOptions.snapEnabled
 	
 func _snap_slider_chaned(value, spinBox):
@@ -261,25 +270,30 @@ func _snap_spinBox_changed(value, slider):
 	slider.set_value_no_signal(value)
 	
 func _intersection_toggled():
+	AudioManager.play_icon_click()
 	print("Called")
 	WorldOptions.showIntersection = not WorldOptions.showIntersection
 	WorldOptions.intersectionsVisibilityChanged.emit(WorldOptions.showIntersection)
 	
 func _subtraction_toggled():
+	AudioManager.play_icon_click()
 	WorldOptions.showSubtraction = not WorldOptions.showSubtraction
 	WorldOptions.subtractionVisibilityChanged.emit(WorldOptions.showSubtraction)
 
 func _passthrough_toggled():
+	AudioManager.play_icon_click()
 	var main = get_tree().get_first_node_in_group("main_node")
 	main.toggle_passthrough()
 
 func _save_as_pressed():
+	AudioManager.play_icon_click()
 	save_name_input.visible = true
 	save_name_input.grab_focus()
 	keyboard.visible = true
 	confirm_button.visible = true
 
 func _save_as_confirmed():
+	AudioManager.play_icon_click()
 	save_name_input.visible = false
 	keyboard.visible = false
 	confirm_button.visible = false
@@ -292,6 +306,7 @@ func _save_as_confirmed():
 		print("Invalid file name!")
 
 func _quick_save_pressed():
+	AudioManager.play_icon_click()
 	if not WorldOptions.is_saved or WorldOptions.current_file_name == "":
 		_save_as_confirmed()
 	else:
@@ -337,6 +352,7 @@ func _load_saved_list():
 		loaded_scenes_container.add_child(container)
 
 func _select_load_file(file_name, btn):
+	AudioManager.play_icon_click()
 	for child in loaded_scenes_container.get_children():
 		child.modulate = Color(1,1,1,1)
 		
@@ -345,6 +361,7 @@ func _select_load_file(file_name, btn):
 	print("Selected file : ", file_name)
 
 func _load_file():
+	AudioManager.play_icon_click()
 	if selected_load_file == "":
 		print("No file selected")
 		return
@@ -352,10 +369,12 @@ func _load_file():
 	SaveManager.load_scene(selected_load_file)
 
 func _delete_save_file(file_name):
+	AudioManager.play_icon_click()
 	SaveManager.delete_save(file_name)
 	_load_saved_list()
 
 func _export_pressed():
+	AudioManager.play_icon_click()
 	if not export_input_active and not object_export_input_active:
 		export_name_input.visible = true
 		export_name_input.grab_focus()
@@ -373,6 +392,7 @@ func _export_pressed():
 			print("Invalid file name")
 
 func _export_object_pressed():
+	AudioManager.play_icon_click()
 	if not object_export_input_active and not export_input_active:
 		export_name_input.visible = true
 		export_name_input.grab_focus()
@@ -390,6 +410,7 @@ func _export_object_pressed():
 			print("Invalid file name")
 
 func _render_object():
+	AudioManager.play_icon_click()
 	emit_signal("render_object")
 	
 func switch_to_tab(tab_index: int):
