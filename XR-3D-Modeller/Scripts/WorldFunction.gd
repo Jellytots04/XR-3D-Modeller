@@ -29,18 +29,22 @@ func _ready() -> void:
 	SaveManager.ensure_directories() # Upon startup ensure the directories are real for saving
 	await get_tree().create_timer(1.0).timeout
 	spawn_tutorial_toast()
-
-	await get_tree().create_timer(2.0).timeout
-	ToastManager.success("Save Complete", "Scene saved successfully!")
-	print("Success")
-
+	
+	# Testing audio, remove layter!!!!
 	await get_tree().create_timer(1.0).timeout
-	ToastManager.error("Load Failed", "Could not find save file!")
-	print("Error")
-
+	print("Testing sounds...")
+	
+	AudioManager.play_error_toast()
+	await get_tree().create_timer(2).timeout
+	
+	AudioManager.play_info_toast()
+	await get_tree().create_timer(2).timeout
+	
+	AudioManager.play_success_toast()
 	await get_tree().create_timer(1.0).timeout
-	ToastManager.info("Exporting", "Creating OBJ file...")
-	print("Info")
+	
+	AudioManager.play_place_down()
+	print("Sound test complete!")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

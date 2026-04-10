@@ -31,6 +31,7 @@ WorldOptions="*uid://bgwsc065if22t"
 SaveManager="*uid://b6vsjaa6jkxrd"
 OBJExporter="*uid://cypdhf5ssdtga"
 ToastManager="*uid://d1ney46j7ljom"
+AudioManager="*uid://vgtikosj3m47"
 
 [display]
 
@@ -47,6 +48,16 @@ xr_camera=""
 [gui]
 
 theme/custom_font="uid://c7c0rx4wp7ybn"
+
+[importer_defaults]
+
+mp3={
+"bar_beats": 4,
+"beat_count": 0,
+"bpm": 0,
+"loop": false,
+"loop_offset": 0
+}
 
 [layer_names]
 
