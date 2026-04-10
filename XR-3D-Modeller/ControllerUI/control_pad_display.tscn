@@ -22,10 +22,9 @@ offset_right = 400.0
 offset_bottom = 200.0
 theme = ExtResource("1_7oq3b")
 tab_alignment = 1
-current_tab = 4
+current_tab = 0
 
 [node name="Build" type="MarginContainer" parent="." unique_id=1469485864]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -72,13 +71,11 @@ layout_mode = 2
 [node name="Load" type="Button" parent="Build/VerticalArrangement/VertexBuild" unique_id=1316880549]
 layout_mode = 2
 size_flags_horizontal = 3
-toggle_mode = true
 text = "Load"
 
 [node name="Clear" type="Button" parent="Build/VerticalArrangement/VertexBuild" unique_id=439873645]
 layout_mode = 2
 size_flags_horizontal = 3
-toggle_mode = true
 text = "Clear"
 
 [node name="AlwaysEditable" type="HBoxContainer" parent="Build/VerticalArrangement" unique_id=616117351]
@@ -330,6 +327,7 @@ theme_override_font_sizes/font_size = 14
 text = "Passthrough"
 
 [node name="File" type="MarginContainer" parent="." unique_id=1989559722]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5

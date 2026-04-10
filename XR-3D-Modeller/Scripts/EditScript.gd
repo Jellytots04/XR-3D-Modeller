@@ -141,6 +141,7 @@ func _process(delta: float) -> void:
 						moveObject(delta)
 			else:
 				if currentlyPlaneMoving:
+					AudioManager.play_place_down()
 					_remove_highlight(activeArrow)
 					currentlyPlaneMoving = false
 					activeArrow = null
@@ -155,12 +156,15 @@ func _process(delta: float) -> void:
 				
 				if currentlyMoving:
 					if highlighted_object:
+						AudioManager.play_snap()
 						if selectIndex == 1:
 							for obj in multiSelectHolder:
 								reattach(obj, highlighted_object)
 						else:
 							reattach(currentSelectedObject, highlighted_object)
-					
+					else:
+						AudioManager.play_place_down()
+
 					spawnArrows(planeMoveTarget())
 					currentlyMoving = false
 
@@ -1101,6 +1105,14 @@ func change_csg_operation(idx):
 			currentSelectedObject.operation = idx
 			print("Changed : ", currentSelectedObject.name, " : operation to : ", idx)
 			
+			match idx:
+				CSGShape3D.OPERATION_UNION:
+					AudioManager.play_place_down()
+				CSGShape3D.OPERATION_INTERSECTION:
+					AudioManager.play_snap()
+				CSGShape3D.OPERATION_SUBTRACTION:
+					AudioManager.play_whoosh()
+				
 			var original = get_ghost_original(currentSelectedObject)
 			if original:
 				original.operation = idx

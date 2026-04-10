@@ -150,6 +150,8 @@ func _on_clear_confirmed():
 	print("Timer started")
 
 func clear_all():
+	AudioManager.play_whoosh()
+	
 	for obj in get_tree().get_nodes_in_group("summonedObjects"):
 		if is_instance_valid(obj):
 			obj.queue_free()
@@ -170,6 +172,7 @@ func clear_all():
 
 func remove_object():
 	if currentSelectedObject and (currentSelectedObject.is_in_group("intersection_ghosts") or currentSelectedObject.is_in_group("subtraction_ghosts")):
+		AudioManager.play_whoosh()
 		var main = get_tree().get_nodes_in_group("main_node")[0]
 		main.delete_ghosted(currentSelectedObject)
 		currentSelectedObject = null
@@ -177,6 +180,7 @@ func remove_object():
 		return
 	
 	if selectIndex == 0:
+		AudioManager.play_whoosh()
 		if currentSelectedObject and is_instance_valid(currentSelectedObject):
 			var removed_obj = currentSelectedObject
 			currentSelectedObject = null
@@ -189,6 +193,7 @@ func remove_object():
 	if selectIndex == 1:
 		var combiners = []
 		if !multiSelectHolder.is_empty():
+			AudioManager.play_whoosh()
 			for obj in multiSelectHolder:
 				if is_instance_valid(obj):
 					var combiner_parent = obj.get_parent() # Get the combiner
@@ -209,6 +214,7 @@ func remove_object():
 
 	if selectIndex == 2:
 		if currentSelectedObject and is_instance_valid(currentSelectedObject):
+			AudioManager.play_whoosh()
 			var removed_obj = currentSelectedObject
 			var combiner = removed_obj.get_parent()
 			currentSelectedObject = null

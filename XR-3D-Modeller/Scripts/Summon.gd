@@ -523,7 +523,7 @@ func validate_mesh() -> bool:
 	
 	if V - E + F != 2:
 		print("Mesh isn't a closed manifold mesh")
-		ToastManager.error("Invalid Shape", "Mesh is not a closed surface V ("+V+") - E ("+E+") + F ("+F+") ≠2)")
+		ToastManager.error("Invalid Shape", "Mesh is not a closed surface V ("+str(V)+") - E ("+str(E)+") + F ("+str(F)+") ≠2)")
 		return false
 		
 	print("Valid Shape")
