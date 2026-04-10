@@ -5,14 +5,14 @@
 [ext_resource type="PackedScene" uid="uid://c8l60rnugru40" path="res://addons/godot-xr-tools/objects/pickable.tscn" id="2_vuevf"]
 [ext_resource type="PackedScene" uid="uid://dgdb1texynduw" path="res://addons/godot-xr-tools/objects/virtual_keyboard.tscn" id="4_yfx2l"]
 
-[sub_resource type="BoxMesh" id="BoxMesh_cjv01"]
-size = Vector3(0.355, 0.215, 0.02)
+[sub_resource type="QuadMesh" id="QuadMesh_yfx2l"]
+size = Vector2(0.35, 0.2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_cjv01"]
-albedo_color = Color(0.5890956, 0.5890956, 0.5890956, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yfx2l"]
+albedo_color = Color(0.78431374, 0.78431374, 0.78431374, 1)
 
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_cjv01"]
-points = PackedVector3Array(0.17750002, 0.1075, 0.01, 0.17750002, 0.1075, -0.01, -0.1775, 0.1075, 0.01, 0.17750002, -0.1075, 0.01, 0.17750002, -0.1075, -0.01, -0.1775, 0.1075, -0.01, -0.1775, -0.1075, 0.01, -0.1775, -0.1075, -0.01)
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_kmb3m"]
+points = PackedVector3Array(0.17496575, 0.1, 0, 0.17496575, -0.1, 0, -0.175, 0.1, 0, -0.175, -0.1, 0)
 
 [node name="UIController" type="Node3D" unique_id=1827770741]
 script = ExtResource("1_l6ach")
@@ -31,13 +31,13 @@ transparent = 2
 unshaded = true
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="PickableObject" unique_id=1651774646]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.013232499)
-mesh = SubResource("BoxMesh_cjv01")
-surface_material_override/0 = SubResource("StandardMaterial3D_cjv01")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0043759868)
+mesh = SubResource("QuadMesh_yfx2l")
+surface_material_override/0 = SubResource("StandardMaterial3D_yfx2l")
 
-[node name="CollisionShape3D2" type="CollisionShape3D" parent="PickableObject" unique_id=872225264]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.013232499)
-shape = SubResource("ConvexPolygonShape3D_cjv01")
+[node name="CollisionShape3D3" type="CollisionShape3D" parent="PickableObject" unique_id=2023397321]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0043759868)
+shape = SubResource("ConvexPolygonShape3D_kmb3m")
 
 [node name="VirtualKeyboard" parent="PickableObject" unique_id=1728948130 instance=ExtResource("4_yfx2l")]
 transform = Transform3D(0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0.22281009, 0)

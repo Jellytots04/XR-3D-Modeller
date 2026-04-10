@@ -721,6 +721,12 @@ func update_highlighted_object():
 			return
 
 		if combiner.is_in_group("intersection_ghosts") or combiner.is_in_group("subtraction_ghosts"):
+			if selectIndex != 2:
+				if highlighted_object and highlighted_object != currentSelectedObject:
+					_remove_highlight(highlighted_object)
+				highlighted_object = null
+				return
+
 			if combiner != highlighted_object:
 				if highlighted_object and highlighted_object != currentSelectedObject:
 					_remove_highlight(highlighted_object)

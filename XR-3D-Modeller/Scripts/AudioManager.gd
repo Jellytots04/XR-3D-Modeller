@@ -14,6 +14,8 @@ const MAX_PLAYERS = 10
 
 var volume_level
 
+var haptic_timers = {}
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	for i in range(MAX_PLAYERS):
@@ -72,6 +74,38 @@ func play_icon_click():
 	var player = _get_available_player()
 	player.stream = icon_click
 	player.play()
+
+func haptic_light(controller: XRController3D):
+	if controller:
+		controller.trigger_haptic_pulse("haptic", 0, 0.3, 0.1, 0)
+
+func haptic_medium(controller: XRController3D):
+	if controller:
+		controller.trigger_haptic_pulse("haptic", 0, 0.5, 0.15, 0)
+
+func haptic_heavy(controller: XRController3D):
+	if controller:
+		controller.trigger_haptic_pulse("haptic", 0, 0.8, 0.2, 0)
+
+func haptic_continue(controller: XRController3D, duration: float, intensity: float):
+	if not controller:
+		return
+	
+	haptic_stop(controller)
+
+	var timer = get_tree().create_timer(duration)
+	haptic_timers[controller] = timer
+
+	while is_instance_valid(controller) and timer.time_left > 0 and controller in haptic_timers:
+		controller.trigger_haptic_pulse("haptic", 0, intensity, 0.05, 0)
+		await get_tree().create_timer(0.05).timeout
+
+	if controller in haptic_timers:
+		haptic_timers.erase(controller)
+
+func haptic_stop(controller: XRController3D):
+	if controller in haptic_timers:
+		haptic_timers.erase(controller)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

@@ -19,6 +19,14 @@ func show_toast(title: String, message: String, type: ToastType = ToastType.INFO
 		print("No XR camera found for toast!")
 		return
 	
+	match type:
+		ToastType.SUCCESS:
+			AudioManager.play_success_toast()
+		ToastType.ERROR:
+			AudioManager.play_error_toast()
+		ToastType.INFO:
+			AudioManager.play_info_toast()
+	
 	var toast = toast_scene.instantiate()
 	get_tree().root.add_child(toast)
 	
