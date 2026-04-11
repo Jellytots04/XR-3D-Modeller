@@ -64,7 +64,7 @@ func _process(delta: float) -> void:
 			clear_cooldown_timer -= delta
 		
 		# Delete the selected objects
-		if controller.is_button_pressed("ax_button") and not controller.is_button_pressed("by_button"):
+		if controller.is_button_pressed("ax_button") and not controller.is_button_pressed("by_button") and (currentSelectedObject or !multiSelectHolder.is_empty()):
 			# print("Hello From remove Script")
 			remove_object()
 		update_highlighted_object()
@@ -73,11 +73,13 @@ func _process(delta: float) -> void:
 			if not is_holding_clear and clear_cooldown_timer <= 0:
 				clear_confirmation.start_holding()
 				is_holding_clear = true
+				AudioManager.haptic_continue(controller, 999.0, 0.5)
 			return
 		else:
 			if is_holding_clear:
 				clear_confirmation.stop_holding()
 				is_holding_clear = false
+				AudioManager.haptic_stop(controller)
 
 		# If the user clicks / presses right trigger on an highlighted object it will become the selected object
 		if controller.is_button_pressed("trigger_click") and !triggerPressed: # This is group select aka entire object because highlighted_object will be the CSGCombiner
@@ -144,6 +146,7 @@ func _process(delta: float) -> void:
 
 func _on_clear_confirmed():
 	print("Clear all confirmed!")
+	AudioManager.haptic_stop(controller)
 	clear_all()
 	is_holding_clear = false
 	clear_cooldown_timer = CLEAR_COOLDOWN
@@ -171,6 +174,7 @@ func clear_all():
 	print("Scene cleared!")
 
 func remove_object():
+	AudioManager.haptic_medium(controller)
 	if currentSelectedObject and (currentSelectedObject.is_in_group("intersection_ghosts") or currentSelectedObject.is_in_group("subtraction_ghosts")):
 		AudioManager.play_whoosh()
 		var main = get_tree().get_nodes_in_group("main_node")[0]

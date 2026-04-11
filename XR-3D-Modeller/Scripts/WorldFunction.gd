@@ -37,19 +37,6 @@ func _process(delta: float) -> void:
 		if not settings_menu_open:
 			toggle_settings_menu()
 
-	var right_controller = get_node("XROrigin3D/RightHand")
-	if right_controller:
-		if right_controller.is_button_pressed("grip_click"):
-			if not right_controller.has_meta("vibrating"):
-				print("Starting continuous haptic...")
-				AudioManager.haptic_continue(right_controller, 10.0, 0.6)
-				right_controller.set_meta("vibrating", true)
-		else:
-			if right_controller.has_meta("vibrating"):
-				print("Stopping haptic...")
-				AudioManager.haptic_stop(right_controller)
-				right_controller.remove_meta("vibrating")
-
 func toggle_settings_menu():
 	if settings_menu_open:
 		close_settings_menu()
