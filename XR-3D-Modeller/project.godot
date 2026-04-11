@@ -44,6 +44,7 @@ enabled=PackedStringArray("res://addons/gdfxr/plugin.cfg", "res://addons/godot-x
 [global_group]
 
 xr_camera=""
+color_blind_filter=""
 
 [gui]
 

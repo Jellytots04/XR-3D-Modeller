@@ -71,6 +71,13 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_e31xy"]
+bg_color = Color(0.42745098, 0.4117647, 0.4, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xnxcg"]
 bg_color = Color(0.23921569, 0.22745098, 0.21568628, 1)
 border_width_left = 2
@@ -82,6 +89,15 @@ border_blend = true
 corner_radius_top_left = 4
 corner_radius_top_right = 4
 corner_radius_bottom_right = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_oi7e3"]
+bg_color = Color(0.42745098, 0.4117647, 0.4, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ob52s"]
+bg_color = Color(0.23921569, 0.22745098, 0.21568628, 1)
+
+[sub_resource type="StyleBoxLine" id="StyleBoxLine_ymef6"]
+color = Color(0.17704415, 0.16764557, 0.15824577, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xnxcg"]
 
@@ -152,7 +168,11 @@ HSlider/styles/slider = SubResource("StyleBoxFlat_hvexu")
 Label/colors/font_color = Color(0.98039216, 0.98039216, 0.9764706, 1)
 LineEdit/styles/focus = SubResource("StyleBoxFlat_l45jv")
 LineEdit/styles/normal = SubResource("StyleBoxFlat_ry5nk")
+OptionButton/styles/hover = SubResource("StyleBoxFlat_e31xy")
 Panel/styles/panel = SubResource("StyleBoxFlat_xnxcg")
+PopupMenu/styles/hover = SubResource("StyleBoxFlat_oi7e3")
+PopupMenu/styles/panel = SubResource("StyleBoxFlat_ob52s")
+PopupMenu/styles/separator = SubResource("StyleBoxLine_ymef6")
 ProgressBar/colors/font_color = Color(0.9490196, 0.9490196, 0.9490196, 0)
 ProgressBar/styles/background = SubResource("StyleBoxEmpty_xnxcg")
 ProgressBar/styles/fill = SubResource("StyleBoxFlat_buwvn")
