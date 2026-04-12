@@ -260,13 +260,16 @@ func _clear_vertices():
 func _snap_toggled():
 	AudioManager.play_icon_click()
 	WorldOptions.snapEnabled = not WorldOptions.snapEnabled
+	WorldOptions.update_snap_state()
 	
 func _snap_slider_chaned(value, spinBox):
 	WorldOptions.snapSizeMM = value
+	WorldOptions.update_snap_state()
 	spinBox.set_value_no_signal(value)
 
 func _snap_spinBox_changed(value, slider):
 	WorldOptions.snapSizeMM = value
+	WorldOptions.update_snap_state()
 	slider.set_value_no_signal(value)
 	
 func _intersection_toggled():

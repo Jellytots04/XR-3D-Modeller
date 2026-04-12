@@ -78,12 +78,15 @@ func _connect_settings_buttons():
 	
 	var tutorial_button = viewport.find_child("TutorialButton", true, false)
 	var exit_button = viewport.find_child("ExitButton", true, false)
+	var hud_button = viewport.find_child("HudButton", true, false)
 	
 	if tutorial_button:
 		tutorial_button.pressed.connect(_settings_tutorial_pressed)
 		print("Tutorial Connected")
 	if exit_button:
 		exit_button.pressed.connect(_settings_exit_pressed)
+	if hud_button:
+		hud_button.pressed.connect(_settings_hud_pressed)
 
 func _settings_tutorial_pressed():
 	AudioManager.play_icon_click()
@@ -96,6 +99,14 @@ func _settings_exit_pressed():
 	AudioManager.play_icon_click()
 	print("Closing the menu")
 	close_settings_menu()
+	
+func _settings_hud_pressed():
+	AudioManager.play_icon_click()
+	var floating_hud = get_tree().get_first_node_in_group("floating_hud")
+	if floating_hud:
+		floating_hud.visible = not floating_hud.visible
+		
+		print("HUD toggled: ", "visible" if floating_hud.visible else "hidden")
 
 func toggle_passthrough():
 	passthrough_on = not passthrough_on

@@ -45,6 +45,7 @@ enabled=PackedStringArray("res://addons/gdfxr/plugin.cfg", "res://addons/godot-x
 
 xr_camera=""
 color_blind_filter=""
+floating_hud=""
 
 [gui]
 

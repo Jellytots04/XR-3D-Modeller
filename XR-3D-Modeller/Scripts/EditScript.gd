@@ -1342,7 +1342,7 @@ func set_page_index(idx):
 		is_active = false
 
 func set_edit_index(idx):
-	# print("Edit Called")
+	print("Edit Called")
 	clearArrows()
 	clearMoveGizmo()
 	clearOrbs()
@@ -1357,6 +1357,10 @@ func set_edit_index(idx):
 	elif idx == 3:
 		if selectIndex == 2:
 			spawnPlaneOrbs(currentSelectedObject)
+	var floating_hud = get_tree().get_first_node_in_group("floating_hud")
+	if floating_hud:
+		floating_hud.update_edit_tool(idx)
+		print("Submit")
 
 func update_list():
 	# print("Hello from Edit script new object update signal")

@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://hfu7l13886ko" path="res://ControllerUI/UIController.tscn" id="2_jw32o"]
 [ext_resource type="PackedScene" uid="uid://dry3gd8dudal" path="res://Scenes/CharacterOrigin.tscn" id="3_50glp"]
 [ext_resource type="Shader" uid="uid://dn2u332rahb5a" path="res://Scenes/Main.gdshader" id="5_pbw6q"]
+[ext_resource type="PackedScene" uid="uid://c5sf2neyf4d1l" path="res://GeneralUI/HudUI/HUD_Scene.tscn" id="6_v1gob"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_uu6xs"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -69,3 +70,6 @@ surface_material_override/0 = SubResource("ShaderMaterial_v1gob")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=1664733718]
 shape = SubResource("WorldBoundaryShape3D_3dxm6")
+
+[node name="HUD" parent="." unique_id=1139159904 groups=["floating_hud"] instance=ExtResource("6_v1gob")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 0.2644664, 1.3691206, -3.8675077)

@@ -30,3 +30,8 @@ func snap_angle(radian):
 
 func snap_vec(v):
 	return Vector3(snap(v.x), snap(v.y), snap(v.z))
+
+func update_snap_state():
+	var floating_hud = get_tree().get_first_node_in_group("floating_hud")
+	if floating_hud:
+		floating_hud.update_snap(snapEnabled, snapSizeMM)

@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://luqtcrmbqxa6"]
+
+[node name="ColorPicker" type="ColorPicker" unique_id=434447849]
+offset_top = 1.0
+offset_right = 298.0
+offset_bottom = 608.0
+edit_alpha = false
+edit_intensity = false
+color_mode = 1
+picker_shape = 1
+sampler_visible = false
+color_modes_visible = false
+sliders_visible = false
+hex_visible = false
+presets_visible = false

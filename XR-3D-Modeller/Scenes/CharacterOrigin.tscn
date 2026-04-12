@@ -32,7 +32,13 @@ strafe = true
 [node name="Docking" type="Marker3D" parent="LeftHand/LeftHand" unique_id=2111490497]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, -0.1, 0, 0.36)
 
+[node name="Secondary" type="Marker3D" parent="LeftHand/LeftHand/Docking" unique_id=1999230844]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0.15, 0)
+
 [node name="Levitate" type="Marker3D" parent="LeftHand/LeftHand" unique_id=1565467319]
+
+[node name="Secondary" type="Marker3D" parent="LeftHand/LeftHand/Levitate" unique_id=771811815]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34353372, 0.055913687, 0)
 
 [node name="FunctionPointer" parent="LeftHand" unique_id=699509882 instance=ExtResource("3_ayg2o")]
 show_laser = 2

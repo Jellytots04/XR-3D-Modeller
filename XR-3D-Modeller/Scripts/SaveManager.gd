@@ -31,10 +31,16 @@ func save_scene(file_name):
 		WorldOptions.current_file_name = clean_name
 		WorldOptions.is_saved = true
 		ToastManager.success("Scene Saved", "Saved as: " + clean_name)
+		
+		var floating_hud = get_tree().get_first_node_in_group("floating_hud")
+		if floating_hud:
+			floating_hud.update_save_state(true, file_name)
+		
 		print("Scene saved as : ", clean_name)
 	else:
 		ToastManager.error("Save Failed", "Could not save scene")
 		print("Failed with error : ", result)
+	
 
 func _set_owner_recursive(node, ownerNode):
 	for child in node.get_children():
@@ -88,6 +94,10 @@ func load_scene(file_name):
 	
 	WorldOptions.current_file_name = file_name
 	WorldOptions.is_saved = true
+	
+	var floating_hud = get_tree().get_first_node_in_group("floating_hud")
+	if floating_hud:
+		floating_hud.update_save_state(true, file_name)
 	
 	scene_loaded.emit()
 	
