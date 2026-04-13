@@ -84,6 +84,8 @@ func _connect_settings_buttons():
 	var tutorial_button = viewport.find_child("TutorialButton", true, false)
 	var exit_button = viewport.find_child("ExitButton", true, false)
 	var hud_button = viewport.find_child("HudButton", true, false)
+	var volume_slider = viewport.find_child("SoundSlider", true, false)
+	var haptics_toggle = viewport.find_child("HapticCheck", true, false)
 	
 	if tutorial_button:
 		tutorial_button.pressed.connect(_settings_tutorial_pressed)
@@ -92,6 +94,20 @@ func _connect_settings_buttons():
 		exit_button.pressed.connect(_settings_exit_pressed)
 	if hud_button:
 		hud_button.pressed.connect(_settings_hud_pressed)
+	if volume_slider:
+		volume_slider.value = AudioManager.get_volume()
+		volume_slider.value_changed.connect(_on_volume_changed)
+	if haptics_toggle:
+		haptics_toggle.button_pressed = AudioManager.haptics_enabled
+		haptics_toggle.toggled.connect(_on_haptics_toggled)
+
+func _on_volume_changed(value):
+	AudioManager.set_volume(value)
+	print("Volume set to : ", int(value * 100), "%")
+	
+func _on_haptics_toggled(enabled):
+	AudioManager.set_haptics_enabled(enabled)
+	print("Haptics ", "enabled" if enabled else "disabled")
 
 func _settings_tutorial_pressed():
 	AudioManager.play_icon_click()

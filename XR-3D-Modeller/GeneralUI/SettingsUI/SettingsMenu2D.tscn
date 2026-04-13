@@ -34,7 +34,26 @@ offset_right = 90.0
 offset_bottom = 140.00009
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 50
+theme_override_constants/separation = 16
+
+[node name="UX" type="VBoxContainer" parent="VBoxContainer" unique_id=1465574913]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer/UX" unique_id=2045615639]
+layout_mode = 2
+text = "Volume"
+horizontal_alignment = 1
+
+[node name="SoundSlider" type="HSlider" parent="VBoxContainer/UX" unique_id=97699296]
+layout_mode = 2
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="HapticCheck" type="CheckButton" parent="VBoxContainer/UX" unique_id=1489990091]
+layout_mode = 2
+text = "Vibrations"
+alignment = 1
 
 [node name="TutorialButton" type="Button" parent="VBoxContainer" unique_id=2007333734]
 custom_minimum_size = Vector2(0, 40)

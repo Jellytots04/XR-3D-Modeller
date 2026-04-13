@@ -1,5 +1,6 @@
 extends Node
 
+# Preloading sounds
 var error_toast_1 = preload("res://Sounds/ErrorToast.sfxr")
 var error_toast_2 = preload("res://Sounds/ErrorToast2.sfxr")
 var success_toast = preload("res://Sounds/SuccessToast.sfxr")
@@ -9,10 +10,13 @@ var place_down_effect = preload("res://Sounds/PlaceDownEffect.wav")
 var snap_effect = preload("res://Sounds/SnapSoundEffect.mp3")
 var delete_whoosh = preload("res://Sounds/WhooshDeleteAudio.mp3")
 
+# Audio Player variables
 var audio_player = []
 const MAX_PLAYERS = 10
 
-var volume_level
+
+var volume_level = 1.0
+var haptics_enabled = true
 
 var haptic_timers = {}
 
@@ -20,9 +24,38 @@ var haptic_timers = {}
 func _ready() -> void:
 	for i in range(MAX_PLAYERS):
 		var player = AudioStreamPlayer.new()
-		player.bus = "SFX"
+		player.bus = "Master"
 		add_child(player)
 		audio_player.append(player)
+	set_volume(volume_level)
+
+func set_volume(value):
+	print("=== SET VOLUME DEBUG ===")
+	print("Input value: ", value)
+	
+	volume_level = clamp(value, 0.0, 1.0)
+	print("Clamped volume_level: ", volume_level)
+	
+	var bus_index = AudioServer.get_bus_index("Master")
+	print("Bus index: ", bus_index)
+	
+	if volume_level > 0.0:
+		var db_value = linear_to_db(volume_level)
+		print("Converting to dB: ", db_value)
+		AudioServer.set_bus_volume_db(bus_index, db_value)
+		AudioServer.set_bus_mute(bus_index, false)
+		print("Set bus volume to: ", AudioServer.get_bus_volume_db(bus_index))
+	else:
+		AudioServer.set_bus_mute(bus_index, true)
+		print("Muted bus")
+	
+	print("======================")
+
+func get_volume():
+	return volume_level
+
+func set_haptics_enabled(enabled):
+	haptics_enabled = enabled
 
 func _get_available_player() -> AudioStreamPlayer:
 	for player in audio_player:
@@ -76,19 +109,19 @@ func play_icon_click():
 	player.play()
 
 func haptic_light(controller: XRController3D):
-	if controller:
+	if controller and haptics_enabled:
 		controller.trigger_haptic_pulse("haptic", 0, 0.3, 0.1, 0)
 
 func haptic_medium(controller: XRController3D):
-	if controller:
+	if controller and haptics_enabled:
 		controller.trigger_haptic_pulse("haptic", 0, 0.5, 0.15, 0)
 
 func haptic_heavy(controller: XRController3D):
-	if controller:
+	if controller and haptics_enabled:
 		controller.trigger_haptic_pulse("haptic", 0, 0.8, 0.2, 0)
 
 func haptic_continue(controller: XRController3D, duration: float, intensity: float):
-	if not controller:
+	if not controller or not haptics_enabled:
 		return
 	
 	haptic_stop(controller)
