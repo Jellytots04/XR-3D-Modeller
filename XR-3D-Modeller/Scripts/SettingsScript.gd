@@ -1,5 +1,6 @@
 extends Node3D
 
+# Get the nodes from the HUD
 @onready var filter_type_option = $Viewport/Viewport/Panel/VBoxContainer/ColorBlind/ColorblindOptions
 @onready var intensity_slider = $Viewport/Viewport/Panel/VBoxContainer/ColorBlind/IntensityBox/Intensity
 @onready var intensity_box = $Viewport/Viewport/Panel/VBoxContainer/ColorBlind/IntensityBox

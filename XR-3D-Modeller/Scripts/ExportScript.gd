@@ -1,5 +1,6 @@
 extends Node3D
 
+# Controller and Raycast
 @onready var controller = get_parent().get_parent()
 @onready var raycast_3d = controller.get_node("RayCast3D")
 
@@ -27,8 +28,6 @@ var meshInstances = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	print("Controller: ", get_parent().get_parent())
-	print("Raycast: ", raycast_3d)
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects")
 	var summoner = get_node("../..")
 	summoner.connect("objectSummoned", Callable(self, "update_list"))
@@ -44,42 +43,48 @@ func _ready() -> void:
 		ui_controller.connect("render_object", Callable(self, "render_selected"))
 		ui_controller.connect("export_object", Callable(self, "export_selected"))
 		ui_controller.connect("export_obj_file", Callable(self, "export_obj_selected"))
-		print("Render Function connected to UI")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if is_active:
 		update_highlighted_object()
-	
+		# Triggers upon users single trigger
 		if controller.is_button_pressed("trigger_click") and not triggerPressed:
 			triggerPressed = true
 			if highlighted_object:
 				if currentSelectedObject == highlighted_object:
+					# Set the deselct variable
 					var deselect = currentSelectedObject
+					# Clear variables and remove highlight
 					currentSelectedObject = null
 					highlighted_object = null
 					await _remove_highlight(deselect)
+				# If no object is selected, set the highlighted object as selected with a highlight
 				elif not currentSelectedObject:
 					currentSelectedObject = highlighted_object
 					highlighted_object = null
 					await _apply_highlight(currentSelectedObject, selected_color)
-		
+		# When trigger isn't pressed reset the flag
 		elif not controller.is_button_pressed("trigger_click"):
 			triggerPressed = false
 
+# Renders the users current selected structure / object
 func render_selected():
+	# If the object isn't valid or isn't selected send an error toast to the user
 	if not currentSelectedObject or not is_instance_valid(currentSelectedObject):
-		print("Nothing selected to render")
 		ToastManager.error("Render Failed", "No object selected")
 		return
 	
+	# Set the object for the function and clear selected
 	var original = currentSelectedObject
 	currentSelectedObject = null
 	highlighted_object = null
 	await _remove_highlight(original)
 	
+	# Create a new mesh
 	var mesh: Mesh = null
 	
+	# If it is a CSGCombiner follow this order
 	if original is CSGCombiner3D:
 		await get_tree().process_frame
 		var meshes = original.get_meshes()
@@ -88,6 +93,7 @@ func render_selected():
 			return
 		mesh = meshes[1]
 		
+		# Generate the surface tool for the rendered object
 		var st = SurfaceTool.new()
 		var processed = ArrayMesh.new()
 		for i in meshes[1].get_surface_count():
@@ -96,9 +102,12 @@ func render_selected():
 			st.index()
 			st.commit(processed)
 		mesh = processed
-		
+	
+	# If it is a MeshInstance3D follow this order
 	elif original is MeshInstance3D:
 		mesh = original.mesh
+	
+	# Ensure the object came from the Vertice creation
 	elif original is StaticBody3D and original.is_in_group("placedMeshes"):
 		for child in original.get_children():
 			if child is MeshInstance3D:
@@ -106,44 +115,50 @@ func render_selected():
 				break
 
 	if not mesh:
-		print("No mesh found")
 		return
 	
+	# Give the object a pickable node part
 	var pickable = XRToolsPickable.new()
 	pickable.add_to_group("rendered_objects")
 	pickable.collision_layer = 1 | 4
 	pickable.collision_mask = 1
 	pickable.picked_up_layer = 0
 	
+	# Set its mesh instance 
 	var mesh_instance = MeshInstance3D.new()
 	mesh_instance.mesh = mesh
 	
+	# Give it a new material
 	var mat = StandardMaterial3D.new()
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
 	mat.albedo_color = Color(0.8, 0.8, 0.8, 1.0)
 	mesh_instance.material_override = mat
 	
+	# Add in a collision with the mesh' shape
 	var collision = CollisionShape3D.new()
 	var convex_shape = mesh.create_convex_shape()
 	collision.shape = convex_shape
 	
+	# Add them to the pickable node
 	pickable.add_child(mesh_instance)
 	pickable.add_child(collision)
 	
+	# Gran a spawn position
 	var spawn_pos = controller.global_transform.origin + -controller.global_transform.basis.z * 1.0
 	get_tree().current_scene.add_child(pickable)
 	pickable.global_transform.origin = spawn_pos
-	
-	# print("Rendered object spawned at: ", spawn_pos)
 
+# Exports the selected object as Godot Scene
 func export_selected(file_name):
+	# Checks to see if the object is valid, if not send the error toast
 	if not currentSelectedObject or not is_instance_valid(currentSelectedObject):
-		print("Nothing selected to export")
 		ToastManager.error("Export Failed", "No object selected")
 		return
+	# Use the save manager export mesh function
 	await SaveManager.export_mesh(currentSelectedObject, file_name)
 
+# Export the selected object as .obj file
 func export_obj_selected(file_name):
 	if not currentSelectedObject or not is_instance_valid(currentSelectedObject):
 		print("Nothing has been selected")
@@ -196,6 +211,7 @@ func update_highlighted_object():
 			_remove_highlight(highlighted_object)
 		highlighted_object = null
 
+# Reused Apply Highlight functions
 func _apply_highlight(obj, color):
 	highlighting_cancelled = true
 	await get_tree().process_frame
@@ -246,7 +262,6 @@ func _apply_highlight_recursive(obj, color):
 		for child in obj.get_children():
 			if not child is MeshInstance3D:
 				continue
-			print("Highlighting : ", child)
 			await _apply_highlight_recursive(child, color)
 			
 	elif obj is StaticBody3D and obj.is_in_group("placedMeshes"):
@@ -301,7 +316,6 @@ func _remove_highlight_recursive(obj):
 		for child in obj.get_children():
 			if not child is MeshInstance3D:
 				continue
-			print("Removing highlight : ",child)
 			await _remove_highlight_recursive(child)
 
 	elif obj is StaticBody3D and obj.is_in_group("placedMeshes"):

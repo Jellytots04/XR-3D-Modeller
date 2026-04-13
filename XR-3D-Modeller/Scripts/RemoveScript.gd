@@ -1,6 +1,8 @@
 extends Node
 
+# Signal to be sent out
 signal objectRemoved
+
 # Since this will always be attached to the right controller
 @onready var controller = get_parent().get_parent()
 @onready var raycast_3d = controller.get_node("RayCast3D")
@@ -57,9 +59,10 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	# print(controller.is_button_pressed("ax_button"))
+	# Only work while active
 	if is_active:
 		
+		# Use a timer to set the clearing cooldown
 		if clear_cooldown_timer > 0:
 			clear_cooldown_timer -= delta
 		
@@ -69,12 +72,14 @@ func _process(delta: float) -> void:
 			remove_object()
 		update_highlighted_object()
 
+		# While holding both X and Y button start the timer
 		if controller.is_button_pressed("ax_button") and controller.is_button_pressed("by_button"):
 			if not is_holding_clear and clear_cooldown_timer <= 0:
 				clear_confirmation.start_holding()
 				is_holding_clear = true
 				AudioManager.haptic_continue(controller, 999.0, 0.5)
 			return
+		# If holding clear is true stop the holding and stop the haptic
 		else:
 			if is_holding_clear:
 				clear_confirmation.stop_holding()
@@ -144,14 +149,14 @@ func _process(delta: float) -> void:
 		elif not controller.is_button_pressed("trigger_click"):
 			triggerPressed = false
 
+# Confirms the clear all confidition
 func _on_clear_confirmed():
-	print("Clear all confirmed!")
 	AudioManager.haptic_stop(controller)
 	clear_all()
 	is_holding_clear = false
 	clear_cooldown_timer = CLEAR_COOLDOWN
-	print("Timer started")
 
+# Clear all function
 func clear_all():
 	AudioManager.play_whoosh()
 	
