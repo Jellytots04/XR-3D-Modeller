@@ -1,5 +1,7 @@
 extends Node3D
 
+var is_pressed = false
+
 var tutorial_toast = preload("res://TutorialUI/IntroUI/3D_Intro_UI_Screen.tscn")
 var tutorial_toast_instance = null
 
@@ -33,9 +35,11 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	var left_controller = get_node("XROrigin3D/LeftHand")
-	if left_controller and left_controller.is_button_pressed("menu_button"):
-		if not settings_menu_open:
-			toggle_settings_menu()
+	if left_controller and left_controller.is_button_pressed("menu_button") and not is_pressed:
+		toggle_settings_menu()
+		is_pressed = true
+	elif not left_controller.is_button_pressed("menu_button"):
+		is_pressed = false
 
 func toggle_settings_menu():
 	if settings_menu_open:
@@ -58,7 +62,8 @@ func open_settings_menu():
 		spawn_pos.y = xr_camera.global_position.y + 0.3
 		
 		settings_menu_instance.global_position = spawn_pos
-		settings_menu_instance.rotation.y = xr_camera.rotation.y
+		settings_menu_instance.look_at(xr_camera.global_position, Vector3.UP)
+		settings_menu_instance.rotate_y(deg_to_rad(180))
 		settings_menu_instance.rotation.x = 0
 		settings_menu_instance.rotation.z = 0
 	
@@ -433,7 +438,8 @@ func show_tutorial_panel():
 		spawn_pos.y = xr_camera.global_position.y + 0.5
 		
 		tutorial_panel_instance.global_position = spawn_pos
-		tutorial_panel_instance.rotation.y = xr_camera.rotation.y
+		tutorial_panel_instance.look_at(xr_camera.global_position, Vector3.UP)
+		tutorial_panel_instance.rotate_y(deg_to_rad(180))
 		tutorial_panel_instance.rotation.x = 0
 		tutorial_panel_instance.rotation.z = 0
 	
