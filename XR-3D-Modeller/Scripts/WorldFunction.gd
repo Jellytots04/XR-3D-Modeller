@@ -1,24 +1,28 @@
 extends Node3D
 
+# Flag
 var is_pressed = false
 
+# Tutorial Toast pop up preload
 var tutorial_toast = preload("res://TutorialUI/IntroUI/3D_Intro_UI_Screen.tscn")
 var tutorial_toast_instance = null
 
+# Tutorial Panel preload
 var tutorial_panel_scene = preload("res://TutorialUI/IntroUI/TutorialPanel.tscn")
 var tutorial_panel_instance = null
 var current_tutorial_step = 0
 
+# Settings menu preload
 var settings_menu = preload("res://GeneralUI/SettingsUI/SettingsScene.tscn")
 var settings_menu_instance = null
 var settings_menu_open = false
 
+# Variables
 var ghosted_mesh = {}
 var passthrough_on = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	print("Ready called worldfunction : ", get_path())
 	add_to_group("main_node")
 	if not WorldOptions.intersectionsVisibilityChanged.is_connected(intersections_visibility_changed):
 		WorldOptions.intersectionsVisibilityChanged.connect(intersections_visibility_changed)
@@ -34,6 +38,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	# Settings pop up button
 	var left_controller = get_node("XROrigin3D/LeftHand")
 	if left_controller and left_controller.is_button_pressed("menu_button") and not is_pressed:
 		toggle_settings_menu()
@@ -41,12 +46,14 @@ func _process(delta: float) -> void:
 	elif not left_controller.is_button_pressed("menu_button"):
 		is_pressed = false
 
+# Toggle the settings menu
 func toggle_settings_menu():
 	if settings_menu_open:
 		close_settings_menu()
 	else:
 		open_settings_menu()
 
+# Open the settings menu
 func open_settings_menu():
 	if settings_menu_instance:
 		return
@@ -61,6 +68,7 @@ func open_settings_menu():
 		var spawn_pos = xr_camera.global_position + forward * 6
 		spawn_pos.y = xr_camera.global_position.y + 0.3
 		
+		# Face the users camera
 		settings_menu_instance.global_position = spawn_pos
 		settings_menu_instance.look_at(xr_camera.global_position, Vector3.UP)
 		settings_menu_instance.rotate_y(deg_to_rad(180))
@@ -69,15 +77,15 @@ func open_settings_menu():
 	
 	_connect_settings_buttons()
 	settings_menu_open = true
-	print("Settings menu opened!")
 
+# Close settings menu
 func close_settings_menu():
 	if settings_menu_instance:
 		settings_menu_instance.queue_free()
 		settings_menu_instance = null
 	settings_menu_open = false
-	print("Settings menu closed")
-	
+
+# Connect the settings buttons to the script 
 func _connect_settings_buttons():
 	var viewport = settings_menu_instance.get_node("Viewport/Viewport")
 	
@@ -87,9 +95,9 @@ func _connect_settings_buttons():
 	var volume_slider = viewport.find_child("SoundSlider", true, false)
 	var haptics_toggle = viewport.find_child("HapticCheck", true, false)
 	
+	# Set their connection to their functions
 	if tutorial_button:
 		tutorial_button.pressed.connect(_settings_tutorial_pressed)
-		print("Tutorial Connected")
 	if exit_button:
 		exit_button.pressed.connect(_settings_exit_pressed)
 	if hud_button:
@@ -101,73 +109,80 @@ func _connect_settings_buttons():
 		haptics_toggle.button_pressed = AudioManager.haptics_enabled
 		haptics_toggle.toggled.connect(_on_haptics_toggled)
 
+# Volume changed function
 func _on_volume_changed(value):
 	AudioManager.set_volume(value)
-	print("Volume set to : ", int(value * 100), "%")
 	
+# Haptics toggle on / off
 func _on_haptics_toggled(enabled):
 	AudioManager.set_haptics_enabled(enabled)
-	print("Haptics ", "enabled" if enabled else "disabled")
 
+# Settings tutorial butto pressed
 func _settings_tutorial_pressed():
 	AudioManager.play_icon_click()
-	print("Re open tutorial via settings")
 	close_settings_menu()
 	current_tutorial_step = 0
 	show_tutorial_panel()
 
+# Settings exit button pressed
 func _settings_exit_pressed():
 	AudioManager.play_icon_click()
-	print("Closing the menu")
 	close_settings_menu()
 	
+# Settings hud pressed 
 func _settings_hud_pressed():
 	AudioManager.play_icon_click()
 	var floating_hud = get_tree().get_first_node_in_group("floating_hud")
 	if floating_hud:
 		floating_hud.visible = not floating_hud.visible
-		
-		print("HUD toggled: ", "visible" if floating_hud.visible else "hidden")
 
+# Toggle passthrough function
 func toggle_passthrough():
+	# Change the passthrough variable
 	passthrough_on = not passthrough_on
+	
+	# Find the XR node
 	var start_xr = get_node("StartXR")
 	start_xr.enable_passthrough = passthrough_on
 	
+	# Grab the environment and floor node
 	var env = get_node("WorldEnvironment").environment
 	var floor_node = get_node("Floor/MeshInstance3D2")
 	floor_node.visible = not passthrough_on
 	env.volumetric_fog_enabled = not passthrough_on
 	
+	# Grab the hand mesh'
 	var left_hand_mesh = get_node("XROrigin3D/LeftHand/LeftHand")
 	var right_hand_mesh = get_node("XROrigin3D/RightHand/RightHand")
 
+	# Turn off visibility for hands 
 	if left_hand_mesh:
 		left_hand_mesh.visible = not passthrough_on
 	if right_hand_mesh:
 		right_hand_mesh.visible = not passthrough_on
 
+	# Clear background for passthrough
 	if passthrough_on:
 		env.background_color = Color(0, 0, 0, 0)
 	else:
 		env.background_color = Color(0.506, 0.667, 0.667, 1.0) 
 
+# Intersections visibility function
 func intersections_visibility_changed(show):
-	print("Show : ", show)
+	# Will create the ghosted variables if show is true 
 	if show:
 		for combiner in get_tree().get_nodes_in_group("summonedObjects"):
-			print("Checking combiner : ", combiner.name)
 			if not combiner is CSGCombiner3D:
 				continue
 			for child in combiner.get_children():
-				print("Child : ", child.name, " : operation : ", child.operation if child is CSGMesh3D else "N/A")
 				if child is CSGMesh3D and child.operation == CSGShape3D.OPERATION_INTERSECTION:
 					spawn_ghosted_obj(child)
-	else:
+	else: 
 		clear_ghosted("intersection_ghosts")
 
+# Subtraction visibility functoin
 func subtraction_visibility_changed(show):
-	print(show)
+	# Will create the ghosted variables if show is true
 	if show:
 		for combiner in get_tree().get_nodes_in_group("summonedObjects"):
 			for child in combiner.get_children():
@@ -176,24 +191,31 @@ func subtraction_visibility_changed(show):
 	else:
 		clear_ghosted("subtraction_ghosts")
 
+# Spawn the ghosted object
 func spawn_ghosted_obj(obj):
+	# Check the ghosted mesh keys for a similarity
 	for ghost in ghosted_mesh.keys():
 		if ghosted_mesh[ghost]["original"] == obj:
 			return
 	
+	# Duplicate the object
 	var ghost = obj.duplicate()
 	
+	# Remove that ghost from all groups
 	ghost.remove_from_group("summonedObjects")
 	ghost.remove_from_group("intersection_ghosts")
 	ghost.remove_from_group("subtraction_ghosts")
 	
+	# Set its operation as a Union
 	ghost.operation = CSGShape3D.OPERATION_UNION
 	ghost.global_transform = obj.global_transform
 	
+	# Change its scale and collision layer 
 	ghost.collision_layer = 4
 	ghost.collision_mask = 0
 	ghost.scale *= 1.002
 	
+	# Change its material
 	var mat = StandardMaterial3D.new()
 	if obj.operation == CSGShape3D.OPERATION_INTERSECTION:
 		mat.albedo_color = Color(1.0, 1.0, 0.5, 0.5)
@@ -202,45 +224,54 @@ func spawn_ghosted_obj(obj):
 		mat.albedo_color = Color(1.0, 0, 0, 0.5)
 		ghost.add_to_group("subtraction_ghosts")
 		
+	# Set its transparency
 	mat.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	ghost.material = mat
 	
+	# Grab the main scene root
 	get_tree().root.add_child(ghost)
 	ghost.remove_from_group("summonedObjects")
 	
+	# Set the ghosted objects key
 	ghosted_mesh[ghost] = {
 		"original": obj,
 		"original_combiner": obj.get_parent()
 	}
 
+# Clear ghosted group
 func clear_ghosted(group):
+	# Check the ghosts in the group
 	for ghost in get_tree().get_nodes_in_group(group):
 		if is_instance_valid(ghost):
+			# Erase them from the array and free from the queue
 			ghosted_mesh.erase(ghost)
 			ghost.queue_free()
 
+# Delete the ghosted object function
 func delete_ghosted(ghost):
 	if ghost in ghosted_mesh:
 		var data = ghosted_mesh[ghost]
 		var original = data["original"]
 		var combiner = data["original_combiner"]
-		print("Deleting ghost: ", ghost)
-		print("Deleting original: ", original)
-		print("Deleting combiner: ", combiner)
 
+		# Ensure the original is valid
 		if is_instance_valid(original):
 			original.queue_free()
 
+		# If the combiner is now empty queue free the combiner 
 		if is_instance_valid(combiner) and combiner.get_child_count() <= 1:
 			combiner.queue_free()
 		
+		# Erase the ghost from the array
 		ghosted_mesh.erase(ghost)
 		ghost.queue_free()
 		
+		# Wait a frame to ensure its fully processed
 		await get_tree().process_frame
 
+# Clear ghost via key
 func clear_ghost_for_original(original):
 	for ghost in ghosted_mesh.keys():
 		if ghosted_mesh[ghost]["original"] == original:
@@ -251,55 +282,56 @@ func clear_ghost_for_original(original):
 
 # Tutorial Functions and variables
 func spawn_tutorial_toast():
+	# Has tutorial been completed
 	if WorldOptions.has_meta("tutorial_completed"):
-		print("Tutorial has been completed")
 		return
 	
+	# Instantiate the tutorial
 	tutorial_toast_instance = tutorial_toast.instantiate()
 	
+	# Grab Camera Node
 	var xr_camera = get_node("XROrigin3D/XRCamera3D")
 	
 	if xr_camera:
+		# Add the toast to the scene
 		add_child(tutorial_toast_instance)
 
+		# Set the tutorial toast
 		var forward = -xr_camera.global_transform.basis.z
 		var spawn_pos = xr_camera.global_position + forward * 6
 		spawn_pos.y = xr_camera.global_position.y + 0.5
 		
 		tutorial_toast_instance.global_position = spawn_pos
-		
+		# Rotate the camera towards the users camera
 		tutorial_toast_instance.rotation.y = xr_camera.rotation.y
 		tutorial_toast_instance.rotation.x = 0
 		tutorial_toast_instance.rotation.z = 0
 		
+		# Connect the buttons
 		connect_tutorial_button()
-		print("Spawned in tutorial")
 
 func connect_tutorial_button():
+	# Grab the nodes from the scene
 	var tutorial = tutorial_toast_instance.find_child("QuickTutorial", true, false)
 	var skip = tutorial_toast_instance.find_child("Skip", true, false)
 	
-	print("Tutorial button found : ", tutorial, " : Skip button found : ", skip)
-	
 	if tutorial:
 		tutorial.pressed.connect(quick_tutorial_pressed)
-		print("Tutorial button connected")
 	
 	if skip:
 		skip.pressed.connect(skip_pressed)
-		print("Skip button connected")
 
+# Skip button function
 func skip_pressed():
 	AudioManager.play_icon_click()
-	print("Skip clicked!")
 	
 	if is_instance_valid(tutorial_toast_instance):
 		tutorial_toast_instance.queue_free()
 		tutorial_toast_instance = null
 
+# Tutorial button function
 func quick_tutorial_pressed():
 	AudioManager.play_icon_click()
-	print("Quick Tutorial clicked!")
 	
 	if tutorial_toast_instance:
 		tutorial_toast_instance.queue_free()
@@ -439,20 +471,25 @@ var tutorial_steps = [
 	}
 ]
 
+# Show tutorial panel
 func show_tutorial_panel():
 	if tutorial_panel_instance:
 		tutorial_panel_instance.queue_free()
 	
+	# Grab the panel instance
 	tutorial_panel_instance = tutorial_panel_scene.instantiate()
 	
+	# Grab the camera node from the scene
 	var xr_camera = get_node("XROrigin3D/XRCamera3D")
 	if xr_camera:
 		add_child(tutorial_panel_instance)
 		
+		# Set the distance
 		var forward = -xr_camera.global_transform.basis.z
 		var spawn_pos = xr_camera.global_position + forward * 6
 		spawn_pos.y = xr_camera.global_position.y + 0.5
 		
+		# Set the rotation to face the user
 		tutorial_panel_instance.global_position = spawn_pos
 		tutorial_panel_instance.look_at(xr_camera.global_position, Vector3.UP)
 		tutorial_panel_instance.rotate_y(deg_to_rad(180))
@@ -462,13 +499,15 @@ func show_tutorial_panel():
 	_connect_tutorial_buttons()
 	update_tutorial_content()
 
+# Connects the buttons on the tutorial
 func _connect_tutorial_buttons():
+	# Grab the viewport
 	var viewport = tutorial_panel_instance.get_node("Viewport")
 	
 	if not viewport:
-		push_error("Could not find Viewport!")
 		return
 
+	# Grab the button nodes
 	var back_btn = viewport.find_child("BackButton", true, false)
 	var next_btn = viewport.find_child("NextButton", true, false)
 	var exit_btn = viewport.find_child("ExitButton", true, false)
@@ -483,19 +522,23 @@ func _connect_tutorial_buttons():
 		exit_btn.pressed.connect(_on_tutorial_exit)
 		print("Exit button connected")
 
+# Update the tutorial content
 func update_tutorial_content():
 	if not tutorial_panel_instance:
 		return
 	
+	# Grab the nodes
 	var step = tutorial_steps[current_tutorial_step]
 	var viewport = tutorial_panel_instance.get_node("Viewport")
 	
+	# Grab the control nodes
 	var step_label = viewport.find_child("StepLabel", true, false)
 	var title_label = viewport.find_child("TitleLabel", true, false)
 	var desc_label = viewport.find_child("DescLabel", true, false)
 	var back_btn = viewport.find_child("BackButton", true, false)
 	var next_btn = viewport.find_child("NextButton", true, false)
 	
+	# Update the variables with their respective fields
 	if step_label:
 		step_label.text = "Step %d / %d" % [current_tutorial_step + 1, tutorial_steps.size()]
 	if title_label:
@@ -517,26 +560,25 @@ func update_tutorial_content():
 		if ui_controller and ui_controller.has_method("switch_to_tab"):
 			ui_controller.switch_to_tab(step["tab"])
 
+# Back button on tutorial page
 func _on_tutorial_back():
 	AudioManager.play_icon_click()
-	print("BACK CLICKED")
 	if current_tutorial_step > 0:
 		current_tutorial_step -= 1
 		update_tutorial_content()
 
+# Next button on tutorial page
 func _on_tutorial_next():
 	AudioManager.play_icon_click()
-	print("NEXT CLICKED")
 	if current_tutorial_step < tutorial_steps.size() - 1:
 		current_tutorial_step += 1
 		update_tutorial_content()
 	else:
 		_on_tutorial_exit()
 
+# Exit button on tutorial page
 func _on_tutorial_exit():
 	AudioManager.play_icon_click()
-	print("EXIT CLICKED")
 	if tutorial_panel_instance:
 		tutorial_panel_instance.queue_free()
 		tutorial_panel_instance = null
-	print("Tutorial exited")

@@ -7,7 +7,7 @@ extends XRController3D
 signal objectSummoned
 signal verticeSummoned
 
-@export var object_scene: PackedScene
+# Editable variables
 @export var spawn_distance := 1.0
 @export var summon_rate:int = 1
 
@@ -24,8 +24,6 @@ var selectIndex = 0
 var currentSelectedObject 
 var multiSelectHolder = []
 
-# var summonableObjects = []
-# var ghostedObjects = []
 # Summon variables
 var summonedObjects
 var objectsInScene = []
@@ -83,23 +81,21 @@ var ui_controller
 var summonableObjects = []
 var ghostedObjects = []
 
+# Loads the summonable objects
 func load_summonables():
 	summonableObjects.clear()
 	for path in summonablePaths:
 		var scene = load(path)
 		if scene:
 			summonableObjects.append(scene)
-		else:
-			print("Could not load: ", path)
 
+# Loads the ghosted scenes
 func load_ghosted():
 	ghostedObjects.clear()
 	for path in ghostedPaths:
 		var scene = load(path)
 		if scene:
 			ghostedObjects.append(scene)
-		else:
-			print("Could not load: ", path)
 
 func _ready() -> void:
 	# Load the summonables when started
@@ -128,10 +124,8 @@ func _ready() -> void:
 		ui_controller.connect("select_change", Callable(self, "select_index_change"))
 		ui_controller.connect("load_mesh", Callable(self, "_load_mesh"))
 		ui_controller.connect("clear_vertices", Callable(self, "_clear_vertices"))
-		print("Controller found ", ui_controller)
-	else:
-		print("UI Controller not found")
 
+# Timeout for summoning objects
 func _time_out():
 	can_summon = true
 
@@ -139,9 +133,12 @@ func _process(_delta):
 	# Will activate when the user presses the A button on the controller
 	if is_active:
 		if is_button_pressed("ax_button") and can_summon: # Meta Quest A button
-			if summonIndex == 4:
+			if summonIndex == 4: # Copy summon
+				# Ensure there is a selected object and its a valid instance
 				if copySelectedObject and is_instance_valid(copySelectedObject):
+					# If its preview isn't on
 					if not ghostingOn:
+						# Create the ghost instance
 						ghostInstance = copySelectedObject.duplicate()
 						if ghostInstance is CSGCombiner3D:
 							ghostInstance.use_collision = false
@@ -168,10 +165,13 @@ func _process(_delta):
 						elif ghostInstance is CSGMesh3D:
 							ghostInstance.material = mat
 						ghostInstance.scale = copySelectedObject.scale
+						# Add the ghost to the scene
 						get_tree().current_scene.add_child(ghostInstance)
 						ghostingOn = true
+					# If the raycast detects another object
 					if raycast_3d.is_colliding():
 						var obj = raycast_3d.get_collider()
+						# Use snapping point if the collided object is inside of summonedObjects and isn't the copied object
 						if obj in summonedObjects and obj != copySelectedObject:
 							var snap_point = WorldOptions.snap_vec(raycast_3d.get_collision_point())
 							ghostInstance.global_position = snap_point + raycast_3d.get_collision_normal() * 0.01
@@ -181,19 +181,22 @@ func _process(_delta):
 					else:
 						var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
 						ghostInstance.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
-			else:
+			else: # follow the other summon index features
+				# Create the ghost instance if it isn't previewing
 				if not ghostingOn:
 					ghostInstance = ghostedObjects[summonIndex].instantiate()
+					# Correct the scale of the vertice ghosted instance
 					if summonIndex == 3:
 						ghostInstance.scale = Vector3.ONE
-					else:
+					else: # Give everything else the edited scale
 						ghostInstance.scale = objectSize * Vector3.ONE # sets all of the values to objectSize
+					# Add the ghost to the scene
 					get_tree().current_scene.add_child(ghostInstance)
 					ghostingOn = true
-				if summonIndex == 3:
+				if summonIndex == 3: # Use world snapping features
 					var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
 					ghostInstance.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
-				else:
+				else: # Use world snapping features while combining
 					if raycast_3d.is_colliding():
 						var obj = raycast_3d.get_collider()
 						if obj in summonedObjects:
@@ -202,30 +205,30 @@ func _process(_delta):
 							ghostInstance.global_position = snap_pos
 							ghostInstance.look_at(snapped_point, raycast_3d.get_collision_normal())
 					else:
+						# Snap the spawn position of the ghosted object while not combining
 						var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
 						ghostInstance.global_transform.origin = WorldOptions.snap_vec(spawn_pos)
 		else:
+			# While ghost is on, free the ghost, start the summon timer.
 			if ghostingOn:
 				ghostInstance.queue_free()
 				ghostInstance = null
 				ghostingOn = false
 				timer.start()
 				can_summon = false
-				if summonIndex == 4:
+				if summonIndex == 4: # If its a copy index copy the selected object
 					place_copy()
-					print("indexed 4 copying time")
-				elif summonIndex == 3:
+				elif summonIndex == 3: # If its a vertice summon the vertex
 					summon_vertex()
-				else:
+				else: # While its colliding combine the summon to the object 
 					if raycast_3d.is_colliding():
-						print("release collider is called")
 						var obj = raycast_3d.get_collider()
 						if obj in summonedObjects:
-							print("placing summonIndex 4 : ", summonIndex)
 							combine_objects(summonIndex, obj, raycast_3d.get_collision_point(), raycast_3d.get_collision_normal())
-					else:
+					else: # If not summon the object!
 						summon_object(summonIndex)
 		
+		# Always keep highlighted variables
 		update_highlighted_object()
 		update_highlighted_vertex()
 		
@@ -235,10 +238,8 @@ func _process(_delta):
 				# Group selecting (Entire CSGCombiner included)
 				if selectIndex == 0:
 					triggerPressed = true
-					# print("This is Group / All select")
 					# Release trigger / click
 					if currentSelectedObject == highlighted_object:
-						# print("Goodbye previous selected object", currentSelectedObject)
 						var deselct_object = currentSelectedObject
 						copySelectedObject = null
 						currentSelectedObject = null
@@ -246,7 +247,6 @@ func _process(_delta):
 						await _remove_highlight(deselct_object)
 
 					elif not currentSelectedObject:
-						# print("Hello new selected object", highlighted_object)
 						currentSelectedObject = highlighted_object
 						copySelectedObject = currentSelectedObject
 						highlighted_object = null
@@ -255,31 +255,22 @@ func _process(_delta):
 				# Multiple selecting (Can select an infinite amount of objects)
 				elif selectIndex == 1: # Multi Select
 					triggerPressed = true
-					# print("This will be multi select")
 					if highlighted_object in multiSelectHolder:
-						# print("Removing : ", highlighted_object, " : To the multiSelectHolder")
 						var deselect_object = highlighted_object
 						highlighted_object = null
 						multiSelectHolder.erase(deselect_object)
 						await _remove_highlight(deselect_object)
 
 					elif highlighted_object not in multiSelectHolder:
-						# print("Adding : ", highlighted_object, " : To the multiSelectHolder")
-						# print("Hello new selected object", highlighted_object)
-						# print(currentSelectedObject, highlighted_object)
-						# _remove_highlight(currentSelectedObject) # Remove any previous highlighting
 						_apply_highlight(highlighted_object, selected_color)
 						multiSelectHolder.append(highlighted_object)
-						# print(currentSelectedObject.scale)
 						# Select case for ensuring the object is selected
 						currentSelectedObject = null
 
 				# Single object selecting (Select a single object at a time)
 				elif selectIndex == 2: # Single Select
 					triggerPressed = true
-					# print("This will be single select")
 					if currentSelectedObject == highlighted_object:
-						# print("Object is no longer selected")
 						var deselect_object = currentSelectedObject
 						copySelectedObject = null
 						currentSelectedObject = null
@@ -287,7 +278,6 @@ func _process(_delta):
 						await _remove_highlight(deselect_object)
 
 					elif not currentSelectedObject:
-						# print("Object is selected")
 						currentSelectedObject = highlighted_object
 						copySelectedObject = currentSelectedObject
 						await _apply_highlight(currentSelectedObject, selected_color)
@@ -297,6 +287,7 @@ func _process(_delta):
 			
 		# Grip logic for gripping a vertex to connect it to another vertex creating an edge
 		if is_button_pressed("grip"):
+			# Apply the highlight to vertex objects when gripping for connecting
 			if not currentlyConnecting and highlighted_vertex:
 				currentlyConnecting = highlighted_vertex
 				await _apply_highlight(currentlyConnecting, selected_color)
@@ -307,7 +298,7 @@ func _process(_delta):
 					ghostEdge.queue_free()
 					ghostEdge = null
 
-		else:
+		else: # If not gripping and the connecting variable is true connect the vertices together
 			if currentlyConnecting:
 				var deselect_color = currentlyConnecting
 				if highlighted_vertex and highlighted_vertex != currentlyConnecting:
@@ -316,12 +307,14 @@ func _process(_delta):
 				await _remove_highlight(deselect_color)
 
 # Summoning Functions
+# Combine the objects together when hovering while summoning
 func combine_objects(index, combiner, spawnPoint, objectNormal):
+	# Guard to ensure you don;t combine to an intersection / subtraction Object
 	if combiner.is_in_group("intersection_ghosts") or combiner.is_in_group("subtraction_ghosts"):
-		print("Cannot combine to ghosts")
 		ToastManager.error("Combine Failed", "Cannot combine objects to ghosted nodes")
 		return
 
+	# Ensure the index is within the summonable objects
 	if index < summonableObjects.size():
 		# Instantiate the object in the scene
 		var new_obj = summonableObjects[index].instantiate()
@@ -330,7 +323,6 @@ func combine_objects(index, combiner, spawnPoint, objectNormal):
 		# Will replace this with a marker tag later on
 		new_obj.global_transform.origin = snapped_point + objectNormal * 0.01
 		# objectsInScene.append(new_obj)
-		# print("Added", new_obj)
 		# Add the new object to the scene
 		new_obj.scale = objectSize * Vector3.ONE
 		new_obj.operation = csgIndex
@@ -339,14 +331,14 @@ func combine_objects(index, combiner, spawnPoint, objectNormal):
 		new_obj.reparent(combiner)
 		new_obj.use_collision = true
 		new_obj.collision_layer = 2
-		print("Parent is : ", new_obj.get_parent())
+		# Add the combined object to the summonedObjects group
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Updates the summoned list within script
 		AudioManager.play_snap()
 		emit_signal("objectSummoned") # This gets called as an upadte is to be sent out due to a reparenting
-		print(summonedObjects)
 	else:
 		print("Summonables out of index")
 
+# Summon the objects into the scene tied to nothing
 func summon_object(index):
 	# Checks to see if index is inside the size of the array
 	if index < summonableObjects.size(): # Prevent from spawning in a vertex
@@ -357,11 +349,6 @@ func summon_object(index):
 		# Grabs the position of the hand and will add to it to spawn the hand in
 		# Will replace this with a marker tag later on
 		var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
-		print("Snap on : ", WorldOptions.snapEnabled, " : spawn position : ", spawn_pos)
-		#new_obj.global_transform.origin = spawn_pos
-		#new_obj.add_to_group("summonedObjects")
-		# objectsInScene.append(new_obj)
-		# print("Added", new_obj)
 		# Add the new object to the scene
 		new_obj.scale = objectSize * Vector3.ONE
 		get_tree().current_scene.add_child(combiner)
@@ -375,19 +362,17 @@ func summon_object(index):
 		
 		new_obj.use_collision = true
 		new_obj.collision_layer = 2
-		print("Object Collision", new_obj.use_collision)
-		print("Object Layer", new_obj.collision_layer)
 		combiner.add_to_group("summonedObjects")
 		summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # Updates the summoned list within script
 		AudioManager.play_place_down()
 		emit_signal("objectSummoned")
-		print(summonedObjects)
 	else:
 		print("Summonables out of index")
 
 # Vertex / Verticies Functions
 func summon_vertex():
-	print("Summoning the vertex")
+	# Summon the vertex into the scene
+	# Instantiate and add it to the root
 	var vertex = summonableObjects[3].instantiate()
 	var spawn_pos = WorldOptions.snap_vec(global_transform.origin + -global_transform.basis.z * spawn_distance)
 	vertex.global_position = spawn_pos
@@ -395,32 +380,40 @@ func summon_vertex():
 	
 	await get_tree().process_frame
 	
+	# Set collision layer and mask to bit level 4
 	vertex.use_collision = true
 	vertex.collision_layer = 8
 	vertex.collision_mask = 8
+	
+	# Add new vertex to the placed vertices group
 	vertex.add_to_group("placedVertices")
 	
+	# Update the array
 	placed_vertices = get_tree().get_nodes_in_group("placedVertices")
 	connect_vertices[vertex] = []
 	AudioManager.play_place_down()
+	# Send out signal
 	emit_signal("verticeSummoned")
-	# print("Vertex placed : ", vertex.global_position)
 
+# Combine the vertices together
 func connect_vertex(vertex_1, vertex_2): # Assuming the this follows grip logic
-	print("Connecting vertex : ", vertex_1, " : With vertex : ", vertex_2)
+	# Ensure the two vertices are valid
 	if not is_instance_valid(vertex_1) or not is_instance_valid(vertex_2):
 		return
 	
+	# Ensure they aren't already connected to each other, if true combine them
 	if vertex_2 not in connect_vertices[vertex_1]:
 		connect_vertices[vertex_1].append(vertex_2)
 	if vertex_1 not in connect_vertices[vertex_2]:
 		connect_vertices[vertex_2].append(vertex_1)
 	
+	# Remove the Preview edge
 	if ghostEdge and is_instance_valid(ghostEdge):
 		ghostEdge.queue_free()
 		ghostEdge = null
 	
 	AudioManager.play_snap()
+	# Draw the edge
 	draw_edge(vertex_1, vertex_2)
 
 # Draw the edge that was created by connecting the two vertices
@@ -442,6 +435,7 @@ func draw_edge(vertex_1, vertex_2):
 	mesh.look_at(vertex_1.global_position, Vector3.UP)
 	mesh.rotate_object_local(Vector3.RIGHT, PI / 2)
 
+# Same as draw edge but as a preview edge
 func preview_edge(vertex_1, vertex_2):
 	if ghostEdge and is_instance_valid(ghostEdge):
 		ghostEdge.queue_free()
@@ -470,37 +464,41 @@ func preview_edge(vertex_1, vertex_2):
 
 	ghostEdge = mesh
 
+# Validation function to ensure that the vertices object follows Eulers 
 func validate_mesh() -> bool:
+	# Ensure there are enough vertices in the world to make a mesh
 	if placed_vertices.size() < 4:
-		print("Required Vertices is 4")
 		ToastManager.error("Invalid Mesh", "At least 4 vertices are required")
 		return false
 		
+	# Put the vertices into a usable array
 	var vertices_usable = []
 	for vertex in placed_vertices:
 		if connect_vertices[vertex].size() == 0:
-			print("Skip this vertex: Empty Connections :, ", vertex.global_position)
 			continue
 		if connect_vertices[vertex].size() < 3:
-			print("Required connections is 3: ", vertex.global_position, " : only has : ", connect_vertices[vertex].size())
 			continue
 		vertices_usable.append(vertex)
 		
+	# Ensure there are enough usable vertices
 	if vertices_usable.size() < 4:
 		print("Required usable (connected) vertices is 4")
 		ToastManager.error("Invalid Connections", "Each vertex needs at least 3 connections")
 		return false
-		
+	
+	# Grab the total edge count
 	var edge_count = 0
 	for vertex in vertices_usable:
 		edge_count += connect_vertices[vertex].size()
 	edge_count /= 2
 	
+	# Grab the total possible face count
 	var face_count = 0
 	var vertex_index = {}
 	for index in vertices_usable.size(): # Give each of the nodes dictionary index
 		vertex_index[vertices_usable[index]] = index
 	
+	# Loop to grab the face count without recounting faces
 	for vertex_1 in vertices_usable:
 		for vertex_2 in connect_vertices[vertex_1]:
 			for vertex_3 in connect_vertices[vertex_1]:
@@ -519,18 +517,18 @@ func validate_mesh() -> bool:
 	var V = vertices_usable.size()
 	var E = edge_count
 	var F = face_count
-	print("Vertices : ", V, " : Edges : ", E, " : Faces : ", F)
 	
+	# Test the mesh through Euler's formula
 	if V - E + F != 2:
-		print("Mesh isn't a closed manifold mesh")
 		ToastManager.error("Invalid Shape", "Mesh is not a closed surface V ("+str(V)+") - E ("+str(E)+") + F ("+str(F)+") ≠2)")
 		return false
 		
-	print("Valid Shape")
 	ToastManager.success("Valid Mesh", "Shape created successfully!")
 	return true
 
+# Build the actual mesh function
 func build_mesh():
+	# Build the vertices usable 
 	var vertices_usable = []
 	
 	for vertex in placed_vertices:
@@ -544,27 +542,34 @@ func build_mesh():
 		print("Need at least 4 connected vertices")
 		return
 	
+	# Grab the center of the mesh overall
 	var center = Vector3.ZERO
 	for vertex in vertices_usable:
 		center += vertex.global_position
 	center /= vertices_usable.size()
 	
+	# Place the vertex into an index value 
 	var vertex_index = {}
 	for index in vertices_usable.size():
 		vertex_index[vertices_usable[index]] = index
 	
+	# Create the MeshInstace3D
 	var mesh_instance = MeshInstance3D.new()
 	get_tree().current_scene.add_child(mesh_instance)
 	mesh_instance.global_position = center
 	
+	# Ensure the frame is processed
 	await get_tree().process_frame
 	
+	# Grab the positions of the vertices
 	var positions = []
 	for v in vertices_usable:
 		positions.append(mesh_instance.to_local(v.global_position))
 	
+	# Create the vector Array
 	var vertices = PackedVector3Array()
 	
+	# Create the packed scene locations
 	for vertex_1 in vertices_usable:
 		for vertex_2 in connect_vertices[vertex_1]:
 			for vertex_3 in connect_vertices[vertex_1]:
@@ -583,19 +588,22 @@ func build_mesh():
 					vertices.push_back(p2)
 					vertices.push_back(p3)
 	
+	# Ensure there is a mesh
 	if vertices.size() == 0:
-		print("No triangles found")
 		mesh_instance.queue_free()
 		return
 	
+	# Create the surface tool
 	var st = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	# Add the vertices to the Surface tool
 	for v in vertices:
 		st.add_vertex(v)
 	st.generate_normals()
 	st.index()
 	var arr_mesh = st.commit()
 	
+	# Give it the standard material
 	var mat = StandardMaterial3D.new()
 	mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
@@ -611,11 +619,13 @@ func build_mesh():
 	get_tree().current_scene.add_child(static_body)
 	static_body.global_transform = mesh_instance.global_transform
 	
+	# Give the object a collision shape
 	var collision = CollisionShape3D.new()
 	var convex_shape = arr_mesh.create_convex_shape()
 	collision.shape = convex_shape
 	static_body.add_child(collision)
 	
+	# Reparent the object
 	mesh_instance.reparent(static_body)
 	mesh_instance.position = Vector3.ZERO
 	
@@ -624,18 +634,15 @@ func build_mesh():
 	
 	AudioManager.play_place_down()
 	
+	# Add it to its own mesh' group
 	static_body.add_to_group("placedMeshes")
 	
 	await get_tree().process_frame
 	
+	# Clear the previous vertices 
 	clear_vertices()
-	
-	#if is_instance_valid(mesh_instance):
-		#convert_to_csg(mesh_instance)
-		#print("Converting the new mesh to a CSG")
 
-	# print("Mesh built at: ", mesh_instance.global_position)
-
+# Clear the existing vertices and edges
 func clear_vertices():
 	for mesh in get_tree().get_nodes_in_group("placedEdges"):
 		mesh.queue_free()
@@ -650,59 +657,76 @@ func clear_vertices():
 	currentlyConnecting = null
 	highlighted_vertex = null
  
+# Place a copy of the selected object
 func place_copy():
+	# Ensure there is a selected object
 	if not copySelectedObject or not is_instance_valid(copySelectedObject):
 		return
 
+	# Check to see if the CSG operation isn't an intersection
 	if csgIndex == CSGShape3D.OPERATION_INTERSECTION:
-		print("Cannot copy intersect operation, use union or subtraction")
 		ToastManager.error("Copy failed", "Cannot copy with intersection operations")
 		return
 
+	# Check to see if the user is hovering over another object
 	if raycast_3d.is_colliding():
 		var obj = raycast_3d.get_collider()
+		# Ensure the object isn't the one being copied
 		if obj in summonedObjects and obj != copySelectedObject:
+			# If it is a group copy
 			if selectIndex == 0:
+				# Ensure the copied object is a CSGCombiner3D
 				if not copySelectedObject is CSGCombiner3D:
 					ToastManager.error("Copy Failed", "Can only copy CSG Combiners in group select!")
 					return
 				
+				# Grab the parent and the targets position for reference
 				var parent_position = copySelectedObject.global_transform.origin
 				var target_position = WorldOptions.snap_vec(raycast_3d.get_collision_point())
 				
+				# For the amount of children in the copied object
 				for i in range(copySelectedObject.get_child_count()):
+					# Grab that child
 					var original_child = copySelectedObject.get_child(i)
+					# Ensure it's a CSGMesh3D
 					if original_child is CSGMesh3D:
+						# Duplicate that child
 						var new_obj = original_child.duplicate()
 						
+						# Change its CSGIndex
 						new_obj.operation = csgIndex
 						
+						# Grab that childs original materials
 						if original_child in true_materials:
 							new_obj.material = true_materials[original_child]
 						else:
 							new_obj.material = null
+						# Set its collision layer properly 
 						new_obj.use_collision = true
 						new_obj.collision_layer = 2
+						# Add child to the tree anda reparent 
 						get_tree().current_scene.add_child(new_obj)
 						new_obj.reparent(obj)
 						
+						# Set the offsets properly
 						var offset = original_child.global_transform.origin - parent_position
 						new_obj.global_transform.origin = target_position + offset + raycast_3d.get_collision_point() * 0.01
 						
 						new_obj.global_transform.basis = original_child.global_transform.basis
 						
-						print("Added child ", i, " to ", obj.name)
-			elif selectIndex == 2:
-				print("enter selectIndex 2")
+			elif selectIndex == 2: # If in single select mode
+				# Ensure the copied object is a CSGMesh3D
 				if not copySelectedObject is CSGMesh3D:
 					ToastManager.error("Copy Failed", "Can only copy CSG Mesh in single select")
 					return
+				
+				# Duplicate the object
 				var new_obj = copySelectedObject.duplicate()
 				
+				# Have it follow the selected operation
 				new_obj.operation = csgIndex
 				
-				print("new_obj mesh: ", new_obj.mesh)
-				print("new_obj operation: ", new_obj.operation)
+				# Snap the object to the location
 				var _snapped = WorldOptions.snap_vec(raycast_3d.get_collision_point())
 				if copySelectedObject in true_materials:
 					new_obj.material = true_materials[copySelectedObject]
@@ -710,6 +734,7 @@ func place_copy():
 					new_obj.material = null
 				new_obj.use_collision = true
 				new_obj.collision_layer = 2
+				# Add to the root and reparent
 				get_tree().current_scene.add_child(new_obj)
 				new_obj.reparent(obj)
 				new_obj.global_transform.origin = _snapped + raycast_3d.get_collision_normal() * 0.01
@@ -717,9 +742,10 @@ func place_copy():
 			AudioManager.play_snap()
 			emit_signal("objectSummoned")
 			return
-
+	
+	# Else the spaawn distance in the world without combining, place infront of user
 	var spawn_pos = global_transform.origin + -global_transform.basis.z * spawn_distance
-	if selectIndex == 0:
+	if selectIndex == 0: # Group select
 		if not copySelectedObject is CSGCombiner3D:
 			ToastManager.error("Copy Failed", "Can only copy CSG Combiners in group select")
 			return
@@ -747,7 +773,7 @@ func place_copy():
 		AudioManager.play_place_down()
 		emit_signal("objectSummoned")
 
-	elif selectIndex == 2:
+	elif selectIndex == 2: # Single select
 		print("Elif 2 selectIndex copy")
 		if not copySelectedObject is CSGMesh3D:
 			ToastManager.error("Copy Failed", "Can only copy CSG Mesh in single select")
@@ -954,7 +980,6 @@ func _apply_highlight_recursive(obj, color):
 		else:
 			print("No mesh resource found on CSGMesh3D!")
 	else:
-		print("No mesh resource found on CSGMesh3D!")
 		return
 
 # Remove highlight recursive
@@ -1044,8 +1069,8 @@ func set_page_index(idx):
 		clear_select(selectIndex)
 		is_active = false
 
+# Change the CSG Operation
 func change_csg_operation(idx):
-	print("The new oepration is : ", idx)
 	csgIndex = idx
 
 func update_list():
@@ -1054,7 +1079,6 @@ func update_list():
 	placed_vertices = get_tree().get_nodes_in_group("placedVertices")
 
 func set_summon_index(idx):
-	print("Summon Called")
 	summonIndex = idx
 	if summonIndex == 3:
 		ui_controller.build_vertex.visible = true
@@ -1073,8 +1097,6 @@ func _load_mesh():
 		#print("Loading mesh has been pressed")
 		build_mesh()
 		#print("Object has been created and loaded!!")
-	else:
-		print("No valid mesh is present")
 
 func _clear_vertices():
 	clear_vertices()

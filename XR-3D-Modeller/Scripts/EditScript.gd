@@ -1,13 +1,15 @@
 extends Node
 
+# Signls going out
 signal objectEdited
-signal selectedScale(value) # signal should send the current scale value for the UI
 
+# onready variables used, controllers, raycast3d
 @onready var secondary_controller = get_parent().get_parent().get_parent().get_node("LeftHand") # Left Controller
 @onready var controller = get_parent().get_parent() # Right Controller / Main Controller hence controller as the name
 @onready var raycast_3d = controller.get_node("RayCast3D")
 @onready var scaleCast = controller.get_node("BuildRayCast")
 
+# Preload scenes for Moving, Scaling and Rotating
 var orb_scene = preload("res://Scenes/orb_plane_scale.tscn")
 var arrow_scene = preload("res://Scenes/arrow.tscn")
 var torus_scene = preload("res://Scenes/torus_rotation_plane.tscn")
@@ -101,7 +103,6 @@ var selected_color = Color(0.913, 0.967, 0.331, 1.0) # When clicked on this is t
 func _ready() -> void:
 	summonedObjects = get_tree().get_nodes_in_group("summonedObjects") # If there are any existing objects already then load, will be used later on for previous saves
 	var summoner = get_node("../..") # Later this path should reach the summon part of function tool node
-	# print(summoner)
 	summoner.connect("objectSummoned", Callable(self,  "update_list"))
 	var remover = get_node("../RemoveFunction")
 	remover.connect("objectRemoved", Callable(self, "update_list"))
@@ -109,29 +110,29 @@ func _ready() -> void:
 	var ui_controllers = get_tree().get_nodes_in_group("ui_controller")
 	if ui_controllers.size() > 0:
 		ui_controller = ui_controllers[0]
-		print("Hello from readying Remover")
 		ui_controller.connect("edit_selected", Callable(self, "set_edit_index"))
 		ui_controller.connect("change_page", Callable(self, "set_page_index"))
 		ui_controller.connect("scaleSize", Callable(self, "scale_selected_object"))
 		ui_controller.connect("select_change", Callable(self, "select_index_change"))
 		ui_controller.connect("csg_operation", Callable(self, "change_csg_operation"))
-		print("UI Controller: ", ui_controller)
-	print("Players controller: ", controller)
 
 func _process(delta: float) -> void:
 	# Allows this script to be ran
 	if is_active:
-		if editIndex == 0:
+		if editIndex == 0: # Move functiojnality
 			if not currentlyPlaneMoving and not currentlyMoving:
 				update_highlighted_arrow()
-				
+			# Grip allowing you to move
 			if controller.is_button_pressed("grip_click"):
+				# Move object with gizmo or the arrows that appear on the object
 				if (highlighted_gizmo_arrow or highlighted_arrow) and not currentlyMoving:
 					if not currentlyPlaneMoving:
+						# Start the plane movement
 						startPlaneMove()
 						currentlyPlaneMoving = true
+					# Plane movement functionality
 					planeMoveObject()
-				
+				# Using the arrows or free move
 				elif not currentlyPlaneMoving:
 					if selectIndex == 0 or selectIndex == 2:
 						if currentSelectedObject:
@@ -140,12 +141,14 @@ func _process(delta: float) -> void:
 								currentlyMoving = true
 							moveObject(delta)
 					
+					# Multi select holder mode
 					elif selectIndex == 1 and not multiSelectHolder.is_empty():
 						if not currentlyMoving:
 							startMove()
 							currentlyMoving = true
 						moveObject(delta)
 			else:
+				# After release play audio and remove the highlights and clear variables
 				if currentlyPlaneMoving:
 					AudioManager.play_place_down()
 					
@@ -166,17 +169,18 @@ func _process(delta: float) -> void:
 					var obj = planeMoveTarget()
 					if obj:
 						updateArrowPositions(obj)
-				
+				# Placing it down with free move
 				if currentlyMoving:
 					
 					AudioManager.haptic_stop(controller)
 					
+					# If hovering on release reattach the object
 					if highlighted_object:
 						AudioManager.play_snap()
-						if selectIndex == 1:
+						if selectIndex == 1: # Reattach all objects and nodes
 							for obj in multiSelectHolder:
 								reattach(obj, highlighted_object)
-						else:
+						else:# Reattach normally
 							reattach(currentSelectedObject, highlighted_object)
 							if selectIndex == 0 and currentSelectedObject is CSGCombiner3D:
 								var target_combiner = highlighted_object
@@ -189,34 +193,36 @@ func _process(delta: float) -> void:
 
 					AudioManager.haptic_stop(controller)
 					
+					# Re Plane MoveTarget
 					var obj = planeMoveTarget()
 					if obj:
 						updateArrowPositions(obj)
 					currentlyMoving = false
-
+		
+		# Stretch condition
 		if controller.is_button_pressed("grip_click") and secondary_controller.is_button_pressed("grip_click") and editIndex == 1: # Stretch the object when gripping controllers and pulling outwards or inwards, second / first index value
 			if selectIndex == 0 or selectIndex == 2:
 				if currentSelectedObject:
-					if not currentlyStretching:
-						startStretch(controller.global_position, secondary_controller.global_position)
-						currentlyStretching = true
-						# print("Distance from stretching process : ", stretchDistance)
-					stretchObject(controller.global_position, secondary_controller.global_position)
-				elif selectIndex == 1 and !multiSelectHolder.is_empty():
-					if not currentlyStretching:
+					if not currentlyStretching: # Start stretching for regular object 
 						startStretch(controller.global_position, secondary_controller.global_position)
 						currentlyStretching = true
 					stretchObject(controller.global_position, secondary_controller.global_position)
-		else:
+				elif selectIndex == 1 and !multiSelectHolder.is_empty(): # Multi stretch
+					if not currentlyStretching:
+						startStretch(controller.global_position, secondary_controller.global_position)
+						currentlyStretching = true
+					stretchObject(controller.global_position, secondary_controller.global_position)
+		else: # Release the haptics on both controller at end of stretch
 			if currentlyStretching:
 				AudioManager.haptic_stop(controller)
 				AudioManager.haptic_stop(secondary_controller)
 			currentlyStretching = false
 
+		# Rotation condition
 		if editIndex == 2:
 			if not currentlyRotating and not currentlyPlaneRotating:
 				update_highlighted_torus()
-
+			# Check if the user grips while hovering an torus index start rotation
 			if controller.is_button_pressed("grip_click"):
 				if selectIndex == 0 or selectIndex == 2:
 					if currentSelectedObject:
@@ -230,6 +236,7 @@ func _process(delta: float) -> void:
 								startRotate()
 								currentlyRotating = true
 							_rotateObject()
+				# Rotation condition for multi select
 				elif selectIndex == 1 and not multiSelectHolder.is_empty():
 					if highlighted_torus and not currentlyRotating:
 						if not currentlyPlaneRotating:
@@ -241,7 +248,7 @@ func _process(delta: float) -> void:
 							startRotate()
 							currentlyRotating = true
 						_rotateObject()
-			else:
+			else: # Release of rotations
 				if currentlyPlaneRotating:
 					AudioManager.haptic_stop(controller)
 					_remove_highlight(activeTorus)
@@ -254,7 +261,9 @@ func _process(delta: float) -> void:
 					objectStartingBasisMulti.clear()
 				currentlyRotating = false
 
+		# Plane Scaling condition
 		if editIndex == 3:
+			# Only works for Single select
 			if selectIndex == 2 and currentSelectedObject:
 				if not currentlyScaling:
 					update_highlighted_orb()
@@ -263,7 +272,6 @@ func _process(delta: float) -> void:
 						startScale()
 						currentlyScaling = true
 					plane_orb_scaling()
-
 				else:
 					if currentlyScaling:
 						if activeGizmoOrb:
@@ -370,34 +378,42 @@ func _process(delta: float) -> void:
 # Stretching functions
 # Main and secondary are both controllers
 func startStretch(main, secondary):
+	# Grabs the starting stretch distance
 	stretchDistance = main.distance_to(secondary)
 	
+	# To ensure the stretching has a bit of wiggle room to not start stretching
 	if stretchDistance < 0.05:
 		currentlyStretching = false
 		return
 	
+	# Begin haptics
 	AudioManager.haptic_continue(controller, 999.0, 0.3)
 	AudioManager.haptic_continue(secondary_controller, 999.0, 0.3)
 	
+	# Starting scale of the objects scale for Single and Group
 	if selectIndex == 0 or selectIndex == 2:
 		startingScale = currentSelectedObject.scale
 	
+	# Starting scale of the multi select
 	elif selectIndex == 1 and !multiSelectHolder.is_empty():
 		for obj in multiSelectHolder:
 			startingScaleMulti[obj] = obj.scale
 
 # Main and secondary are both controllers and obj is the currently selected object
 func stretchObject(main, secondary):
+	# Grab the current distance
 	var currentDistance = main.distance_to(secondary)
 	# Return if controllers aren't separated
 	if stretchDistance == 0:
 		return
 
+	# Get the ratio of the distance by the stretch distance
 	var ratio = currentDistance / stretchDistance
 	
 	if selectIndex == 0 or selectIndex == 2:
 		var newScale = startingScale * ratio
 		
+		# Clamp the scale to not be bigger than 10.0 and less than 1.0
 		newScale.x = clamp(newScale.x, 0.1, 10.0)
 		newScale.y = clamp(newScale.y, 0.1, 10.0)
 		newScale.z = clamp(newScale.z, 0.1, 10.0)
@@ -405,6 +421,7 @@ func stretchObject(main, secondary):
 		var avgScale = (newScale.x + newScale.y + newScale.z) / 3.0
 		ui_controller._change_scale_value(Vector3(avgScale, avgScale, avgScale))
 
+	# Clamp the scale
 	if selectIndex == 1 and !multiSelectHolder.is_empty():
 		for obj in multiSelectHolder:
 			var newScale = startingScaleMulti[obj] * ratio
@@ -413,34 +430,41 @@ func stretchObject(main, secondary):
 			newScale.z = clamp(newScale.z, 0.1, 10.0)
 			obj.scale = newScale
 		
+	# Emit edit signal
 	emit_signal("objectEdited")
 
 # Moving functions
 func startMove():
-	
+	# Move function begin
 	AudioManager.haptic_continue(controller, 999.0, 0.25)
+	# Grab the offset of the moving object 
 	if selectIndex == 0 or selectIndex == 2:
 		moveOffset = WorldOptions.snap_vec(currentSelectedObject.global_position) - self.global_position # distance between object and controller
 		moveBasis = self.global_transform.basis # starting basis for the object to rotate around
 		# print(moveOffset)
+	# Same for Multi select
 	elif selectIndex == 1 and !multiSelectHolder.is_empty():
 		for obj in multiSelectHolder:
 			moveOffsetMulti[obj] = WorldOptions.snap_vec(obj.global_position) - self.global_position
 		moveBasis = self.global_transform.basis
 
+# Move the object function
 func moveObject(delta):
+	# Grab the objets rotation and offset.
 	var rotation = self.global_transform.basis * moveBasis.inverse()
 	var offset_direction = -controller.global_transform.basis.z
 	var joystick = controller.get_vector2("primary")
+	# Group select movement for joystick and object
 	if selectIndex == 0:
 		# Moves the objects position based on the rotation and distance the controller has moved
 		currentSelectedObject.global_position = WorldOptions.snap_vec(self.global_position + rotation * moveOffset)
 		if abs(joystick.y) > 0.1:
 			#print("Object is being pulled towards me : ", joystick.y)
 			#print("offset direction : ", offset_direction)
+			# Offset the objet with move speed direction and joystick
 			moveOffset += offset_direction * joystick.y * moveSpeed * delta
 			#print("Moving objects location : ",currentSelectedObject.global_position)
-
+	# Single select move object 
 	elif selectIndex == 2:
 		# Moves the objects position based on the rotation and distance the controller has moved
 		currentSelectedObject.global_position = WorldOptions.snap_vec(self.global_position + rotation * moveOffset)
@@ -453,6 +477,7 @@ func moveObject(delta):
 		if original:
 			original.global_position = currentSelectedObject.global_position
 
+	# multi select move object 
 	elif selectIndex == 1 and !multiSelectHolder.is_empty():
 		for obj in multiSelectHolder:
 			obj.global_position = WorldOptions.snap_vec(self.global_position + rotation * moveOffsetMulti[obj])
@@ -460,37 +485,38 @@ func moveObject(delta):
 			if abs(joystick.y) > 0.1:
 				moveOffsetMulti[obj] += offset_direction * joystick.y * moveSpeed * delta
 
+	# Edited signal
 	emit_signal("objectEdited")
 
-# Reattach functions
+# Reattach object to new combiner parent
 func reattach(obj, combiner):
-	# print("Reattach this object : ", obj, " : to the new object : ", combiner)
+	# Reattach the object
 	var target_combiner
 	if combiner is CSGCombiner3D:
 		target_combiner = combiner
 	elif combiner is CSGMesh3D:
 		target_combiner = combiner.get_parent() as CSGCombiner3D
 
-	# Fail safe incase the 
+	# Fail safe incase the target is empty
 	if target_combiner == null:
-		# print("The target attaching too is not a combiner nor is not tied to a combiner")
 		return
-
+	
+	# If the obj is a CSGMesh3D simply add it 
 	if obj is CSGMesh3D:
 		var old_combiner = obj.get_parent() as CSGCombiner3D
 		if old_combiner == target_combiner:
-			# print("This is already the combiner of this object")
 			return
 		
 		var obj_transform = obj.global_transform
 		old_combiner.remove_child(obj)
 		target_combiner.add_child(obj)
 		obj.global_transform = obj_transform
-		await no_children_left(old_combiner) # Function for later
+		# Check if the combiner has nay children left
+		await no_children_left(old_combiner)
 
+	# If the obj is a combiner (with group select)
 	elif obj is CSGCombiner3D:
 		if obj == target_combiner:
-			# print("This is me!!")
 			return
 		
 		for child in obj.get_children():
@@ -500,30 +526,33 @@ func reattach(obj, combiner):
 			child.global_transform = obj_transform
 		
 		await no_children_left(obj)
-
+	# Signal out
 	emit_signal("objectEdited")
 
+# Release the object with no more children
 func no_children_left(combiner):
 	if combiner.get_child_count() == 0:
 		combiner.queue_free()
-		# print("MY CHILDREN ARE GONE")
 
 # Rotation functions
 func startRotate():
-	# print("Begin the rotations!")
+	# Rotate the object opening variables
 	AudioManager.haptic_continue(controller, 999.0, 0.3)
 	startingBasis = controller.global_transform.basis
+	# Grab starting rotations
 	if selectIndex == 0 or selectIndex == 2:
-		# print("Take the object at hand's BASIS!!")
 		objectStartingBasis = currentSelectedObject.global_transform.basis
 	
 	elif selectIndex == 1:
 		for obj in multiSelectHolder:
 			objectStartingBasisMulti[obj] = obj.global_transform.basis
 
+# Rotate the objects
 func _rotateObject():
+	# Grab the rotation done by the controller
 	var rotation = controller.global_transform.basis * startingBasis.inverse()
 	var euler = rotation.get_euler()
+	# Get the snapped euler rotation
 	var snapped_euler = Vector3(
 		WorldOptions.snap_angle(euler.x),
 		WorldOptions.snap_angle(euler.y),
@@ -532,11 +561,13 @@ func _rotateObject():
 	
 	var snapped_rotation = Basis.from_euler(snapped_euler)
 	
+	# Group select rotation
 	if selectIndex == 0:
 		var current_scale = currentSelectedObject.scale
 		currentSelectedObject.global_transform.basis = snapped_rotation * objectStartingBasis.inverse()
 		currentSelectedObject.scale = current_scale
-
+	
+	# Single select rotation
 	elif selectIndex == 2:
 		var current_scale = currentSelectedObject.scale
 		currentSelectedObject.global_transform.basis = snapped_rotation * objectStartingBasis.inverse()
@@ -545,16 +576,19 @@ func _rotateObject():
 			original.global_transform.basis = currentSelectedObject.global_transform.basis
 			original.scale = current_scale
 
+	# Multi select rotations
 	elif selectIndex == 1:
 		for obj in multiSelectHolder:
 			var current_scale = obj.scale
 			obj.global_transform.basis = snapped_rotation * objectStartingBasisMulti[obj]
 			obj.scale = current_scale
 
+	# Emit the signal
 	emit_signal("objectEdited")
 
 # Plane Scaling functions
 func startScale():
+	# Starting scale 
 	if highlighted_gizmo_orb:
 		activeGizmoOrb = highlighted_gizmo_orb
 		scaleAxis = activeGizmoOrb.get_meta("scale_axis")
@@ -562,24 +596,30 @@ func startScale():
 		activeOrb = highlighted_orb
 		scaleAxis = activeOrb.get_meta("scale_axis")
 	
+	# Grab the objects starting scale
 	scaleStartingScale = currentSelectedObject.scale
 	scaleStartingPosition = WorldOptions.snap_vec(currentSelectedObject.global_position)
 	
+	# Scale to the world axis
 	scaleWorldAxis = (currentSelectedObject.global_transform.basis.orthonormalized() * scaleAxis).normalized()
 	scaleStartingDistance = controller.global_position.dot(scaleWorldAxis)
 
+# Orb scaling
 func plane_orb_scaling():
-	# print("Use this orb to SCALE!!!")
+	# Checks to see if the currently selected object is still an instance 
 	if not is_instance_valid(currentSelectedObject):
 		return
 	if not is_instance_valid(activeGizmoOrb) and not is_instance_valid(activeOrb):
 		return
 
+	# Grab the current distance between the orbs
 	var currentDistance = controller.global_position.dot(scaleWorldAxis)
 	var delta = currentDistance - scaleStartingDistance
 	var snapped_delta = WorldOptions.snap(delta* 10.0) / 10.0
 	
+	# New scale is set
 	var newScale = scaleStartingScale
+	# Grabs the rotation and clamps between 10.0 and 10.0
 	if scaleAxis == Vector3.RIGHT:
 		newScale.x = clamp(scaleStartingScale.x + snapped_delta * 10.0, 0.1, 10.0)
 	elif scaleAxis == Vector3.UP:
@@ -587,30 +627,38 @@ func plane_orb_scaling():
 	elif scaleAxis == Vector3.FORWARD:
 		newScale.z = clamp(scaleStartingScale.z + snapped_delta * 10.0, 0.1, 10.0)
 		
+	# Gets the changed scale
 	var scaleChange = newScale - scaleStartingScale
 	var axis_component = scaleChange.x if scaleAxis == Vector3.RIGHT \
 		else scaleChange.y if scaleAxis == Vector3.UP \
 		else scaleChange.z
 	currentSelectedObject.global_position = WorldOptions.snap_vec(scaleStartingPosition + scaleWorldAxis * (axis_component * 0.5))
 
+	# Sets the objects new scale
 	currentSelectedObject.scale = newScale
+	# Update the position of orbs 
 	updateOrbPositions(currentSelectedObject)
 	
+	# Grabs the original
 	var original = get_ghost_original(currentSelectedObject)
 	if original:
 		original.global_position = currentSelectedObject.global_position
 		original.scale = currentSelectedObject.scale
 	
+	# Emit the signal
 	emit_signal("objectEdited")
 
+# Spawn the plane scaling orbs
 func spawnPlaneOrbs(obj):
 	if obj == null:
 		return
 	clearOrbs()
 	
+	# set the axes and colors for the orbs 
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD]
 	var colors = [Color(0.937, 0.267, 0.267, 0.95), Color(0.063, 0.725, 0.506, 0.95), Color(0.231, 0.510, 0.965, 0.95)]
 	
+	# loop through the axes and place the orbs down
 	for i in range(axes.size()):
 		var orb = orb_scene.instantiate()
 		get_tree().root.add_child(orb)
@@ -623,12 +671,16 @@ func spawnPlaneOrbs(obj):
 			orb.material = mat
 		
 		planeScalingOrbs.append(orb)
+	# Update the orb positions
 	updateOrbPositions(obj)
 	
 	spawnScaleGizmo()
 
+# Spawns the scale gizmo
 func spawnScaleGizmo():
 	clearScaleGizmo()
+	
+	# Same thing as scale orbs but for the orb gizmo
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD]
 	var colors = [Color(0.937, 0.267, 0.267, 0.95), Color(0.063, 0.725, 0.506, 0.95), Color(0.231, 0.510, 0.965, 0.95)]
 	
@@ -647,9 +699,11 @@ func spawnScaleGizmo():
 	
 	updateScaleGizmoPosition()
 	
+# Updating scaling gizmo 
 func updateScaleGizmoPosition():
 	var spawn_pos = controller.global_transform.origin + -controller.global_transform.basis.z * 0.5
 	
+	 # Same as scale orb
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD]
 	for i in range(planeScaleGizmo.size()):
 		var orb = planeScaleGizmo[i]
@@ -659,7 +713,9 @@ func updateScaleGizmoPosition():
 		var offset = axes[i] * 0.2
 		orb.global_position = spawn_pos + offset
 		
+# Clear scale gizmo
 func clearScaleGizmo():
+	# Clear the orb gizmos
 	for orb in planeScaleGizmo:
 		if is_instance_valid(orb):
 			orb.queue_free()
@@ -667,6 +723,7 @@ func clearScaleGizmo():
 	highlighted_gizmo_orb = null
 	activeGizmoOrb = null
 
+# Update the orb positions
 func updateOrbPositions(obj): # Update their positions once spawned
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD] # Directions
 	for i in range(planeScalingOrbs.size()):
@@ -675,15 +732,15 @@ func updateOrbPositions(obj): # Update their positions once spawned
 			continue
 		var world_offset = obj.global_transform.basis * axes[i]
 		orb.global_position = obj.global_position + world_offset
-		print("Orb has been moved to here : ", orb.global_position)
 
+# Clear the regular orbs
 func clearOrbs(): # Remove the orbs from the world
 	for orb in planeScalingOrbs:
 		if is_instance_valid(orb):
 			orb.queue_free()
-	print("Removing the orbs")
 	planeScalingOrbs.clear()
 
+# Highlighting feature for the orb objects
 func update_highlighted_orb():
 	var closest_orb = null
 	var closest_gizmo_orb = null
@@ -727,6 +784,7 @@ func spawnArrows(obj):
 		return
 	clearArrows()
 	
+	# Same as scale orb
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD]
 	var colors = [Color(0.937, 0.267, 0.267, 0.95), Color(0.063, 0.725, 0.506, 0.95), Color(0.231, 0.510, 0.965, 0.95)]
 	
@@ -747,6 +805,7 @@ func spawnArrows(obj):
 	spawnMoveGizmo()
 
 func spawnMoveGizmo():
+	# Same as Orb gizmo
 	clearMoveGizmo()
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD]
 	var colors = [Color(0.937, 0.267, 0.267, 0.95), Color(0.063, 0.725, 0.506, 0.95), Color(0.231, 0.510, 0.965, 0.95)]
@@ -766,6 +825,7 @@ func spawnMoveGizmo():
 	
 	updateMoveGizmoPosition()
 
+# Same as scale orbs functions but for moving gizmos
 func updateMoveGizmoPosition():
 	var spawn_pos = controller.global_transform.origin + -controller.global_transform.basis.z * 0.05
 	
@@ -784,6 +844,7 @@ func updateMoveGizmoPosition():
 		forward = right.cross(up).normalized()
 		arrow.global_transform.basis = Basis(right, up, -forward)
 
+# Clear move gizmo object
 func clearMoveGizmo():
 	for arrow in planeMoveGizmo:
 		if is_instance_valid(arrow):
@@ -792,6 +853,7 @@ func clearMoveGizmo():
 	highlighted_gizmo_arrow = null
 	activeGizmoArrow = null
 
+# Update the arrows positions after moving
 func updateArrowPositions(obj):
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD]
 	for i in range(planeMoveArrows.size()):
@@ -807,13 +869,14 @@ func updateArrowPositions(obj):
 		forward = right.cross(up).normalized()
 		arrow.global_transform.basis = Basis(right, up, -forward)
 
+# Clear the arrows
 func clearArrows():
 	for arrow in planeMoveArrows:
 		if is_instance_valid(arrow):
 			arrow.queue_free()
-	# print("Removing the arrows")
 	planeMoveArrows.clear()
 
+# Update the highlighted arrow 
 func update_highlighted_arrow():
 	var closest_arrow = null
 	var closest_gizmo_arrow = null
@@ -849,6 +912,7 @@ func update_highlighted_arrow():
 		if highlighted_arrow:
 			_apply_highlight(highlighted_arrow, highlight_color)
 
+# Plane move target for specifying what object is selected
 func planeMoveTarget():
 	if selectIndex == 0 or selectIndex == 2:
 		return currentSelectedObject
@@ -856,6 +920,7 @@ func planeMoveTarget():
 		return multiSelectHolder[0]
 	return null
 
+# Starting function for plane move object
 func startPlaneMove():
 	if highlighted_gizmo_arrow:
 		activeGizmoArrow = highlighted_gizmo_arrow
@@ -867,7 +932,6 @@ func startPlaneMove():
 	var target = planeMoveTarget()
 	
 	if not target or not is_instance_valid(target):
-		print("Target is invalid in startPlaneMove")
 		currentlyPlaneMoving = false
 		return
 	
@@ -881,6 +945,7 @@ func startPlaneMove():
 			if is_instance_valid(obj):
 				moveStartingPositionMulti[obj] = WorldOptions.snap_vec(obj.global_position)
 
+# Plane move the selected object
 func planeMoveObject():
 	var target = planeMoveTarget()
 	if target == null or not is_instance_valid(target):
@@ -1033,7 +1098,6 @@ func _apply_highlight_recursive(obj, color):
 			await _apply_highlight_recursive(child, color)
 	
 	if obj is CSGMesh3D:
-		# print("obj is a CSGMesh3D")
 		mesh_inst = obj
 		
 		if mesh_inst.mesh:
@@ -1156,7 +1220,9 @@ func _remove_highlight_recursive(obj):
 			if not is_instance_valid(obj):
 				return
 
+# Spawn the rotation torus gizmo 
 func spawnRotationToruses():
+	# Same as orb gizmo spawn
 	clearRotationTorus()
 	var axes = [Vector3.RIGHT, Vector3.UP, Vector3.FORWARD]
 	var colors = [Color(0.937, 0.267, 0.267, 0.95), Color(0.063, 0.725, 0.506, 0.95), Color(0.231, 0.510, 0.965, 0.95)]
@@ -1175,6 +1241,7 @@ func spawnRotationToruses():
 		planeRotationTorus.append(torus)
 	updateTorusPosition()
 
+# Torus rotation gizmo same as plane orb scaling function 
 func updateTorusPosition():
 	var spawn_pos = controller.global_transform.origin + -controller.global_transform.basis.z * 0.5
 	for i in range(planeRotationTorus.size()):
@@ -1182,6 +1249,7 @@ func updateTorusPosition():
 		if not is_instance_valid(torus):
 			continue
 		torus.global_position = spawn_pos
+		# Rotates based on euler basis and rotates according to the controllers rotation as well as which torus is selected
 		match i:
 			0:
 				torus.global_transform.basis = Basis.from_euler(Vector3(0, 0, PI/2))
@@ -1191,6 +1259,7 @@ func updateTorusPosition():
 				torus.global_transform.basis = Basis.from_euler(Vector3(PI/2, 0, 0))
 		torus.scale = Vector3.ONE * 0.15
 
+# Clear rotation torus'
 func clearRotationTorus():
 	for torus in planeRotationTorus:
 		if is_instance_valid(torus):
@@ -1198,7 +1267,8 @@ func clearRotationTorus():
 	planeRotationTorus.clear()
 	highlighted_torus = null
 	activeTorus = null
-	
+
+# Update the highlighted torus
 func update_highlighted_torus():
 	var closest_torus = null
 	if scaleCast.is_colliding():
@@ -1216,43 +1286,52 @@ func update_highlighted_torus():
 	highlighted_torus = closest_torus
 	if highlighted_torus != null:
 		_apply_highlight(highlighted_torus, highlight_color)
-	
+
+# Start the plane rotations
 func startPlaneRotate():
 	
 	AudioManager.haptic_continue(controller, 999.0, 0.3)
-	
+	# Grabs the active torus
 	activeTorus = highlighted_torus
 	var axis = activeTorus.get_meta("rotation_axis")
 	rotationWorldAxis = axis
 	rotaitonStartingBasis = controller.global_transform.basis
+	# Grabs the starting rotation basis from the currently selected object 
 	if selectIndex == 0 or selectIndex == 2:
 		rotationObjectStartingBasis = currentSelectedObject.global_transform.basis
 	elif selectIndex == 1:
+		# Grabs all the starting rotation of the selected objects 
 		rotationObjectStartingBasisMulti.clear()
 		for obj in multiSelectHolder:
 			rotationObjectStartingBasisMulti[obj] = obj.global_transform.basis
-			
+
+# Plane rotation object 
 func planeRotateObject():
 	if not is_instance_valid(activeTorus):
 		return
+	# Grabs the current rotation
 	var rotation_delta = controller.global_transform.basis * rotaitonStartingBasis.inverse()
 	var angle = rotation_delta.get_euler().dot(rotationWorldAxis)
 	var snapped_angle = WorldOptions.snap_angle(angle)
 	var snap_rotation = Basis(rotationWorldAxis, snapped_angle)
 	
+	# Using snap rotation snap the object accordingly
 	if selectIndex == 0 or selectIndex == 2:
 		currentSelectedObject.global_transform.basis = snap_rotation * rotationObjectStartingBasis
 		var original = get_ghost_original(currentSelectedObject)
 		if original:
 			original.global_transform.basis = currentSelectedObject.global_transform.basis
+	# Using Single select snap all of the starting rotations by the snap rotaiton
 	elif selectIndex == 1:
 		for obj in multiSelectHolder:
 			obj.global_transform.basis = snap_rotation * rotationObjectStartingBasisMulti[obj]
 	
+	# Emit edited signal
 	emit_signal("objectEdited")
 
 # Intersection / Subtraction helper functions
 func get_ghost_original(obj):
+	# Get the ghost' original, for editing ghost objects
 	var main = get_tree().get_nodes_in_group("main_node")[0]
 	if obj.is_in_group("intersection_ghosts") or obj.is_in_group("subtraction_ghosts"):
 		if obj in main.ghosted_mesh:
@@ -1260,6 +1339,7 @@ func get_ghost_original(obj):
 	return null
 
 # Called when a new select index is chosen
+# Calls clearing functions
 func clear_select(idx):
 	if selectIndex == 0 or selectIndex == 2:
 		var cleared_object = currentSelectedObject
@@ -1283,7 +1363,9 @@ func clear_select(idx):
 
 	selectIndex = idx
 
+# Scale selected
 func scale_selected_object(value):
+	# For signel and group select change the objects new scale
 	if selectIndex == 0 or selectIndex == 2:
 		if currentSelectedObject:
 			var current = currentSelectedObject.scale
@@ -1294,6 +1376,7 @@ func scale_selected_object(value):
 			newScale.z = clamp(newScale.z, 0.01, 10.0)
 			currentSelectedObject.scale = newScale
 
+	# For multi select change the objects in the arrays scale
 	if selectIndex == 1:
 		if !multiSelectHolder.is_empty():
 			for obj in multiSelectHolder:
@@ -1305,18 +1388,20 @@ func scale_selected_object(value):
 				newScale.z = clamp(newScale.z, 0.01, 10.0)
 				obj.scale = newScale
 
+# Change the selected objects current CSG Operation
 func change_csg_operation(idx):
 	if not is_active:
 		return
 	
+	# Grab the current opreation selected
 	current_operation = idx
-	print("CSG operation changed too : ", idx)
 	
+	# If on Single select and an object is selected change the object CSG operation
 	if selectIndex == 2 and currentSelectedObject:
 		if currentSelectedObject is CSGMesh3D:
 			currentSelectedObject.operation = idx
-			print("Changed : ", currentSelectedObject.name, " : operation to : ", idx)
 			
+			# Match the chosen index' CSG operation
 			match idx:
 				CSGShape3D.OPERATION_UNION:
 					AudioManager.play_place_down()
@@ -1324,17 +1409,15 @@ func change_csg_operation(idx):
 					AudioManager.play_snap()
 				CSGShape3D.OPERATION_SUBTRACTION:
 					AudioManager.play_whoosh()
-				
+			
+			# Get the original ghost after edit
 			var original = get_ghost_original(currentSelectedObject)
 			if original:
 				original.operation = idx
 				
 			emit_signal("objectEdited")
-		else:
-			print("Selected obj is not a CSGMesh3D, cannot change operation on non CSGMesh3Ds !!!")
 
 func set_page_index(idx):
-	# print("Hello from remove call index")
 	clear_select(selectIndex)
 	if idx == 2:
 		is_active = true
@@ -1342,7 +1425,6 @@ func set_page_index(idx):
 		is_active = false
 
 func set_edit_index(idx):
-	print("Edit Called")
 	clearArrows()
 	clearMoveGizmo()
 	clearOrbs()
@@ -1360,7 +1442,6 @@ func set_edit_index(idx):
 	var floating_hud = get_tree().get_first_node_in_group("floating_hud")
 	if floating_hud:
 		floating_hud.update_edit_tool(idx)
-		print("Submit")
 
 func update_list():
 	# print("Hello from Edit script new object update signal")

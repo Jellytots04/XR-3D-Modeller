@@ -14,6 +14,7 @@ signal render_object
 signal export_object(file_name)
 signal export_obj_file(file_name)
 
+# Exportable variables
 @export var edit_scaleSize: HSlider # Allows this variable to be edited by variables in other scripts
 @export var build_load: Button
 @export var build_clear: Button
@@ -49,6 +50,7 @@ var export_name_input: LineEdit
 var object_export_input_active = false
 
 func _ready():
+	# Fix the groupings of the buttons
 	_group_fix()
 	add_to_group("ui_controller")
 	var viewport_scene = $PickableObject/Viewport2Din3D/Viewport.get_child(0)
@@ -110,6 +112,7 @@ func _ready():
 		build_load = build_vertex.get_node("Load") # Button Node
 		build_clear = build_vertex.get_node("Clear") # Button Node
 		
+		# Connecting the buttons and nodes to the script
 		save_as_button.connect("pressed", Callable(self, "_save_as_pressed"))
 		confirm_button.connect("pressed", Callable(self, "_save_as_confirmed"))
 		quick_save_button.connect("pressed", Callable(self, "_quick_save_pressed"))
@@ -123,20 +126,17 @@ func _ready():
 		
 		obj_export_button.connect("pressed", Callable(self, "_export_object_pressed"))
 		
-		# print(build_options)
 		if build_options:
 			for idx in range(build_options.get_child_count()):
 				var button = build_options.get_child(idx)
 				button.button_group = build_options_group
 				button.connect("pressed", Callable(self, "_build_option").bind(idx))
-				# print(idx)
 		else:
 			print("BuildOptions node not found!")
 
 		print(build_scaleSize)
 		if build_scaleSize:
 			build_scaleSize.connect("value_changed", Callable(self, "_size_change"))
-			# print("Build Scales are connected")
 		else:
 			print("Build Scales not found")
 
@@ -202,6 +202,7 @@ func _ready():
 	else:
 		print("Viewport root scene not loaded!")
 
+# Fixing the groups buttons to allow them to be unpressed
 func _group_fix():
 	build_options_group.allow_unpress = false
 	build_csg_group.allow_unpress = false
@@ -211,73 +212,85 @@ func _group_fix():
 	edit_options_group.allow_unpress = false
 	edit_select_group.allow_unpress = false
 
+# Scale value change function
 func _change_scale_value(value):
 	edit_scaleSize.get_parent().visible = true
 	edit_scaleSize.value = value.x 
-	# can use any of the values z or y as they will always be the same
 
+# Make the scale invisible
 func _remove_scale():
 	edit_scaleSize.get_parent().visible = false
 
+# Set the build options
 func _build_option(idx):
-	# print("Button Pressed Summon", idx)
 	AudioManager.play_icon_click()
 	emit_signal("summonable_selected", idx)
 
+# Remove options
 func _remove_option(idx):
 	AudioManager.play_icon_click()
 	emit_signal("remove_selected", idx)
 
+# Edit options
 func _edit_option(idx):
 	AudioManager.play_icon_click()
 	emit_signal("edit_selected", idx)
 
+# Swap page fuinctions
 func _swap_page(idx):
 	AudioManager.play_icon_click()
-	# print("UI Controller idx emit, from _swap_page: ", idx)
 	emit_signal("change_page", idx)
 
+# Size changing
 func _size_change(value):
-	# print(value)
 	scaleSize.emit(value) # Another way to emit signals with argument(s)
 
+# CSG Operation select
 func _csg_operation(idx):
 	AudioManager.play_icon_click()
 	csg_operation.emit(idx)
 
+# Select option change
 func _select_option(idx):
 	AudioManager.play_icon_click()
 	emit_signal("select_change", idx)
 
+# Load mesh button
 func _load_mesh():
 	AudioManager.play_icon_click()
 	emit_signal("load_mesh")
 
+# Clear vertices button
 func _clear_vertices():
 	AudioManager.play_icon_click()
 	emit_signal("clear_vertices")
 
+# Toggle snap button
 func _snap_toggled():
 	AudioManager.play_icon_click()
 	WorldOptions.snapEnabled = not WorldOptions.snapEnabled
 	WorldOptions.update_snap_state()
-	
+
+# Snap slider changed to increase / decrease snap meters 
 func _snap_slider_chaned(value, spinBox):
 	WorldOptions.snapSizeMM = value
 	WorldOptions.update_snap_state()
 	spinBox.set_value_no_signal(value)
 
+# Spinbox changed increase / decrease snap meters 
 func _snap_spinBox_changed(value, slider):
 	WorldOptions.snapSizeMM = value
 	WorldOptions.update_snap_state()
 	slider.set_value_no_signal(value)
 	
+# Intersection objects toggle
 func _intersection_toggled():
 	AudioManager.play_icon_click()
 	print("Called")
 	WorldOptions.showIntersection = not WorldOptions.showIntersection
 	WorldOptions.intersectionsVisibilityChanged.emit(WorldOptions.showIntersection)
 	
+# Subtraction objects toggle
 func _subtraction_toggled():
 	AudioManager.play_icon_click()
 	WorldOptions.showSubtraction = not WorldOptions.showSubtraction
