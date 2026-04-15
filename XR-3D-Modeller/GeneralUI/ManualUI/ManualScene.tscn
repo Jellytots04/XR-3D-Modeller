@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://dmxtf0lyo6vcx"]
+
+[ext_resource type="PackedScene" uid="uid://duiw8fcb4serg" path="res://TutorialUI/IntroUI/TutorialScreen.tscn" id="1_ai35w"]
+[ext_resource type="Script" uid="uid://ccy6nheh7mhmr" path="res://Scripts/ManualScript.gd" id="1_ljf8u"]
+[ext_resource type="PackedScene" uid="uid://clv7o5kwikqgp" path="res://GeneralUI/ManualUI/Manual2D.tscn" id="2_ljf8u"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_vhm7i"]
+size = Vector2(6, 3)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qw80a"]
+albedo_color = Color(0.2, 0.1882353, 0.18039216, 1)
+
+[node name="ManualScene" type="Node3D" unique_id=516282020]
+script = ExtResource("1_ljf8u")
+
+[node name="Viewport" parent="." unique_id=593767825 instance=ExtResource("1_ai35w")]
+screen_size = Vector2(6, 3)
+scene = ExtResource("2_ljf8u")
+viewport_size = Vector2(800, 400)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=77220290]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0051303506)
+mesh = SubResource("QuadMesh_vhm7i")
+surface_material_override/0 = SubResource("StandardMaterial3D_qw80a")

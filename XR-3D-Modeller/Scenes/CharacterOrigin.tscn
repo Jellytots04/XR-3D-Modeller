@@ -4,7 +4,6 @@
 [ext_resource type="PackedScene" uid="uid://b4kad2kuba1yn" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/left_hand_low.tscn" id="1_5w5qi"]
 [ext_resource type="Script" uid="uid://evdnmsuh025x" path="res://Scripts/Summon.gd" id="1_md7ef"]
 [ext_resource type="PackedScene" uid="uid://b4ysuy43poobf" path="res://addons/godot-xr-tools/functions/function_pickup.tscn" id="2_a57kf"]
-[ext_resource type="PackedScene" uid="uid://heyxgipogtlf" path="res://Summonables_Folder/Objects_Summonable/cube.tscn" id="2_s27s0"]
 [ext_resource type="PackedScene" uid="uid://l2n30mpbkdyw" path="res://addons/godot-xr-tools/hands/scenes/lowpoly/right_hand_low.tscn" id="2_tpptb"]
 [ext_resource type="PackedScene" uid="uid://cqhw276realc" path="res://addons/godot-xr-tools/functions/function_pointer.tscn" id="3_ayg2o"]
 [ext_resource type="PackedScene" uid="uid://bl2nuu3qhlb5k" path="res://addons/godot-xr-tools/functions/movement_direct.tscn" id="5_bayos"]
@@ -48,7 +47,6 @@ show_target = true
 [node name="RightHand" type="XRController3D" parent="." unique_id=1769323809]
 tracker = &"right_hand"
 script = ExtResource("1_md7ef")
-object_scene = ExtResource("2_s27s0")
 
 [node name="RightHand" parent="RightHand" unique_id=512246083 instance=ExtResource("2_tpptb")]
 
@@ -63,13 +61,6 @@ target_radius = 0.01
 collision_mask = 5242894
 
 [node name="Timer" type="Timer" parent="RightHand" unique_id=25853258]
-
-[node name="SelectPointer" parent="RightHand" unique_id=996107899 instance=ExtResource("3_ayg2o")]
-show_laser = 2
-laser_length = 1
-show_target = true
-target_radius = 0.01
-collision_mask = 0
 
 [node name="BuildRayCast" type="RayCast3D" parent="RightHand" unique_id=387871037]
 target_position = Vector3(0, 0, -8)

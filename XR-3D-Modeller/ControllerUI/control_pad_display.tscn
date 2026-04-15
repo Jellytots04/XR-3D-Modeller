@@ -22,7 +22,7 @@ offset_right = 400.0
 offset_bottom = 200.0
 theme = ExtResource("1_7oq3b")
 tab_alignment = 1
-current_tab = 2
+current_tab = 5
 
 [node name="Build" type="MarginContainer" parent="." unique_id=1469485864]
 visible = false
@@ -165,6 +165,7 @@ toggle_mode = true
 icon = ExtResource("15_a121i")
 
 [node name="Edit" type="MarginContainer" parent="." unique_id=1374180317]
+visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5
@@ -401,7 +402,6 @@ theme_override_font_sizes/font_size = 14
 text = "Load"
 
 [node name="Export" type="MarginContainer" parent="." unique_id=810857528]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 5
 theme_override_constants/margin_top = 5

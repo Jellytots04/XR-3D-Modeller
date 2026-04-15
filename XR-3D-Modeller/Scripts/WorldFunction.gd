@@ -12,6 +12,10 @@ var tutorial_panel_scene = preload("res://TutorialUI/IntroUI/TutorialPanel.tscn"
 var tutorial_panel_instance = null
 var current_tutorial_step = 0
 
+# Manual Panel preload
+var manual_scene = preload("res://GeneralUI/ManualUI/ManualScene.tscn")
+var manual_scene_instance = null
+
 # Settings menu preload
 var settings_menu = preload("res://GeneralUI/SettingsUI/SettingsScene.tscn")
 var settings_menu_instance = null
@@ -52,6 +56,26 @@ func toggle_settings_menu():
 		close_settings_menu()
 	else:
 		open_settings_menu()
+
+func show_manual():
+	if manual_scene_instance:
+		manual_scene_instance.queue_free()
+	
+	manual_scene_instance = manual_scene.instantiate()
+	
+	var xr_camera = get_node("XROrigin3D/XRCamera3D")
+	if xr_camera:
+		add_child(manual_scene_instance)
+		
+		var forward = -xr_camera.global_transform.basis.z
+		var spawn_pos = xr_camera.global_position + forward * 6
+		spawn_pos.y = xr_camera.global_position.y + 0.5
+		
+		manual_scene_instance.global_position = spawn_pos
+		manual_scene_instance.look_at(xr_camera.global_position, Vector3.UP)
+		manual_scene_instance.rotate_y(deg_to_rad(180))
+	
+	print("Manual opened")
 
 # Open the settings menu
 func open_settings_menu():
@@ -122,7 +146,7 @@ func _settings_tutorial_pressed():
 	AudioManager.play_icon_click()
 	close_settings_menu()
 	current_tutorial_step = 0
-	show_tutorial_panel()
+	show_manual()
 
 # Settings exit button pressed
 func _settings_exit_pressed():
@@ -349,7 +373,7 @@ var tutorial_steps = [
 	},
 	{
 		"title": "Movement",
-		"description": "Firstly moving in this void world, you can use the left joystick to move around the area, when in passthrough mode this works the same way, with the right joystick you can look left to right!\nMove around!",
+		"description": "Firstly moving in this void world, you can use the left joystick to move around the area and with the right joystick you can look left to right!\nMove around!",
 		"tab": 0
 	},
 	{
@@ -358,115 +382,48 @@ var tutorial_steps = [
 		"tab": 1
 	},
 	{
-		"title": "Build Tab (Summoning)",
-		"description": "With this tab you can spawn in shapes and vertices to make your objects as well as copy any existing ones. \nPress the A Button and summon a cube!",
+		"title": "Build Tab",
+		"description": "This tab allows you to summon objects, vertices, copy existing objects and play around with CSG Operations!",
 		"tab": 2
 	},
 	{
-		"title": "Build Tab (Operations)",
-		"description": "You can also select different types of operations for the objects summoned, Uinon (Merge), Intersection (Overlap only) or Subtract (Cut away). \nSelect subtract to cut a sphere from a cube",
+		"title": "Remove Tab",
+		"description": "Mistakes are bound to happen, using those 3 select buttons, feel free to remove an object from the scene with the A button and clear all with A + B button",
 		"tab": 3
 	},
 	{
-		"title": "Build Tab (Vertices)",
-		"description": "Here you can create objects from scratch, place vertices down connect them with grip then click load to create the shape. \n(These objects are on their own and don't work with summoned objects)",
+		"title": "Edit Tab",
+		"description": "If you want to make some changes to objects like moving them around, rotating, or scaling them differntly then feel free to do so in this tab",
 		#"description": "Here you can create complex objects from scratch, this building style is on its own, (due to a Godot limitation this operation is on its own and does not work with other summoned objects), place vertices down with the A Button and combine it with the right grip.\nWhen you are happy press load and the object will appear. (Follows the Eulers Polyhedron Theorem)",
 		"tab": 4
 	},
 	{
-		"title": "Build Tab (Select and Copy)",
-		"description": "The bottom row is in most of the tabs and is used for specifying the select type, Whole Select (Entire object), Multi Select (Individual Nodes) and Single Node Select.\nIt uses your operation but only for union and subtraction!",
-		#"description": "Lastly selecting and Copy, the bottom row appears in most of the other tabs, they consist of Whole Select (The entie object tree), Multi Select (Select multiple single objects) or Single Select (Single node within a tree). \nFor copying you must use Whole select and once highlighted you can press the A Button to summon your copied object.",
+		"title": "World Tab",
+		"description": "In this tab you can mess around with the world settings like visibility of certain nodes, snap based movements and Passthrough",
+		#"description": "Here you can create complex objects from scratch, this building style is on its own, (due to a Godot limitation this operation is on its own and does not work with other summoned objects), place vertices down with the A Button and combine it with the right grip.\nWhen you are happy press load and the object will appear. (Follows the Eulers Polyhedron Theorem)",
 		"tab": 5
 	},
 	{
-		"title": "Remove Tab",
-		"description": "Point and select an object, then press A to delete the object(s).\nHold A+B together for 2 seconds to clear the entire scene.",
+		"title": "File Tab",
+		"description": "In this tab you are able to save the scene with Save as or Quick save, and if you always want to return to those saved files you can do so by loading the scene!",
+		#"description": "Here you can create complex objects from scratch, this building style is on its own, (due to a Godot limitation this operation is on its own and does not work with other summoned objects), place vertices down with the A Button and combine it with the right grip.\nWhen you are happy press load and the object will appear. (Follows the Eulers Polyhedron Theorem)",
 		"tab": 6
 	},
 	{
-		"title": "Edit Tab (Free Move)",
-		"description": "This tab is edits can be done, firstly moving an object when you select object(s), you can press the right grip and the object will move along your controller! (If you pull the right joystick towards you it will come closer, it works the other way too)",
+		"title": "Export Tab",
+		"description": "In this tab you can render out your structures and objects to play around with in your virtual or mixed environment, then export the rendered mesh into a Godot .tscn or .OBJ file",
+		#"description": "Here you can create complex objects from scratch, this building style is on its own, (due to a Godot limitation this operation is on its own and does not work with other summoned objects), place vertices down with the A Button and combine it with the right grip.\nWhen you are happy press load and the object will appear. (Follows the Eulers Polyhedron Theorem)",
 		"tab": 7
 	},
 	{
-		"title": "Edit Tab (Plane Move)",
-		"description": "Now that you can move freely, as you can see when you select an object while in move mode, arrows appear, when you grip at one and you start moving your controller in that plane the object moves along side it!",
+		"title": "Settings",
+		"description": "If you press the Menu button on the left controller you can always see the settings menu, this contains optionals for volume, haptics and the HUD as well as the Manual",
+		#"description": "Here you can create complex objects from scratch, this building style is on its own, (due to a Godot limitation this operation is on its own and does not work with other summoned objects), place vertices down with the A Button and combine it with the right grip.\nWhen you are happy press load and the object will appear. (Follows the Eulers Polyhedron Theorem)",
 		"tab": 8
 	},
 	{
-		"title": "Edit Tab (Stretch)",
-		"description": "After moving you may want to change the object size, using the stretchy mode once selected you can use the two controller grips and start stretching your arms apart to increase the size, this works both ways!",
-		"tab": 9
-	},
-	{
-		"title": "Edit Tab (Free Rotation)",
-		"description": "Rotating the object freely works the same as free move, when you have a selected object, you can press grip to start rotating your controller and the object will rotate in the same way. \nTry to spin a cube!",
-		"tab": 10
-	},
-	{
-		"title": "Edit Tab (Plane Rotation)",
-		"description": "You might have noticed the gizmo infront of you, this is for plane rotation, similar to plane movements when you grip one of the rings, you can rotate in that oreintation and the object will rotate accordingly",
-		"tab": 11
-	},
-	{
-		"title": "Edit Tab (Plane Scaling)",
-		"description": "Maybe you want more percise scaling, when you click the plane scaling option and you select an object, orbs will spawn, gripping one will allow you to scale the same way plane moving works!",
-		"tab": 12
-	},
-	{
-		"title": "Edit Tab (Changing Operation)",
-		"description": "Accidentally placed an object as intersection or subtraction, don't worry you can always use single select, and change the objects CSG operation, after selecting an object click an operation and watch it change.",
-		"tab": 13
-	},
-	{
-		"title": "World Tab (Visibility)",
-		"description": "You may have noticed you can't see your Intersection or Subtractions, in the world Tab you can click the intersection or subtraction buttons to make them appear.\nThey can be edited now",
-		"tab": 14
-	},
-	{
-		"title": "World Tab (Snap feature)",
-		"description": "Now everything is moving freely maybe you want things to be more measured, you can select the scale of meters to snap objects to, things will move in that increment.\n Works for Build and Edit functions",
-		"tab": 15
-	},
-	{
-		"title": "World Tab (Passthrough)",
-		"description": "Maybe you would like to visualize your objects in the real world, well if you click the passthrough button, you'll be able to now work in your mixed reality setting.\nPress it again and you'll be back virtual!",
-		"tab": 16
-	},
-	{
-		"title": "File Tab (Saving the Scene)",
-		"description": "Let's assume you're in a hurry and need to go, don't worry if you press the Save as button, you'll be able to type a name for your file and it will be saved to the headset!\nJust use the keyboard above to type then hit confirm",
-		"tab": 17
-	},
-	{
-		"title": "File Tab (Loading up files)",
-		"description": "You're ready to start working on your project again, fantastic! Just click on the file name below then click load!\nJust be careful your current scene will not be saved so make sure to save before loading a new scene!",
-		"tab": 18
-	},
-	{
-		"title": "File Tab (Quick Save)",
-		"description": "Incase you need to quickly save something, as long as you currently have saved the current scene or loaded an old scene, just hit Quick Save and you'll re save the scene no name needed!\nHowever if you're not on a saved file you will be prompted to save it first!",
-		"tab": 19
-	},
-	{
-		"title": "Export (Render)",
-		"description": "Finally you have completed your object and you'd like to see it rendered, you can select the object, click render and it'll appear infront of you, you can play around with it and throw it about\n(This is not permanent and will not be saved to the scene)",
-		"tab": 20
-	},
-	{
-		"title": "Export (Godot Export)",
-		"description": "These Rendered objects can be saved as well so don't worry too much, you can save it as a Godot Scene .tscn to be used in other Godot Projects.\nSelect your object, click Godot Export, give it a name and hit Godot Export again.",
-		"tab": 21
-	},
-	{
-		"title": "Export (.OBJ Export)",
-		"description": "Lastly you can also export the objects as .OBJ to be used in other commercial and professional softwares, press .OBJ Export, select your object, give it a name and press .OBJ Export!\n(This will save its .mtl and .obj together)",
-		"tab": 22
-	},
-	{
 		"title": "Tutorial Complete!",
-		"description": "You're ready to create! Remember, you can always access this tutorial again from the Settings menu.",
+		"description": "You're ready to create! Remember, you can access the in depth Manual through the settings, enjoy Creating!",
 		"tab": -1
 	}
 ]

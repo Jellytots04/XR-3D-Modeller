@@ -1,0 +1,2429 @@
+[gd_scene format=3 uid="uid://clv7o5kwikqgp"]
+
+[ext_resource type="Theme" uid="uid://ck52fr37rq2gt" path="res://UI_Themes/UI_Theme.tres" id="1_i20wx"]
+[ext_resource type="Texture2D" uid="uid://c8pk4vn3lhmx8" path="res://Images/Manual/Intro/UI_Controller.png" id="2_3s4pp"]
+[ext_resource type="Texture2D" uid="uid://dyyaj8mplnrvl" path="res://Images/Manual/Intro/HUD.png" id="3_vcyw8"]
+[ext_resource type="Texture2D" uid="uid://doouo351qxka6" path="res://ControllerUI/Icons/CubeIcon.aseprite" id="4_n472s"]
+[ext_resource type="Texture2D" uid="uid://b4fy5f1eolrqs" path="res://ControllerUI/Icons/PrismIcon.aseprite" id="5_xnpa6"]
+[ext_resource type="Texture2D" uid="uid://ddss0uunw1bww" path="res://ControllerUI/Icons/SphereIcon.aseprite" id="6_rsd1r"]
+[ext_resource type="Texture2D" uid="uid://bpju5ct00vr8c" path="res://ControllerUI/Icons/Union.aseprite" id="7_si8m2"]
+[ext_resource type="Texture2D" uid="uid://cq88w3yft0u8o" path="res://ControllerUI/Icons/Intersection.aseprite" id="8_5pp24"]
+[ext_resource type="Texture2D" uid="uid://foa1v7b87nci" path="res://ControllerUI/Icons/Subtraction.aseprite" id="9_awiwq"]
+[ext_resource type="Texture2D" uid="uid://ta5e6sy0j6wr" path="res://ControllerUI/Icons/VerticeIcon.aseprite" id="10_5pp24"]
+[ext_resource type="Texture2D" uid="uid://d2510acmdcvmr" path="res://ControllerUI/Icons/CopyIcon.aseprite" id="11_awiwq"]
+[ext_resource type="Texture2D" uid="uid://dal57lyb0m5ul" path="res://ControllerUI/Icons/WholeSelect.aseprite" id="12_d0xus"]
+[ext_resource type="Texture2D" uid="uid://bvcowhfr02f6l" path="res://ControllerUI/Icons/MultiSelect.aseprite" id="13_7r4nj"]
+[ext_resource type="Texture2D" uid="uid://baljqlsa6l0qi" path="res://ControllerUI/Icons/SingleSelect.aseprite" id="14_eh6e8"]
+[ext_resource type="Texture2D" uid="uid://csyna0axkoeoh" path="res://ControllerUI/Icons/MoveIcon.aseprite" id="15_2wtjb"]
+[ext_resource type="Texture2D" uid="uid://qq8cr2pngjy1" path="res://ControllerUI/Icons/StretchIcon.aseprite" id="16_ks7cb"]
+[ext_resource type="Texture2D" uid="uid://bhbhf16um162j" path="res://ControllerUI/Icons/RotateIcon.aseprite" id="17_elvd6"]
+[ext_resource type="Texture2D" uid="uid://iukg2m2fcqk3" path="res://ControllerUI/Icons/MultiScaleIcon.aseprite" id="18_v0i38"]
+
+[node name="Panel" type="Panel" unique_id=2013077947]
+custom_minimum_size = Vector2(800, 400)
+offset_right = 40.0
+offset_bottom = 40.0
+theme = ExtResource("1_i20wx")
+
+[node name="Container" type="VBoxContainer" parent="." unique_id=484824790]
+custom_minimum_size = Vector2(750, 360)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -103.0
+offset_right = 100.0
+offset_bottom = 103.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Container" unique_id=825103638]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "Manual"
+horizontal_alignment = 1
+
+[node name="ControllerDisplay" type="TabContainer" parent="Container" unique_id=1304676578]
+layout_mode = 2
+size_flags_vertical = 3
+theme = ExtResource("1_i20wx")
+theme_override_font_sizes/font_size = 20
+tab_alignment = 1
+current_tab = 0
+
+[node name="Introduction" type="MarginContainer" parent="Container/ControllerDisplay" unique_id=1314229265]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="IntroPages" type="Control" parent="Container/ControllerDisplay/Introduction" unique_id=1647473601]
+layout_mode = 2
+
+[node name="Intro1" type="Panel" parent="Container/ControllerDisplay/Introduction/IntroPages" unique_id=681133231]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro1" unique_id=1774329660]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro1/VBoxContainer" unique_id=1331080497]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Welcome to PolyMesh!"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro1/VBoxContainer" unique_id=1355874811]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "What is PolyMesh, well this is a VR-First 3D Modeller!
+Be prepared to Design, Create and bring your structures to life (Virtually) with your own hands.
+This is the Manual and shall help you throughout learning this software to help you make the most out of this fantastic software!
+Use either trigger to press the buttons below to continue!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Intro2" type="Panel" parent="Container/ControllerDisplay/Introduction/IntroPages" unique_id=910929324]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextBoxExample" type="VBoxContainer" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro2" unique_id=1737593775]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro2/TextBoxExample" unique_id=1305405323]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "UI and HUD"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro2/TextBoxExample" unique_id=405903928]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Firstly the UI and HUD they look like this"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Images" type="HBoxContainer" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro2/TextBoxExample" unique_id=62304890]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro2/TextBoxExample/Images" unique_id=253385625]
+custom_minimum_size = Vector2(225, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "UI
+This is your controller, everything is set here"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="TextureRect" type="TextureRect" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro2/TextBoxExample/Images" unique_id=1205862893]
+custom_minimum_size = Vector2(175, 100)
+layout_mode = 2
+texture = ExtResource("2_3s4pp")
+expand_mode = 1
+
+[node name="TextureRect2" type="TextureRect" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro2/TextBoxExample/Images" unique_id=502625463]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+texture = ExtResource("3_vcyw8")
+expand_mode = 1
+
+[node name="Label2" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro2/TextBoxExample/Images" unique_id=913298143]
+custom_minimum_size = Vector2(225, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "HUD
+Your settings are displayed here."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro2/TextBoxExample" unique_id=481797967]
+custom_minimum_size = Vector2(750, 40)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "They can be summoned with the left controller X button.
+It can also be docked to your left hand with the Y button, you can adjust it with grip!"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Intro5" type="Panel" parent="Container/ControllerDisplay/Introduction/IntroPages" unique_id=250444978]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro5" unique_id=1734196524]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro5/VBoxContainer" unique_id=1716242313]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Navigating The UI"
+horizontal_alignment = 1
+
+[node name="Images" type="HBoxContainer" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro5/VBoxContainer" unique_id=574273262]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="TextureRect" type="TextureRect" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro5/VBoxContainer/Images" unique_id=913120737]
+custom_minimum_size = Vector2(250, 175)
+layout_mode = 2
+texture = ExtResource("2_3s4pp")
+expand_mode = 1
+
+[node name="TextBoxExample" type="VBoxContainer" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro5/VBoxContainer/Images" unique_id=467539352]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro5/VBoxContainer/Images/TextBoxExample" unique_id=792705405]
+custom_minimum_size = Vector2(480, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now to navigate the UI, to navigate the respective tabs, you must click on the tabs at the top using trigger, doing so will put you in that respective mode!
+The tab / mode you are currently on will also be displayed on the HUD, you will also be able to click onto the buttons on these tabs as well!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Intro6" type="Panel" parent="Container/ControllerDisplay/Introduction/IntroPages" unique_id=245884170]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro6" unique_id=436647433]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro6/VBoxContainer" unique_id=1143782332]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Pointing and Click"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro6/VBoxContainer" unique_id=4056121]
+custom_minimum_size = Vector2(480, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "This is how you interact with basically everything in this software, similar to pointing and click with a mouse, except this time you are physically pointing at it with your \"hand\", \"finger\", \"thumb\", \"controller\" whatever you want to call it.
+Whenever you do point at something you may see this little beam appear, that is telling you where exactly you're pointing to!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Intro3" type="Panel" parent="Container/ControllerDisplay/Introduction/IntroPages" unique_id=904755463]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextBoxExample" type="VBoxContainer" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro3" unique_id=1937900389]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro3/TextBoxExample" unique_id=198688203]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Movement"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro3/TextBoxExample" unique_id=2106347217]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "You may want to move and be free, to do so you can use the left controller joystick to walk around the virtual environment and in the passthrough environment.
+Do note in passthrough you won't actually be moving your body you have legs for that, but the scene will be moving for you!
+As for looking around, you can turn your head or use your right controller joystick to turn the camera!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Intro4" type="Panel" parent="Container/ControllerDisplay/Introduction/IntroPages" unique_id=363221682]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro4" unique_id=1265911286]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro4/VBoxContainer" unique_id=536205709]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Manual Expert"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Introduction/IntroPages/Intro4/VBoxContainer" unique_id=1411322980]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "You can always return to this manual if you can't remember how to do something.
+If you want to just get around quickly, feel free to use the Tab >> or << Tab buttons to skip tabs or just click onto the tab you'd like to visit.
+
+That is all I have for this introduciton enjoy learning and creating!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Build" type="MarginContainer" parent="Container/ControllerDisplay" unique_id=1063793720]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="BuildPages" type="Control" parent="Container/ControllerDisplay/Build" unique_id=2095765950]
+layout_mode = 2
+
+[node name="Build1" type="Panel" parent="Container/ControllerDisplay/Build/BuildPages" unique_id=736322451]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build1" unique_id=1350132203]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build1/VBoxContainer" unique_id=2005615018]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Build Tab"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build1/VBoxContainer" unique_id=1947996562]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "This tab is where magic appears, here you are able to spawn in 3D shapes, vertices and copy existing structures in the world, click onto the build tab to start.
+The objects you spawn into this environment are CSG shapes and follow the 3 operations of Union, Intersection and Subtraction.
+Click on ahead to understand how to start building!
+Feel free to build along while reading!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Build2" type="Panel" parent="Container/ControllerDisplay/Build/BuildPages" unique_id=302863222]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build2" unique_id=1918357993]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build2/VBoxContainer" unique_id=89032498]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Summoning objects"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build2/VBoxContainer" unique_id=61897705]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build2/VBoxContainer/HBoxContainer" unique_id=1073013332]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Build/BuildPages/Build2/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=984705128]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+icon = ExtResource("4_n472s")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Button2" type="Button" parent="Container/ControllerDisplay/Build/BuildPages/Build2/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1467844024]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+icon = ExtResource("5_xnpa6")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Button3" type="Button" parent="Container/ControllerDisplay/Build/BuildPages/Build2/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1223482099]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+icon = ExtResource("6_rsd1r")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build2/VBoxContainer/HBoxContainer" unique_id=663364012]
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "If you want to summon an object you can click on one of these 3 buttons to select that respecitve object.
+Tosummon it you may press the A button on your right controller. 
+You will firstly notice a ghosted object appear, that is just a preview, upon releasing the A button the object will appear infront of you. Congrats you have just summoned your first shape"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Build3" type="Panel" parent="Container/ControllerDisplay/Build/BuildPages" unique_id=1424332993]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build3" unique_id=2037998276]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build3/VBoxContainer" unique_id=1166993309]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Combining Objects"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build3/VBoxContainer" unique_id=1630808450]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now that you can summon your objects, you may want to combine some them, you can combine objects after placing them down already but you can also combine them upon summoning them.
+To do so, while holding down the A button to get a preview, hover your \"pointer\" over another existing object, it should snap to the object when the \"pointer\" appears upon release the objects will be combined!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Build4" type="Panel" parent="Container/ControllerDisplay/Build/BuildPages" unique_id=988081098]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build4" unique_id=1674768884]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build4/VBoxContainer" unique_id=491374568]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "CSG Operations"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build4/VBoxContainer" unique_id=97375398]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now after combining objects together you can get to more advanced stuff, CSG Operations are what runs most PC 3D modelling softwares and PolyMesh follows that standard, your current operation also appears on your HUD."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build4/VBoxContainer" unique_id=1362063398]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build4/VBoxContainer/HBoxContainer" unique_id=1844721276]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Build/BuildPages/Build4/VBoxContainer/HBoxContainer/HBoxContainer" unique_id=1083983904]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+icon = ExtResource("7_si8m2")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build4/VBoxContainer/HBoxContainer/HBoxContainer" unique_id=17780609]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Union
+(Merge)"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build4/VBoxContainer/HBoxContainer" unique_id=868353566]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Build/BuildPages/Build4/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=1657266124]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+icon = ExtResource("8_5pp24")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build4/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=1606393415]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Intersection
+(Overlap)"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build4/VBoxContainer/HBoxContainer" unique_id=1981179218]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Build/BuildPages/Build4/VBoxContainer/HBoxContainer/HBoxContainer3" unique_id=1681589883]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+icon = ExtResource("9_awiwq")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build4/VBoxContainer/HBoxContainer/HBoxContainer3" unique_id=1919807054]
+custom_minimum_size = Vector2(150, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Subtraction
+(Cut)"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build4/VBoxContainer" unique_id=541876094]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Select one of these on the UI Controller to summon with that operation!."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Build5" type="Panel" parent="Container/ControllerDisplay/Build/BuildPages" unique_id=1687728794]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build5" unique_id=1867413912]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build5/VBoxContainer" unique_id=52355109]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Combining Operations"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build5/VBoxContainer" unique_id=2116221285]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Having selected an object do the same thing as combining objects and hold the A button down, hover over an existing object and relase.
+You should see the operation has taken place assuming you used interseciton or cut.
+Notice using intersection and subtraciton while not hovering / combining will just spawn the object in as normal.
+Go on and try to make something special with this knowledge!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Build6" type="Panel" parent="Container/ControllerDisplay/Build/BuildPages" unique_id=1447474399]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build6" unique_id=1657103981]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build6/VBoxContainer" unique_id=1144799156]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Vertice Building"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build6/VBoxContainer" unique_id=958099823]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now I am sure you can make something fantastic with the basic operations.
+However you can take extreme creativity with placing vertices down and building the mesh that way. 
+Click the vertex button on the UI controller to enter that mode"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build6/VBoxContainer" unique_id=842671486]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Build/BuildPages/Build6/VBoxContainer/HBoxContainer" unique_id=1831298972]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+icon = ExtResource("10_5pp24")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build6/VBoxContainer/HBoxContainer" unique_id=520366601]
+custom_minimum_size = Vector2(650, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Once selected you can place vertices down the same way as summoning reguar objects, with the A button and release, place 4 vertices down!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Build7" type="Panel" parent="Container/ControllerDisplay/Build/BuildPages" unique_id=440275366]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build7" unique_id=1633392511]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build7/VBoxContainer" unique_id=2004725201]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Connecting Vertices"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build7/VBoxContainer" unique_id=1180037546]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now that you have placed down some vertices, you can connect them together,
+To do this you must first point with the right controller to highlight it, afterwards you can press the grip, you'll notice its color change
+You can now while keeping that grip hover over another vertex, you'll see a preview edge appear, upon release it'll connect those two vertices together and draw a line!
+Connect all your 4 vertices together!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Build9" type="Panel" parent="Container/ControllerDisplay/Build/BuildPages" unique_id=1800806271]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build9" unique_id=1874500944]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build9/VBoxContainer" unique_id=1310909869]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Loading Vertices"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build9/VBoxContainer" unique_id=1956144319]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now once you have at least 4 vertices summoned, and each vertex has at least 3 connections, assuming the object has created 4 planes, you can now load the shape.
+Click the Load button on the UI Controller and the object will be validated.
+If it is okay you will get a positive message, if its not okay you'll be told what you are missing!
+Keep in mind this follows Euler's Manifold Formula Vertices - Edges + Faces = 2"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Build8" type="Panel" parent="Container/ControllerDisplay/Build/BuildPages" unique_id=2047168514]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build8" unique_id=1446301122]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build8/VBoxContainer" unique_id=1024461909]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Clearing Vertices"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build8/VBoxContainer" unique_id=1965351648]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Incase you made a mistake, you can clear all the vertices in the scene, this is the only way to get rid of them :)
+You must start over unfortunately.
+To clear the scene press the clear button on the UI Controller and watch all of the vertices disappear.
+This will not clear any loaded shapes!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Build10" type="Panel" parent="Container/ControllerDisplay/Build/BuildPages" unique_id=2013165060]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build10" unique_id=17415224]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build10/VBoxContainer" unique_id=2104959873]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Vertex Notes"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build10/VBoxContainer" unique_id=1396612345]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "The loaded shapes from vertex based building are not CSG shapes, so they cannot be edited further once loaded.
+Unfortunately it won't be possible to edit Loaded vertices as of right now.
+
+However these shapes can be used later on in exporting."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Build11" type="Panel" parent="Container/ControllerDisplay/Build/BuildPages" unique_id=2131940680]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build11" unique_id=1924793376]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build11/VBoxContainer" unique_id=1645257439]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Copying Objects"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build11/VBoxContainer" unique_id=1664204335]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "You may have created some objects you are happy with and would like to see multiple of, luckily you can copy that object.
+Select the wand button on the UI Controller."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build11/VBoxContainer" unique_id=864521190]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Build/BuildPages/Build11/VBoxContainer/HBoxContainer" unique_id=130766837]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+size_flags_vertical = 4
+icon = ExtResource("11_awiwq")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build11/VBoxContainer/HBoxContainer" unique_id=1908856169]
+custom_minimum_size = Vector2(650, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Once selected you can select an object in the scene, to do so just hover over an object in the scene and press trigger, the color should change to a bright yellow, once selected Press A and watch your copy appear!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Build12" type="Panel" parent="Container/ControllerDisplay/Build/BuildPages" unique_id=423479431]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Build/BuildPages/Build12" unique_id=641729416]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build12/VBoxContainer" unique_id=1579573506]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Operational Copying"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Build/BuildPages/Build12/VBoxContainer" unique_id=166299562]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "In case you made a really cool object and you want to subtract it from another object, you are free to do so.
+If you have the Subtraction operation selected and are hovering over an object.
+Press A and release and watch your object shape be subtracted from that object!.
+Keep in mind if the object your combining already has subtractions they will also be added to that shape! Intersections cannot copy but you can do Union operations!."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Remove" type="MarginContainer" parent="Container/ControllerDisplay" unique_id=1327910908]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="RemovePages" type="Control" parent="Container/ControllerDisplay/Remove" unique_id=2078808586]
+layout_mode = 2
+
+[node name="Remove1" type="Panel" parent="Container/ControllerDisplay/Remove/RemovePages" unique_id=2139869012]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Remove/RemovePages/Remove1" unique_id=844214412]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Remove/RemovePages/Remove1/VBoxContainer" unique_id=731503138]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Remove Tab"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Remove/RemovePages/Remove1/VBoxContainer" unique_id=2079735858]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "This is where mistakes can disappear.
+Here you can fully utilize specific select types."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Remove/RemovePages/Remove1/VBoxContainer" unique_id=244461066]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Remove/RemovePages/Remove1/VBoxContainer/HBoxContainer" unique_id=1855079590]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Remove/RemovePages/Remove1/VBoxContainer/HBoxContainer/HBoxContainer" unique_id=461757628]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+icon = ExtResource("12_d0xus")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Remove/RemovePages/Remove1/VBoxContainer/HBoxContainer/HBoxContainer" unique_id=789924226]
+custom_minimum_size = Vector2(160, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Group Select
+(Whole Structure)"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Container/ControllerDisplay/Remove/RemovePages/Remove1/VBoxContainer/HBoxContainer" unique_id=1980606466]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Remove/RemovePages/Remove1/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=1824263471]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+icon = ExtResource("13_7r4nj")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Remove/RemovePages/Remove1/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=1711706059]
+custom_minimum_size = Vector2(160, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Multi Select
+(Multiple Nodes)"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Container/ControllerDisplay/Remove/RemovePages/Remove1/VBoxContainer/HBoxContainer" unique_id=1318233502]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Remove/RemovePages/Remove1/VBoxContainer/HBoxContainer/HBoxContainer3" unique_id=325078868]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+icon = ExtResource("14_eh6e8")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Remove/RemovePages/Remove1/VBoxContainer/HBoxContainer/HBoxContainer3" unique_id=373422060]
+custom_minimum_size = Vector2(160, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Single Select
+(Single Node)"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="Container/ControllerDisplay/Remove/RemovePages/Remove1/VBoxContainer" unique_id=14186823]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Selecting one of these in the UI Tablet will update your HUD and your select mode!.
+To select an object you must hover and highlight it, to unselect you must click it again"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Remove2" type="Panel" parent="Container/ControllerDisplay/Remove/RemovePages" unique_id=992047845]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Remove/RemovePages/Remove2" unique_id=606217800]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Remove/RemovePages/Remove2/VBoxContainer" unique_id=1775573811]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Removing an object"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Remove/RemovePages/Remove2/VBoxContainer" unique_id=43671079]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now to delete an object, firstly select the object(s), then with the right controller press the A button, and watch them disappear!
+If you are on a single select then only that node will disappear.
+If you are on multi select then all the selected nodes will disappear."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Remove3" type="Panel" parent="Container/ControllerDisplay/Remove/RemovePages" unique_id=626421431]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Remove/RemovePages/Remove3" unique_id=157120153]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Remove/RemovePages/Remove3/VBoxContainer" unique_id=857029939]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Clearing the scene"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Remove/RemovePages/Remove3/VBoxContainer" unique_id=2085507603]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Maybe you want to clear the whole scene, and start fresh.
+If you hold the A and B button on the right controller at the same time for 2 seconds,
+Your scene gets cleared.
+
+It however doesn't clear non permanent objects like rendered objects!
+"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Edit" type="MarginContainer" parent="Container/ControllerDisplay" unique_id=236838704]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="EditPages" type="Control" parent="Container/ControllerDisplay/Edit" unique_id=2100456137]
+layout_mode = 2
+
+[node name="Edit1" type="Panel" parent="Container/ControllerDisplay/Edit/EditPages" unique_id=509883338]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit1" unique_id=2111417191]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer" unique_id=1098442903]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Edit Tab"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer" unique_id=1493560424]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "This tab allows you to make edits to the objects, structures and nodes in the scene!
+The tools in this tab will update the tool part in the HUD!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer" unique_id=1968890631]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer/HBoxContainer" unique_id=2107111930]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer/HBoxContainer/HBoxContainer" unique_id=1478058888]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+icon = ExtResource("15_2wtjb")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer/HBoxContainer/HBoxContainer" unique_id=985172976]
+custom_minimum_size = Vector2(125, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Move"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer/HBoxContainer" unique_id=2092418899]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=190491474]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+icon = ExtResource("16_ks7cb")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer/HBoxContainer/HBoxContainer2" unique_id=871257029]
+custom_minimum_size = Vector2(125, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Stretch"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer/HBoxContainer" unique_id=392625316]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer/HBoxContainer/HBoxContainer3" unique_id=1611362114]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+icon = ExtResource("17_elvd6")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer/HBoxContainer/HBoxContainer3" unique_id=1674897884]
+custom_minimum_size = Vector2(125, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 20
+text = "Rotation"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer/HBoxContainer" unique_id=1497736298]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer/HBoxContainer/HBoxContainer4" unique_id=220529387]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+icon = ExtResource("18_v0i38")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer/HBoxContainer/HBoxContainer4" unique_id=989458370]
+custom_minimum_size = Vector2(125, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Scale"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit1/VBoxContainer" unique_id=1027986238]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "These are the tools for this tab, they have similar ways to be used but have different outputs for the objects, to use these make sure you have the object(s) selected!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Edit2" type="Panel" parent="Container/ControllerDisplay/Edit/EditPages" unique_id=104488061]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextBoxExample" type="VBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit2" unique_id=1848431940]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit2/TextBoxExample" unique_id=1169900009]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Free Move"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit2/TextBoxExample" unique_id=295051650]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Firstly you wan't to be able to move items, to do so click this move Icon!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit2/TextBoxExample" unique_id=919925864]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit2/TextBoxExample/HBoxContainer" unique_id=1221428752]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Edit/EditPages/Edit2/TextBoxExample/HBoxContainer/HBoxContainer" unique_id=316243758]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+icon = ExtResource("15_2wtjb")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit2/TextBoxExample/HBoxContainer/HBoxContainer" unique_id=1329450818]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Move"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit2/TextBoxExample/HBoxContainer" unique_id=473771022]
+custom_minimum_size = Vector2(550, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "After the move tool has been selected, select an object(s) in the scene! this can be done with any of the select statements."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit2/TextBoxExample" unique_id=1136011674]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "After an object(s) have been selected you can hold the right controller grip and then start moving the controller around, watch as the object(s) follows your controllers movement."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Edit3" type="Panel" parent="Container/ControllerDisplay/Edit/EditPages" unique_id=717660875]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextBoxExample" type="VBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit3" unique_id=1091330687]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit3/TextBoxExample" unique_id=2098750095]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Reattach and Deattach"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit3/TextBoxExample" unique_id=1806469996]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "In the build tab you are able to combine objects together, here you can reattach objects or dettach objects from their structure."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit3/TextBoxExample" unique_id=1845167326]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "To reattach an object make sure you are currently moving it, while moving hover over an existing object or structure, once its highlighted, release the grip then when you hover over the object with group select you can see it is now a part of that structure.
+To dettach in single select, while not hovering an object release the grip!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Edit4" type="Panel" parent="Container/ControllerDisplay/Edit/EditPages" unique_id=11966390]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextBoxExample" type="VBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit4" unique_id=1255427201]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit4/TextBoxExample" unique_id=57111317]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Plane Move"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit4/TextBoxExample" unique_id=267697268]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "You have have noticed the arrows that appeared when selecting an object, those are plane arrows and correspond to a specific axis in the world.
+Blue = Z axis, Green = Y axis, Red = X axis.
+The arrows gizmo spawned somewhat close to you, you can grip on one of the arrows there or the arrows on the object, when you hover over an arrow you can press grip to \"select\" it and start moving your controller on that plane and watch the object follow!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Edit5" type="Panel" parent="Container/ControllerDisplay/Edit/EditPages" unique_id=1242650330]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextBoxExample" type="VBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit5" unique_id=983975930]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit5/TextBoxExample" unique_id=807218517]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Stretch"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit5/TextBoxExample" unique_id=1525595097]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now you can move your objects, you should be able to stretch them, select stretch!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit5/TextBoxExample" unique_id=2013925970]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit5/TextBoxExample/HBoxContainer" unique_id=1489292763]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Edit/EditPages/Edit5/TextBoxExample/HBoxContainer/HBoxContainer" unique_id=1142441818]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+icon = ExtResource("16_ks7cb")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit5/TextBoxExample/HBoxContainer/HBoxContainer" unique_id=945438249]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Stretch"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit5/TextBoxExample/HBoxContainer" unique_id=96911586]
+custom_minimum_size = Vector2(550, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "	Once this tool has been selected, select your object(s) to stretch once selected grip both controllers and move your arms."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit5/TextBoxExample" unique_id=1081123630]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "This works in both directions, if you want to keep stretching, release the grip and start again from a closer point!.
+Keep in mind stretching should be done on finished scaled objects!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Edit6" type="Panel" parent="Container/ControllerDisplay/Edit/EditPages" unique_id=947132951]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextBoxExample" type="VBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit6" unique_id=152391795]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit6/TextBoxExample" unique_id=1877165948]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Free Rotation"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit6/TextBoxExample" unique_id=322148954]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Rotating the object freely works the same as free move, select the rotation tool!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit6/TextBoxExample" unique_id=1233343099]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit6/TextBoxExample/HBoxContainer" unique_id=1785131103]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Edit/EditPages/Edit6/TextBoxExample/HBoxContainer/HBoxContainer" unique_id=368671429]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+icon = ExtResource("17_elvd6")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit6/TextBoxExample/HBoxContainer/HBoxContainer" unique_id=426661179]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Rotation"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit6/TextBoxExample/HBoxContainer" unique_id=199628701]
+custom_minimum_size = Vector2(550, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Once selected, select your object(s) in the scene, press grip and rotate your right controller, watch the object SPIN!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit6/TextBoxExample" unique_id=431546739]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Keep in mind rotating the object will rotate the way it faces."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Edit7" type="Panel" parent="Container/ControllerDisplay/Edit/EditPages" unique_id=87207142]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextBoxExample" type="VBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit7" unique_id=1862159249]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit7/TextBoxExample" unique_id=1734332476]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Plane Rotation"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit7/TextBoxExample" unique_id=1194185158]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "You may have also seen the gizmo that spawned in, this is like the arrow gizmo!
+The color responds to their corresponding Axis again, when you hover over one of the torus' / donuts, you can then press the right grip and then start rotating along that axis!
+The controller can only rotate so much until you need to restart the rotaion so release the grip and hover again to keep rotating!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit7/TextBoxExample" unique_id=552571371]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit7/TextBoxExample/HBoxContainer" unique_id=686893049]
+layout_mode = 2
+
+[node name="Edit8" type="Panel" parent="Container/ControllerDisplay/Edit/EditPages" unique_id=791809769]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextBoxExample" type="VBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit8" unique_id=1968736152]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit8/TextBoxExample" unique_id=1957304174]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Plane Scaling"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit8/TextBoxExample" unique_id=1541458644]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now like stretching this is the plane specific version, select this tool in the UI!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit8/TextBoxExample" unique_id=1498872575]
+layout_mode = 2
+size_flags_horizontal = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit8/TextBoxExample/HBoxContainer" unique_id=1252085446]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="Container/ControllerDisplay/Edit/EditPages/Edit8/TextBoxExample/HBoxContainer/HBoxContainer" unique_id=1366686489]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+icon = ExtResource("18_v0i38")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit8/TextBoxExample/HBoxContainer/HBoxContainer" unique_id=1381986206]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Plane Scale"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit8/TextBoxExample/HBoxContainer" unique_id=1466072169]
+custom_minimum_size = Vector2(550, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Once selected, select the object(s) in the scene, you may notice orbs appearing, those are what you use to scale the object!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Label2" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit8/TextBoxExample" unique_id=1007482431]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "The colors correspond to their respective axis similar to the other tools, this tool only works for single select! You can use both the orb gizmo infront of you and on the object
+To scale, hover over the orb, press the right grip and start moving your controller!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Edit9" type="Panel" parent="Container/ControllerDisplay/Edit/EditPages" unique_id=720308604]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextBoxExample" type="VBoxContainer" parent="Container/ControllerDisplay/Edit/EditPages/Edit9" unique_id=43386243]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit9/TextBoxExample" unique_id=1400940015]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Changing Operation"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Edit/EditPages/Edit9/TextBoxExample" unique_id=1095225858]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "You have notice the CSG Operations are in this tab as well!
+This is because you can change an object's operation, this only works for the single select as well!
+Once you have an object selected you can click any of the 3 CSG Operations and watch it change in real time!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="World" type="MarginContainer" parent="Container/ControllerDisplay" unique_id=2138773297]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 4
+
+[node name="WorldPages" type="Control" parent="Container/ControllerDisplay/World" unique_id=1383340892]
+layout_mode = 2
+
+[node name="World1" type="Panel" parent="Container/ControllerDisplay/World/WorldPages" unique_id=638314574]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/World/WorldPages/World1" unique_id=894621554]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/World/WorldPages/World1/VBoxContainer" unique_id=1191286605]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "World Tab"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/World/WorldPages/World1/VBoxContainer" unique_id=580379821]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "This is the world tab, this is an operational tab that is used for controlling certain aspects in the world! This will also update parts of the HUD
+Here you can edit the visibility of certain nodes, create add a snapping mechanic for the build and edit tab and enter passthrough mode!."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="World2" type="Panel" parent="Container/ControllerDisplay/World/WorldPages" unique_id=379827143]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/World/WorldPages/World2" unique_id=596273581]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/World/WorldPages/World2/VBoxContainer" unique_id=2044017034]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Visibility"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/World/WorldPages/World2/VBoxContainer" unique_id=122602369]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now you may have noticed that visually you can see Intersection and Subtraction nodes are doing their intended opreations, sometimes you may want to move or delete them in the edit and remove script!
+If you click the buttons with the Operation name you can see any of those operations that you have in the scene currently, you can now edit and remove them, keep in mind the objets can only be actively edited with single select mode!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="World3" type="Panel" parent="Container/ControllerDisplay/World/WorldPages" unique_id=1166133627]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/World/WorldPages/World3" unique_id=1034989838]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/World/WorldPages/World3/VBoxContainer" unique_id=1485360638]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Visibility"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/World/WorldPages/World3/VBoxContainer" unique_id=250738554]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now you may have noticed that visually you can see Intersection and Subtraction nodes are doing their intended opreations, sometimes you may want to move or delete them in the edit and remove script!
+If you click the buttons with the Operation name you can see any of those operations that you have in the scene currently, you can now edit and remove them, keep in mind the objets can only be actively edited with single select mode!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="World4" type="Panel" parent="Container/ControllerDisplay/World/WorldPages" unique_id=25470529]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/World/WorldPages/World4" unique_id=987613217]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/World/WorldPages/World4/VBoxContainer" unique_id=298259348]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Snap Feature / Measured Movements"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/World/WorldPages/World4/VBoxContainer" unique_id=1270877928]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now for the precision modelling, here you can you toggle the snap features, this will update the HUD under snap, Click the Snap Movements button and watch the HUD.
+Head back to the build tab and try spawning in something you may notice the slight jolt between certain legnths, thats the snap, this works for moving, scaling and roating in the Edit script too!
+If you want to change the distance use the Slider or the Spinbox to edit the distance."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="World5" type="Panel" parent="Container/ControllerDisplay/World/WorldPages" unique_id=1377043181]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/World/WorldPages/World5" unique_id=1855372428]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/World/WorldPages/World5/VBoxContainer" unique_id=569177307]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Passthrough"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/World/WorldPages/World5/VBoxContainer" unique_id=1791708705]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "This world setting allows you to see these objects and structures, in your real life environment, be ready to see your creations virtually come to life!
+Click the passthrough button to start, and if you ever want to return just press the passthrough button again and you'll see the world overlay again.
+Keep in mind your Camera Y axis is locked in passthrough mode, so objects will follow your eye level, this works differently in virtual mode!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="File" type="MarginContainer" parent="Container/ControllerDisplay" unique_id=1878527158]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 5
+
+[node name="FilePages" type="Control" parent="Container/ControllerDisplay/File" unique_id=1742073930]
+layout_mode = 2
+
+[node name="File1" type="Panel" parent="Container/ControllerDisplay/File/FilePages" unique_id=1928556309]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/File/FilePages/File1" unique_id=423094425]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/File/FilePages/File1/VBoxContainer" unique_id=1107591636]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "File Tab"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/File/FilePages/File1/VBoxContainer" unique_id=1269186606]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "In this tab you are able to save, quick save and load any up any scenes.
+Let's say you need to stop working on a scene then feel free to hit Save as and always come back to it later!.
+Maybe just for a quick break!
+You can always expect it to be back here ready to load!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="File2" type="Panel" parent="Container/ControllerDisplay/File/FilePages" unique_id=1547054418]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/File/FilePages/File2" unique_id=616088102]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/File/FilePages/File2/VBoxContainer" unique_id=1128095464]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Saving Scene"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/File/FilePages/File2/VBoxContainer" unique_id=1499249819]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now you may wonder how do you actually save the scene, well once you're happy with its state and are ready to quit and move on, hit the Save As button, you should see the keyboard and editable line appear, you can start typing a name you wan't to give your save file!, Keep in mind there is a 60 Character limit!
+Once you are happy with your name for the file just hit the confirm button and wait for the confirmation popup, now check the HUD to see your file name saved!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="File3" type="Panel" parent="Container/ControllerDisplay/File/FilePages" unique_id=956629835]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/File/FilePages/File3" unique_id=935181875]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/File/FilePages/File3/VBoxContainer" unique_id=959606858]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Quick Save"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/File/FilePages/File3/VBoxContainer" unique_id=34777192]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now maybe you are on the run and are already on a save file or have saved recently, don't worry you can always just hit quick save and it'll save to your current file.
+On your HUD check to make sure that you are on the file you want to save to and hit quick save it will save the scene to that file!
+ If you aren't on a scene then it will just automatically do the Save As operation."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="File4" type="Panel" parent="Container/ControllerDisplay/File/FilePages" unique_id=473317577]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/File/FilePages/File4" unique_id=316764741]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/File/FilePages/File4/VBoxContainer" unique_id=477979322]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Load Scene"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/File/FilePages/File4/VBoxContainer" unique_id=1389258276]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now that you have your scene saved and want to return to it, to do so you have to find the files name in your list under the load title, there your files will appear!
+When you want to load a certain file, just click it with trigger and once its highlighted press load, and wait for the load transition!
+Keep in mind it will clear everything in your current scene so don't forget to save before loading a new scene!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="File5" type="Panel" parent="Container/ControllerDisplay/File/FilePages" unique_id=1571020489]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/File/FilePages/File5" unique_id=565340550]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/File/FilePages/File5/VBoxContainer" unique_id=1419980221]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Deleting Files"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/File/FilePages/File5/VBoxContainer" unique_id=618785497]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now you are able to delete and remove the files but be careful because once you press the X button, they are not coming back!.
+So make sure you don't hit the X unless you really want too!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Export" type="MarginContainer" parent="Container/ControllerDisplay" unique_id=1904868240]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 6
+
+[node name="ExportPages" type="Control" parent="Container/ControllerDisplay/Export" unique_id=543158061]
+layout_mode = 2
+
+[node name="Export1" type="Panel" parent="Container/ControllerDisplay/Export/ExportPages" unique_id=1010328437]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Export/ExportPages/Export1" unique_id=1084650827]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Export/ExportPages/Export1/VBoxContainer" unique_id=570422384]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Export Tab"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Export/ExportPages/Export1/VBoxContainer" unique_id=499531584]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "This tab is where you can bring your creations and objects to other Godot based projects or into other professional PC based softwares like Blender.
+Here you can also render objects / structures to be played around with and thrown around your environment."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Export2" type="Panel" parent="Container/ControllerDisplay/Export/ExportPages" unique_id=653240291]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Export/ExportPages/Export2" unique_id=989809461]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Export/ExportPages/Export2/VBoxContainer" unique_id=733556680]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Rendering Structures"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Export/ExportPages/Export2/VBoxContainer" unique_id=1805842982]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now that you probably have some sort of completed object either with the vertice creation or the CSG operation, you can render that object / structure!
+Keep in mind rendered objects aren't saved in the scene through file saving, they are just for playing around with, don't worry you can still export it and have it saved!
+To render an object, select your structure and hit render, in this mode you are always on Group select, the object would have spawned in front of you, play around with it!"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Export3" type="Panel" parent="Container/ControllerDisplay/Export/ExportPages" unique_id=1716718335]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Export/ExportPages/Export3" unique_id=981221138]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Export/ExportPages/Export3/VBoxContainer" unique_id=718706000]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Godot Export"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Export/ExportPages/Export3/VBoxContainer" unique_id=655720492]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "That rendered object you just created can now be exported as a Godot .tscn file to be used in other projects, to do so select the rendered object, once selected you can then hit the Godot Export button, a line bar should appear and then you can type a name for your file, once you are happy with its name hit Godot Export again and wait for the ping to tell you if it was successful or not!
+To see how to pull this save file from the headset to a computer check the FAQ"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Export4" type="Panel" parent="Container/ControllerDisplay/Export/ExportPages" unique_id=381790338]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Export/ExportPages/Export4" unique_id=937495509]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Export/ExportPages/Export4/VBoxContainer" unique_id=860003382]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = ".OBJ Export"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Export/ExportPages/Export4/VBoxContainer" unique_id=538531428]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Maybe you want a more professional software, more professional than this one, it hurts to hear that.
+But you can still do that, the same way you dont the Godot Exprort.
+Select your rendered object, once selected hit the .OBJ Export button, give your file a name, and hit .OBJ Export button once more, wait for the ping and BOOM, its saved!
+If you want to pull the ,OBJ file to be used elsewhere check the FAQ"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Settings" type="MarginContainer" parent="Container/ControllerDisplay" unique_id=444923616]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 7
+
+[node name="SettingPages" type="Control" parent="Container/ControllerDisplay/Settings" unique_id=1391255672]
+layout_mode = 2
+
+[node name="Settings1" type="Panel" parent="Container/ControllerDisplay/Settings/SettingPages" unique_id=553332292]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/Settings/SettingPages/Settings1" unique_id=1647593781]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/Settings/SettingPages/Settings1/VBoxContainer" unique_id=125035184]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/Settings/SettingPages/Settings1/VBoxContainer" unique_id=745736918]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Now moving away from the UI Controller finally.
+Pressing the menu button on the left controller, you can pull up the settings menu.
+Here you can do some cool changes.
+Firstly you can change the master volume and get rid of the annoying sounds.
+Get rid of the weird controller vibrations that everyone hates.
+Open up  this fantastic Manual again if you wish, or change the HUD's visibility."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="FAQ" type="MarginContainer" parent="Container/ControllerDisplay" unique_id=723394869]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 8
+
+[node name="FAQPages" type="Control" parent="Container/ControllerDisplay/FAQ" unique_id=1323512605]
+layout_mode = 2
+
+[node name="FAQ1" type="Panel" parent="Container/ControllerDisplay/FAQ/FAQPages" unique_id=683511130]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ1" unique_id=80635554]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ1/VBoxContainer" unique_id=790235358]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "FAQ"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ1/VBoxContainer" unique_id=2098550242]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "This part of the manual are just some extras that I have added in from questions I get asked when people may not know what to do with the software, or simply just forget."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="FAQ2" type="Panel" parent="Container/ControllerDisplay/FAQ/FAQPages" unique_id=2022300109]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ2" unique_id=1422435788]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ2/VBoxContainer" unique_id=386307587]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "how to set up to pull files?"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ2/VBoxContainer" unique_id=1489484438]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "To pull your files, firstly you need to have some sort of connection established with your headset to your PC or Laptop.
+Ensure you have ADB (Android Debug Bridge) installed on your device and added to your environment path.
+Once your device is connected and ADB is installed you are ready to pull the files."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="FAQ3" type="Panel" parent="Container/ControllerDisplay/FAQ/FAQPages" unique_id=1732646631]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ3" unique_id=608928523]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ3/VBoxContainer" unique_id=324730451]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Pull Files for Windows"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ3/VBoxContainer" unique_id=1907502186]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Open up your command Prompt
+for the Godot Scenes type in
+adb pull /sdcard/Android/data/com.jello.polymesh/files/meshes/
+to specify do /meshes/file_name.tscn
+adb pull /sdcard/Android/data/com.jello.polymesh/files/objects/
+to specifiy do /objects/file_name.obj and /objects/file_name.mtl"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="FAQ4" type="Panel" parent="Container/ControllerDisplay/FAQ/FAQPages" unique_id=1802921249]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ4" unique_id=262797303]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ4/VBoxContainer" unique_id=965884377]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Pull Files for Linux"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ4/VBoxContainer" unique_id=2113032766]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Open up your Terminal
+for the Godot Scenes type in
+adb pull /sdcard/Android/data/com.jello.polymesh/files/meshes/
+to specify do /meshes/file_name.tscn
+adb pull /sdcard/Android/data/com.jello.polymesh/files/objects/
+to specifiy do /objects/file_name.obj and /objects/file_name.mtl"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="FAQ5" type="Panel" parent="Container/ControllerDisplay/FAQ/FAQPages" unique_id=1691136294]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ5" unique_id=2129198691]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ5/VBoxContainer" unique_id=1591372689]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Pull Files for Mac"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ5/VBoxContainer" unique_id=881090142]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Open up your Terminal
+for the Godot Scenes type in
+adb pull /sdcard/Android/data/com.jello.polymesh/files/meshes/
+to specify do /meshes/file_name.tscn
+adb pull /sdcard/Android/data/com.jello.polymesh/files/objects/
+to specifiy do /objects/file_name.obj and /objects/file_name.mtl"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="FAQ6" type="Panel" parent="Container/ControllerDisplay/FAQ/FAQPages" unique_id=334198140]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ6" unique_id=101533510]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ6/VBoxContainer" unique_id=16144478]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Where are the files?"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ6/VBoxContainer" unique_id=447189610]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Whichever path you ran the commands from thats the location you will see the folders and or singluar files
+For example
+Windows: C:\\Users\\YourName\\ ,by default this is where cmd opens on.
+Mac: YourName@MacBook-Pro ~ % , Terminal opens here.
+Linux: YourName@hostname:~$ , Terminal opens here."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="FAQ7" type="Panel" parent="Container/ControllerDisplay/FAQ/FAQPages" unique_id=126761740]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ7" unique_id=1501941459]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ7/VBoxContainer" unique_id=1557235317]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Are there any video tutorials?"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ7/VBoxContainer" unique_id=1451278555]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Yes there are, on my youtube channel Jellytots04, there is a guide for the basic operations and a step by step guide on building a chair for reference."
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="FAQ8" type="Panel" parent="Container/ControllerDisplay/FAQ/FAQPages" unique_id=1052299239]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ8" unique_id=1823083411]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ8/VBoxContainer" unique_id=1130235851]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Where do I send my questions?"
+horizontal_alignment = 1
+
+[node name="Label" type="Label" parent="Container/ControllerDisplay/FAQ/FAQPages/FAQ8/VBoxContainer" unique_id=305970558]
+custom_minimum_size = Vector2(750, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "If you have any sort of questions about this software feel free to send an email with your inquiry, I am open to all opinions and ideas for this software.
+Business Email:
+polymesh.business@gmail.com"
+horizontal_alignment = 1
+autowrap_mode = 3
+
+[node name="Buttons" type="HBoxContainer" parent="Container" unique_id=1213458566]
+layout_mode = 2
+
+[node name="BackTab" type="Button" parent="Container/Buttons" unique_id=440857902]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 22
+text = " << Tab "
+
+[node name="BackPage" type="Button" parent="Container/Buttons" unique_id=236296715]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 24
+text = " < Page "
+
+[node name="Exit" type="Button" parent="Container/Buttons" unique_id=316318132]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 24
+text = " Exit X "
+
+[node name="NextPage" type="Button" parent="Container/Buttons" unique_id=545819945]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 24
+text = " Page > "
+
+[node name="NextTab" type="Button" parent="Container/Buttons" unique_id=1415086319]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 24
+text = " Tab >> "

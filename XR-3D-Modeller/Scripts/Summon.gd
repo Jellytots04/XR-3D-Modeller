@@ -693,8 +693,9 @@ func place_copy():
 						# Duplicate that child
 						var new_obj = original_child.duplicate()
 						
-						# Change its CSGIndex
-						new_obj.operation = csgIndex
+						# Change its CSGIndex only if it is Subtraction
+						if csgIndex == 2:
+							new_obj.operation = csgIndex
 						
 						# Grab that childs original materials
 						if original_child in true_materials:
