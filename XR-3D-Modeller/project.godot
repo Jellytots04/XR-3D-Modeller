@@ -18,6 +18,7 @@ config/name="XR 3D Modeller"
 run/main_scene="uid://dt52fi5t6blik"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
+config/windows_native_icon="res://Images/Icon/PolyMeshIcon.ico"
 
 [aseprite_importers]
 
