@@ -52,7 +52,6 @@ func save_scene(file_name):
 	# Give the user an error toast if result != OK
 	else:
 		ToastManager.error("Save Failed", "Could not save scene")
-	
 # Re parenting script
 func _set_owner_recursive(node, ownerNode):
 	for child in node.get_children():

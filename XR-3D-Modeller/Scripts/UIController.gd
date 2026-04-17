@@ -286,7 +286,6 @@ func _snap_spinBox_changed(value, slider):
 # Intersection objects toggle
 func _intersection_toggled():
 	AudioManager.play_icon_click()
-	print("Called")
 	WorldOptions.showIntersection = not WorldOptions.showIntersection
 	WorldOptions.intersectionsVisibilityChanged.emit(WorldOptions.showIntersection)
 	
@@ -336,11 +335,8 @@ func _load_saved_list():
 	for child in loaded_scenes_container.get_children():
 		child.queue_free()
 		
-	print("Loading files list")
-	print("Container : ", loaded_scenes_container)
 	var files = SaveManager.get_save_files()
 	if files.size() == 0:
-		print("No files found")
 		return
 	
 	for file in files:
@@ -374,14 +370,11 @@ func _select_load_file(file_name, btn):
 		
 	btn.modulate = Color(0.913, 0.967, 0.331, 1.0)
 	selected_load_file = file_name
-	print("Selected file : ", file_name)
 
 func _load_file():
 	AudioManager.play_icon_click()
 	if selected_load_file == "":
-		print("No file selected")
 		return
-	print("Loading : ", selected_load_file)
 	SaveManager.load_scene(selected_load_file)
 
 func _delete_save_file(file_name):
@@ -433,4 +426,3 @@ func switch_to_tab(tab_index: int):
 	var viewport_scene = $PickableObject/Viewport2Din3D/Viewport.get_child(0)
 	if viewport_scene:
 		viewport_scene.current_tab = tab_index
-		print("Switched tab via tutorial : ", tab_index)

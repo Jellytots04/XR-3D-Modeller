@@ -320,9 +320,7 @@ func combine_objects(index, combiner, spawnPoint, objectNormal):
 		var new_obj = summonableObjects[index].instantiate()
 		var snapped_point = WorldOptions.snap_vec(spawnPoint)
 		# Grabs the position of the hand and will add to it to spawn the hand in
-		# Will replace this with a marker tag later on
 		new_obj.global_transform.origin = snapped_point + objectNormal * 0.01
-		# objectsInScene.append(new_obj)
 		# Add the new object to the scene
 		new_obj.scale = objectSize * Vector3.ONE
 		new_obj.operation = csgIndex
@@ -824,9 +822,7 @@ func update_highlighted_vertex():
 
 # Highlighting Functions
 func update_highlighted_object():
-	# print("Ray update")
 	if summonIndex == 4 and ghostingOn:
-		# print("Returned for ghosting")
 		return
 	if raycast_3d.is_colliding():
 		var combiner = raycast_3d.get_collider()
@@ -853,7 +849,6 @@ func update_highlighted_object():
 						_apply_highlight(highlighted_object, highlight_color)
 
 		else:
-			# print("For Multi and Single selecting")
 			if combiner in summonedObjects:
 				var hit_point = raycast_3d.get_collision_point()
 				var selected_obj = null # Object holder variable

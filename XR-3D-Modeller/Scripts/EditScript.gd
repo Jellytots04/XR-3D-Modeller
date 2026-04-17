@@ -459,20 +459,14 @@ func moveObject(delta):
 		# Moves the objects position based on the rotation and distance the controller has moved
 		currentSelectedObject.global_position = WorldOptions.snap_vec(self.global_position + rotation * moveOffset)
 		if abs(joystick.y) > 0.1:
-			#print("Object is being pulled towards me : ", joystick.y)
-			#print("offset direction : ", offset_direction)
 			# Offset the objet with move speed direction and joystick
 			moveOffset += offset_direction * joystick.y * moveSpeed * delta
-			#print("Moving objects location : ",currentSelectedObject.global_position)
 	# Single select move object 
 	elif selectIndex == 2:
 		# Moves the objects position based on the rotation and distance the controller has moved
 		currentSelectedObject.global_position = WorldOptions.snap_vec(self.global_position + rotation * moveOffset)
 		if abs(joystick.y) > 0.1:
-			#print("Object is being pulled towards me : ", joystick.y)
-			#print("offset direction : ", offset_direction)
 			moveOffset += offset_direction * joystick.y * moveSpeed * delta
-			#print("Moving objects location : ",currentSelectedObject.global_position)
 		var original = get_ghost_original(currentSelectedObject)
 		if original:
 			original.global_position = currentSelectedObject.global_position
@@ -1316,11 +1310,15 @@ func planeRotateObject():
 	var snap_rotation = Basis(rotationWorldAxis, snapped_angle)
 	
 	# Using snap rotation snap the object accordingly
-	if selectIndex == 0 or selectIndex == 2:
+	if selectIndex == 0:
+		currentSelectedObject.global_transform.basis = snap_rotation * rotationObjectStartingBasis
+	
+	elif selectIndex == 2:
 		currentSelectedObject.global_transform.basis = snap_rotation * rotationObjectStartingBasis
 		var original = get_ghost_original(currentSelectedObject)
 		if original:
 			original.global_transform.basis = currentSelectedObject.global_transform.basis
+			
 	# Using Single select snap all of the starting rotations by the snap rotaiton
 	elif selectIndex == 1:
 		for obj in multiSelectHolder:
